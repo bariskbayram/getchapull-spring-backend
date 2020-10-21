@@ -36,7 +36,7 @@ public class FakeAlbumDao implements DataAccessAlbum {
     @Override
     public int deleteAlbumById(UUID id) {
         Optional<Album> album = getAlbumById(id);
-        if(album.isEmpty()){
+        if(album == null){
             return 0;
         }
         albums.remove(album.get());
