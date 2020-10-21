@@ -42,6 +42,8 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         // Authorization key'i ile yollamıştık. Geri aynı şekilde geliyor ve aldık
         String authorizationHeader = request.getHeader("Authorization");
 
+        System.out.println("authorization headerdan alındı");
+
         if(Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())){
             filterChain.doFilter(request, response);
             return;
