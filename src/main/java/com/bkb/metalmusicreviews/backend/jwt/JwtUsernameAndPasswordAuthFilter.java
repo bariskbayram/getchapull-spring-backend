@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -68,6 +69,11 @@ public class JwtUsernameAndPasswordAuthFilter extends UsernamePasswordAuthentica
                 .compact();
 
         System.out.println("token ürettik");
+
+        Cookie cookie = new Cookie("Bearer ", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
         response.addHeader(jwtConfig.getAuthorizationHeader(),jwtConfig.getTokenPrefix() + token);
         response.addHeader("BKB", "bariskbayram");
