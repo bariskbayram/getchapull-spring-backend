@@ -49,8 +49,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
-                .csrf()
-                .and()
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
