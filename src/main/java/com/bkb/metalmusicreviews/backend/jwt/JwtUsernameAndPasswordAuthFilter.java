@@ -70,17 +70,7 @@ public class JwtUsernameAndPasswordAuthFilter extends UsernamePasswordAuthentica
 
         System.out.println("token ürettik");
 
-       /* Cookie cookie = new Cookie("Bearer ", token);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);*/
-
-        //response.addHeader(jwtConfig.getAuthorizationHeader(),jwtConfig.getTokenPrefix() + token);
-        response.setHeader("Content-Type", token);
-        response.addHeader("Authorization", "Bearer " + token);
-        response.addHeader("Auth", "Bearer " + token);
-        response.addHeader("BKB", "bariskbayram");
-
+        response.addHeader(jwtConfig.getAuthorizationHeader(),jwtConfig.getTokenPrefix() + token);
 
         System.out.println("token'ı header'a koyduk");
 

@@ -85,8 +85,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("BKB", jwtConfig.getAuthorizationHeader(), "authorization", "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(Arrays.asList("x-auth-token", jwtConfig.getAuthorizationHeader(), "BKB", "authorization"));
+        configuration.setAllowedHeaders(Arrays.asList(jwtConfig.getAuthorizationHeader(), "content-type", "x-auth-token"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token", jwtConfig.getAuthorizationHeader()));
         configuration.setMaxAge((long) 3600);
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
