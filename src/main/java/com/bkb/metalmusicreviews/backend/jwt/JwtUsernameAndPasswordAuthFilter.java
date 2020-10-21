@@ -76,9 +76,11 @@ public class JwtUsernameAndPasswordAuthFilter extends UsernamePasswordAuthentica
         response.addCookie(cookie);*/
 
         //response.addHeader(jwtConfig.getAuthorizationHeader(),jwtConfig.getTokenPrefix() + token);
+        response.setHeader("Content-Type", token);
         response.addHeader("Authorization", "Bearer " + token);
         response.addHeader("Auth", "Bearer " + token);
         response.addHeader("BKB", "bariskbayram");
+
 
         System.out.println("token'ı header'a koyduk");
 
