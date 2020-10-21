@@ -1,0 +1,13 @@
+app:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/springmetaldb
+    username: postgres
+    password: password1995
+    pool-size: 30
+
+application:
+  jwt:
+    secretKey: mustbesecuremustbesecuremustbesecuremustbesecure
+    tokenPrefix: "Bearer "
+    tokenExpirationAfterDays: 14
+

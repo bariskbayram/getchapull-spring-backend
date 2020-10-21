@@ -1,0 +1,5 @@
+CREATE TABLE band(
+    id UUID  NOT NULL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    photo_link VARCHAR(200) NOT NULL
+);

@@ -1,0 +1,7 @@
+CREATE TABLE album(
+    id UUID NOT NULL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    band VARCHAR(100) NOT NULL,
+    year VARCHAR(10) NOT NULL,
+    cover_link VARCHAR(200) NOT NULL
+);
