@@ -35,7 +35,11 @@ public class UserProfileController {
     )
     @PreAuthorize("hasAuthority('review:read')")
     public byte[] downloadProfilePhoto(@PathVariable("username") String username){
-        return userProfileService.downloadProfilePhoto(username);
+        byte[] array = userProfileService.downloadProfilePhoto(username);
+        for(byte b: array){
+            System.out.print(b);
+        }
+        return array;
     }
 
     @PostMapping("/signup")
