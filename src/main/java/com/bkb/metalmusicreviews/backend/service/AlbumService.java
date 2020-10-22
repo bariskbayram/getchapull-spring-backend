@@ -26,48 +26,43 @@ public class AlbumService {
         this.fileStoreService = fileStoreService;
     }
 
-    public List<Album> getAllAlbums(){
-        return dataAccessAlbum.getAllAlbums();
+    public List<Album> getAllAlbums(String username){
+        return dataAccessAlbum.getAllAlbums(username);
     }
 
-    public byte[] downloadAlbumImage(UUID albumId) {
-        Album album = getAlbumOrThrow(albumId);
+    public byte[] downloadAlbumImage(UUID albumId, String username) {
+        Album album = getAlbumOrThrow(albumId, username);
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
-                "profiles/bariskbayram/albums");
+                "profiles/" + username +"/albums");
 
         return album.getCoverLink()
                 .map(key -> fileStoreService.download(path, key))
                 .orElse(new byte[0]);
     }
 
-    private Album getAlbumOrThrow(UUID albumId) {
-        return getAllAlbums()
+    private Album getAlbumOrThrow(UUID albumId, String username) {
+        return getAllAlbums(username)
                 .stream()
                 .filter(s -> s.getId().equals(albumId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Album is not found!", albumId)));
     }
 
-    public byte[] downloadProfilePhoto() {
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
-                "profiles/bariskbayram/profilephotos");
-        return fileStoreService.download(path, "bkb.jpg");
-    }
-
     public void uploadAlbumFile(MultipartFile albumFile,
                                 String albumTitle,
-                                String bandName,
-                                String year) {
+                                UUID bandId,
+                                String year,
+                                String username) {
         isImage(albumFile);
         isFileEmpty(albumFile);
 
-        Album new_album = new Album(UUID.randomUUID(), bandName,albumTitle,year,"");
+        Album new_album = new Album(UUID.randomUUID(), albumTitle, bandId, year,"", username);
 
         Map<String, String> metadata = new HashMap<>();
         metadata.put("Content-Type", albumFile.getContentType());
         metadata.put("Content-Length", String.valueOf(albumFile.getSize()));
 
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/bariskbayram/albums");
+        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username +"/albums");
 
         String filename = String.format("%s-%s", albumFile.getOriginalFilename(), UUID.randomUUID());
 

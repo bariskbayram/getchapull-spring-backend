@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface DataAccessAlbum {
-    List<Album> getAllAlbums();
+    List<Album> getAllAlbums(String username);
     void addAlbum(Album album);
     Optional<Album> getAlbumById(UUID id);
     int deleteAlbumById(UUID id);

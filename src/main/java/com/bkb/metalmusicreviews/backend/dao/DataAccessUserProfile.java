@@ -11,4 +11,5 @@ public interface DataAccessUserProfile {
     Optional<UserProfile> getUserProfileByUsername(String username);
     void deleteUserProfileByUsername(String username);
     void updateUserProfileByUsername(String username, UserProfile userProfile);
+    boolean usernameIsAvailable(String username);
 }

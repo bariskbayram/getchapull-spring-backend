@@ -1,8 +1,13 @@
 app:
   datasource:
-    jdbc-url: ${JDBC_DATABASE_URL}
-    username: ${JDBC_DATABASE_USERNAME}
-    password: ${JDBC_DATABASE_PASSWORD}
+#    jdbc-url: ${JDBC_DATABASE_URL}
+#    username: ${JDBC_DATABASE_USERNAME}
+#    password: ${JDBC_DATABASE_PASSWORD}
+
+    jdbc-url: jdbc:postgresql://localhost:5432/springmetaldb
+    username: postgres
+    password: password
+
     pool-size: 30
 
 application:

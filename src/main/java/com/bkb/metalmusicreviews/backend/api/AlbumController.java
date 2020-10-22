@@ -26,24 +26,18 @@ public class AlbumController {
         this.bandService = bandService;
     }
 
-    @GetMapping
+    @GetMapping()
     @PreAuthorize("hasAuthority('review:read')")
-    public List<Album> getAllAlbums(){
-        return albumService.getAllAlbums();
+    public List<Album> getAllAlbums(@RequestParam(name = "username") String username){
+        return albumService.getAllAlbums(username);
     }
 
     @GetMapping(path = "{albumId}/image/download")
     @PreAuthorize("hasAuthority('review:read')")
-    public byte[] downloadAlbumImage(@PathVariable("albumId") UUID albumId){
-        return albumService.downloadAlbumImage(albumId);
+    public byte[] downloadAlbumImage(@PathVariable("albumId") UUID albumId,
+                                     @RequestParam(name = "username") String username){
+        return albumService.downloadAlbumImage(albumId, username);
     }
-
-    @GetMapping(path="profile/image/download")
-    @PreAuthorize("hasAuthority('review:read')")
-    public byte[] downloadProfilePhoto(){
-        return albumService.downloadProfilePhoto();
-    }
-
 
     //Çok fazla parametre var onun yerine direkt album nesnesi yollayıp @RequestBody ile Json çevirebiliriz.
     @PostMapping(
@@ -56,10 +50,11 @@ public class AlbumController {
                                      @RequestParam("band_file") MultipartFile bandFile,
                                      @RequestParam("album_title") String albumTitle,
                                      @RequestParam("band_name") String bandName,
-                                     @RequestParam("year") String year){
+                                     @RequestParam("year") String year,
+                                     @RequestParam("username") String username){
 
-        albumService.uploadAlbumFile(albumFile, albumTitle, bandName, year);
-        bandService.uploadBandFile(bandFile, bandName);
+        UUID bandId = bandService.uploadBandFile(bandFile, bandName, username);
+        albumService.uploadAlbumFile(albumFile, albumTitle, bandId, year, username);
     }
 
     //orElse yerine 404 fırtlatman mantıklı olabilir bunu dene.

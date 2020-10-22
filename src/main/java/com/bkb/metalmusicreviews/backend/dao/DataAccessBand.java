@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface DataAccessBand {
-    List<Band> getAllBands();
+    List<Band> getAllBands(String username);
     void addBand(Band band);
     Optional<Band> getBandById(UUID id);
     void deleteBandById(UUID id);

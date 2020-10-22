@@ -6,35 +6,45 @@ import java.util.UUID;
 
 public class Band {
 
-    private final UUID id;
-    private final String name;
-    private String photoLink;
+    private final UUID bandId;
+    private final String bandName;
+    private String bandPhoto;
+    private String username;
 
-    public Band(UUID id, String name, String photoLink) {
-        this.id = id;
-        this.name = name;
-        this.photoLink = photoLink;
+    public Band(UUID bandId, String bandName, String bandPhoto, String username) {
+        this.bandId = bandId;
+        this.bandName = bandName;
+        this.bandPhoto = bandPhoto;
+        this.username = username;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getBandId() {
+        return bandId;
     }
 
-    public String getName() {
-        return name;
+    public String getBandName() {
+        return bandName;
     }
 
-    public Optional<String> getPhotoLink() {
-        return Optional.ofNullable(photoLink);
+    public Optional<String> getBandPhoto() {
+        return Optional.ofNullable(bandPhoto);
     }
 
-    public void setPhotoLink(String photoLink) {
-        this.photoLink = photoLink;
+    public void setBandPhoto(String bandPhoto) {
+        this.bandPhoto = bandPhoto;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id,name, photoLink);
+        return Objects.hash(bandId, bandName, bandPhoto, username);
     }
 
     @Override
@@ -42,8 +52,9 @@ public class Band {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Band that = (Band) obj;
-        return Objects.equals(id,that.id) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(photoLink, that.photoLink);
+        return Objects.equals(bandId,that.bandId) &&
+                Objects.equals(bandName, that.bandName) &&
+                Objects.equals(username, that.username) &&
+                Objects.equals(bandPhoto, that.bandPhoto);
     }
 }

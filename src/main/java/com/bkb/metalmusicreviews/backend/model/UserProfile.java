@@ -1,5 +1,6 @@
 package com.bkb.metalmusicreviews.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,8 +9,7 @@ import java.util.Set;
 
 public class UserProfile implements UserDetails {
 
-    private final String name;
-    private final String surname;
+    private final String fullName;
     private final String username;
     private final String password;
     private final Set<? extends GrantedAuthority> grantedAuthorities;
@@ -17,21 +17,17 @@ public class UserProfile implements UserDetails {
     private final boolean isAccountNonLocked;
     private final boolean isCredentialsNonExpired;
     private final boolean isEnabled;
-    private final String profilePhotoLink;
 
-    public UserProfile(String name,
-                       String surname,
-                       String username,
-                       String password,
+    public UserProfile(@JsonProperty("username") String username,
+                       @JsonProperty("password") String password,
+                       @JsonProperty("fullname") String fullName,
                        Set<? extends GrantedAuthority> grantedAuthorities,
                        boolean isAccountNonExpired,
                        boolean isAccountNonLocked,
                        boolean isCredentialsNonExpired,
-                       boolean isEnabled,
-                       String profilePhotoLink) {
+                       boolean isEnabled) {
 
-        this.name = name;
-        this.surname = surname;
+        this.fullName = fullName;
         this.username = username;
         this.password = password;
         this.grantedAuthorities = grantedAuthorities;
@@ -39,7 +35,6 @@ public class UserProfile implements UserDetails {
         this.isAccountNonLocked = isAccountNonLocked;
         this.isCredentialsNonExpired = isCredentialsNonExpired;
         this.isEnabled = isEnabled;
-        this.profilePhotoLink = profilePhotoLink;
     }
 
     @Override
@@ -49,12 +44,12 @@ public class UserProfile implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
     @Override
@@ -77,16 +72,8 @@ public class UserProfile implements UserDetails {
         return isEnabled;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public String getProfilePhotoLink() {
-        return profilePhotoLink;
+    public String getFullName() {
+        return fullName;
     }
 
 }

@@ -10,6 +10,7 @@ public class MetalMusicReviewsApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MetalMusicReviewsApplication.class, args);
+
     }
 
 }

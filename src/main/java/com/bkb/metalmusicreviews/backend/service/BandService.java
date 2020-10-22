@@ -26,46 +26,49 @@ public class BandService {
         this.fileStoreService = fileStoreService;
     }
 
-    public List<Band> getAllBands() {
-        return dataAccessBand.getAllBands();
+    public List<Band> getAllBands(String username) {
+        return dataAccessBand.getAllBands(username);
     }
 
-    public byte[] downloadBandImage(UUID bandId) {
-        Band band = getBandOrThrow(bandId);
+    public byte[] downloadBandImage(UUID bandId, String username) {
+        Band band = getBandOrThrow(bandId, username);
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
-                "profiles/bariskbayram/bands");
+                "profiles/" + username + "/bands");
 
-        return band.getPhotoLink()
+        return band.getBandPhoto()
                 .map(key -> fileStoreService.download(path, key))
                 .orElse(new byte[0]);
     }
 
-    private Band getBandOrThrow(UUID bandId) {
-        return getAllBands()
+    private Band getBandOrThrow(UUID bandId, String username) {
+        return getAllBands(username)
                 .stream()
-                .filter(s -> s.getId().equals(bandId))
+                .filter(s -> s.getBandId().equals(bandId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Band is not found!", bandId)));
     }
 
-    public void uploadBandFile(MultipartFile bandFile, String bandName) {
+    public UUID uploadBandFile(MultipartFile bandFile, String bandName, String username) {
         isImage(bandFile);
         isFileEmpty(bandFile);
 
-        Band new_band = new Band(UUID.randomUUID(), bandName, "");
+        UUID randomId = UUID.randomUUID();
+
+        Band new_band = new Band(randomId, bandName, "", username);
 
         Map<String, String> metadata = new HashMap<>();
         metadata.put("Content-Type", bandFile.getContentType());
         metadata.put("Content-Length", String.valueOf(bandFile.getSize()));
 
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/bariskbayram/bands");
+        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username + "/bands");
 
         String filename = String.format("%s-%s", bandFile.getOriginalFilename(), UUID.randomUUID());
 
         try {
             fileStoreService.save(path, filename, Optional.of(metadata), bandFile.getInputStream());
-            new_band.setPhotoLink(filename);
+            new_band.setBandPhoto(filename);
             dataAccessBand.addBand(new_band);
+            return randomId;
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

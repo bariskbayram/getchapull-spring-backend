@@ -28,6 +28,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import javax.crypto.SecretKey;
 import java.util.Arrays;
 
+import static com.bkb.metalmusicreviews.backend.security.ApplicationUserPermission.*;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -59,6 +61,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthFilter.class)
                 .authorizeRequests()
                 .antMatchers("/", "index", "/css/*","/js/*").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/api/user-profiles/signup").permitAll()
+                .antMatchers("/api/user-profiles/search-username").permitAll()
                 .anyRequest()
                 .authenticated();
 
@@ -86,7 +91,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList(jwtConfig.getAuthorizationHeader(), "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(Arrays.asList("x-auth-token", jwtConfig.getAuthorizationHeader()));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token", jwtConfig.getAuthorizationHeader(), "content-type"));
         configuration.setMaxAge((long) 3600);
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
