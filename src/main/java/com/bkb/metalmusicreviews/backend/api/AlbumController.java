@@ -2,7 +2,7 @@ package com.bkb.metalmusicreviews.backend.api;
 
 import com.bkb.metalmusicreviews.backend.model.Album;
 import com.bkb.metalmusicreviews.backend.service.AlbumService;
-import com.bkb.metalmusicreviews.backend.service.BandService;
+import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,12 +18,10 @@ import java.util.UUID;
 public class AlbumController {
 
     private final AlbumService albumService;
-    private final BandService bandService;
 
     @Autowired
-    public AlbumController(AlbumService albumService, BandService bandService) {
+    public AlbumController(AlbumService albumService) {
         this.albumService = albumService;
-        this.bandService = bandService;
     }
 
     @GetMapping()
@@ -36,7 +34,8 @@ public class AlbumController {
     @PreAuthorize("hasAuthority('review:read')")
     public byte[] downloadAlbumImage(@PathVariable("albumId") UUID albumId,
                                      @RequestParam(name = "username") String username){
-        return albumService.downloadAlbumImage(albumId, username);
+        byte[] arrayBase64 = Base64.getEncoder().encode(albumService.downloadAlbumImage(albumId, username));
+        return arrayBase64;
     }
 
     //Çok fazla parametre var onun yerine direkt album nesnesi yollayıp @RequestBody ile Json çevirebiliriz.
@@ -46,15 +45,13 @@ public class AlbumController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAuthority('review:write')")
-    public void uploadFilesAndReview(@RequestParam("album_file") MultipartFile albumFile,
-                                     @RequestParam("band_file") MultipartFile bandFile,
-                                     @RequestParam("album_title") String albumTitle,
-                                     @RequestParam("band_name") String bandName,
-                                     @RequestParam("year") String year,
-                                     @RequestParam("username") String username){
+    public UUID uploadAlbum(@RequestParam("album_file") MultipartFile albumFile,
+                            @RequestParam("album_title") String albumTitle,
+                            @RequestParam("band_id") UUID bandId,
+                            @RequestParam("year") String year,
+                            @RequestParam("username") String username){
 
-        UUID bandId = bandService.uploadBandFile(bandFile, bandName, username);
-        albumService.uploadAlbumFile(albumFile, albumTitle, bandId, year, username);
+        return albumService.uploadAlbum(albumFile, albumTitle, bandId, year, username);
     }
 
     //orElse yerine 404 fırtlatman mantıklı olabilir bunu dene.

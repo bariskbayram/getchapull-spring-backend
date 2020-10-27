@@ -85,4 +85,12 @@ public class BandService {
             throw new IllegalStateException("BandFile is empty!");
         }
     }
+
+    public void deleteBandById(UUID id) {
+        dataAccessBand.deleteBandById(id);
+    }
+
+    public boolean isBandExist(String bandName, String username) {
+        return dataAccessBand.isBandExist(bandName, username);
+    }
 }

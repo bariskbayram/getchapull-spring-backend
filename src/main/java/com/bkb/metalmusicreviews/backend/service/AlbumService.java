@@ -48,15 +48,17 @@ public class AlbumService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Album is not found!", albumId)));
     }
 
-    public void uploadAlbumFile(MultipartFile albumFile,
-                                String albumTitle,
-                                UUID bandId,
-                                String year,
-                                String username) {
+    public UUID uploadAlbum(MultipartFile albumFile,
+                            String albumTitle,
+                            UUID bandId,
+                            String year,
+                            String username) {
         isImage(albumFile);
         isFileEmpty(albumFile);
 
-        Album new_album = new Album(UUID.randomUUID(), albumTitle, bandId, year,"", username);
+        UUID randomId = UUID.randomUUID();
+
+        Album new_album = new Album(randomId, albumTitle, bandId, year,"", username);
 
         Map<String, String> metadata = new HashMap<>();
         metadata.put("Content-Type", albumFile.getContentType());
@@ -70,6 +72,7 @@ public class AlbumService {
             fileStoreService.save(path, filename, Optional.of(metadata), albumFile.getInputStream());
             new_album.setCoverLink(filename);
             dataAccessAlbum.addAlbum(new_album);
+            return randomId;
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

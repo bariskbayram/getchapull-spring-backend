@@ -1,8 +1,8 @@
 package com.bkb.metalmusicreviews.backend.api;
 
+import java.util.Base64;
 import com.bkb.metalmusicreviews.backend.model.UserProfile;
 import com.bkb.metalmusicreviews.backend.service.UserProfileService;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,11 +35,13 @@ public class UserProfileController {
     )
     @PreAuthorize("hasAuthority('review:read')")
     public byte[] downloadProfilePhoto(@PathVariable("username") String username){
-        byte[] array = userProfileService.downloadProfilePhoto(username);
-        for(byte b: array){
-            System.out.print(b);
-        }
-        return array;
+        byte[] arrayBase64 = Base64.getEncoder().encode(userProfileService.downloadProfilePhoto(username));
+        return arrayBase64;
+    }
+
+    @GetMapping("/get-user")
+    public UserDetails getUserByUsername(@RequestParam(name = "username") String username){
+        return userProfileService.loadUserByUsername(username);
     }
 
     @PostMapping("/signup")

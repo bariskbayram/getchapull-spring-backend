@@ -28,7 +28,7 @@ public class AlbumDataAccess implements DataAccessAlbum {
                         username
                 },
                 (resultSet,i) -> {
-                    UUID id = UUID.fromString(resultSet.getString("BAND_ID"));
+                    UUID id = UUID.fromString(resultSet.getString("ALBUM_ID"));
                     String name = resultSet.getString("ALBUM_NAME");
                     UUID band_id = UUID.fromString(resultSet.getString("BAND_ID"));
                     String year = resultSet.getString("ALBUM_YEAR");
@@ -40,10 +40,11 @@ public class AlbumDataAccess implements DataAccessAlbum {
 
     @Override
     public void addAlbum(Album album) {
-        final String sql = "INSERT INTO album(ALBUM_ID, ALBUM_NAME, BAND_ID, ALBUM_YEAR, ALBUM_COVER, USERNAME) VALUES (uuid_generate_v4(), ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO album(ALBUM_ID, ALBUM_NAME, BAND_ID, ALBUM_YEAR, ALBUM_COVER, USERNAME) VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(
                 sql,
                 new Object[]{
+                        album.getId(),
                         album.getName(),
                         album.getBand(),
                         album.getYear(),
@@ -73,7 +74,11 @@ public class AlbumDataAccess implements DataAccessAlbum {
 
     @Override
     public int deleteAlbumById(UUID id) {
-        return 0;
+        final String sql = "DELETE FROM album WHERE ALBUM_ID = ?";
+        jdbcTemplate.update(
+                sql,
+                new Object[]{id});
+        return 1;
     }
 
     @Override

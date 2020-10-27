@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -42,6 +43,12 @@ public class UserProfileService implements UserDetailsService {
     }
 
     public void registerUser(UserProfile userProfile) {
+        fileStoreService.createFolder(BucketName.IMAGE.getBucketName(), "profiles/" + userProfile.getUsername() + "/albums");
+        fileStoreService.createFolder(BucketName.IMAGE.getBucketName(), "profiles/" + userProfile.getUsername() + "/bands");
+        fileStoreService.putProfilePhoto(
+                BucketName.IMAGE.getBucketName(),
+                "profiles/" + userProfile.getUsername() + "/profilephotos/" + userProfile.getUsername() + ".jpg",
+                new File("src/main/resources/static/default.jpg"));
         dataAccessUserProfile.addUserProfile(userProfile);
     }
 
