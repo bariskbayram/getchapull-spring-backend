@@ -110,7 +110,10 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public void deleteUserProfileByUsername(String username) {
-
+        final String sql = "DELETE FROM user_details WHERE USERNAME = ?";
+        jdbcTemplate.update(
+                sql,
+                new Object[]{username});
     }
 
     @Override

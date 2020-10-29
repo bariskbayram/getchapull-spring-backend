@@ -58,4 +58,10 @@ public class UserProfileController {
     public boolean usernameIsAvailable(@RequestParam(name = "username") String username){
         return userProfileService.usernameIsAvailable(username);
     }
+
+    @DeleteMapping(path = "{username}")
+    @PreAuthorize("hasAuthority('member:write')")
+    public void deleteUserProfile(@PathVariable("username") String username){
+        userProfileService.deleteUserProfile(username);
+    }
 }

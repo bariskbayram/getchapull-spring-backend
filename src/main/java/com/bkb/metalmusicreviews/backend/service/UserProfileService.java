@@ -65,4 +65,8 @@ public class UserProfileService implements UserDetailsService {
                 new File("src/main/resources/static/default.jpg"));
         dataAccessUserProfile.addUserProfileForAdmin(userProfile);
     }
+
+    public void deleteUserProfile(String username) {
+        dataAccessUserProfile.deleteUserProfileByUsername(username);
+    }
 }
