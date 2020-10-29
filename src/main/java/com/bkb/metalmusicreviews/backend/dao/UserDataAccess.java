@@ -135,4 +135,21 @@ public class UserDataAccess implements DataAccessUserProfile{
         }
         return true;
     }
+
+    @Override
+    public void addUserProfileForAdmin(UserProfile userProfile) {
+        final String sql = "INSERT INTO user_details(USERNAME, PASSWORD, FULLNAME, USER_ROLE, IS_ACCOUNT_NON_EXPIRED, IS_ACCOUNT_NON_LOCKED, IS_CREDENTIALS_NON_EXPIRED, IS_ENABLED) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(
+                sql,
+                new Object[]{
+                        userProfile.getUsername(),
+                        passwordEncoder.encode(userProfile.getPassword()),
+                        userProfile.getFullName(),
+                        "ADMIN",
+                        "true",
+                        "true",
+                        "true",
+                        "true"
+                });
+    }
 }

@@ -49,6 +49,11 @@ public class UserProfileController {
         userProfileService.registerUser(userProfile);
     }
 
+    @PostMapping("admin/signup")
+    public void registerAdmin(@RequestBody UserProfile userProfile){
+        userProfileService.registerAdmin(userProfile);
+    }
+
     @GetMapping("/search-username")
     public boolean usernameIsAvailable(@RequestParam(name = "username") String username){
         return userProfileService.usernameIsAvailable(username);
