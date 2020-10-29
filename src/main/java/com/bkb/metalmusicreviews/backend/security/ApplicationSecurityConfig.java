@@ -62,6 +62,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/api/user-profiles/signup").permitAll()
+                .antMatchers("/api/user-profiles/admin/signup").permitAll()
                 .antMatchers("/api/user-profiles/search-username").permitAll()
                 .antMatchers("/api/user-profiles/get-user").permitAll()
                 .anyRequest()
