@@ -73,5 +73,15 @@ public class AlbumController {
         albumService.updateAlbumById(id, album);
     }
 
+    @GetMapping(path = "/isExist/{albumName}")
+    @PreAuthorize("hasAuthority('review:write')")
+    public boolean isAlbumExistForSameUser(
+            @PathVariable("albumName") String albumName,
+            @RequestParam(name = "bandId") String bandId,
+            @RequestParam(name = "username") String username){
+
+        return albumService.isAlbumExistForSameUser(albumName, UUID.fromString(bandId), username);
+    }
+
 }
 

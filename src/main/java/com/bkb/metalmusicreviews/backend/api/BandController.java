@@ -60,7 +60,7 @@ public class BandController {
 
     @GetMapping(path = "{bandName}")
     @PreAuthorize("hasAuthority('review:write')")
-    public boolean isBandExist(
+    public UUID isBandExist(
             @PathVariable("bandName") String bandName,
             @RequestParam(name = "username") String username){
         return bandService.isBandExist(bandName, username);

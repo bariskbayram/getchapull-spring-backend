@@ -101,4 +101,8 @@ public class AlbumService {
     public int updateAlbumById(UUID id, Album album){
         return dataAccessAlbum.updateAlbumById(id, album);
     }
+
+    public boolean isAlbumExistForSameUser(String albumName, UUID bandId, String username) {
+        return dataAccessAlbum.isAlbumExistForSameUser(albumName, bandId, username);
+    }
 }

@@ -79,14 +79,15 @@ public class BandDataAccess implements DataAccessBand{
     }
 
     @Override
-    public boolean isBandExist(String bandName, String username) {
-        final String sql = "SELECT USERNAME, BAND_NAME FROM band Where USERNAME = ? AND BAND_NAME = ?";
+    public UUID isBandExist(String bandName, String username) {
+        final String sql = "SELECT BAND_ID, USERNAME, BAND_NAME FROM band Where USERNAME = ? AND BAND_NAME = ?";
         List<String> result = new ArrayList<>();
         try {
             jdbcTemplate.query(
                     sql,
                     new Object[]{username, bandName},
                     resultSet -> {
+                        result.add(resultSet.getString("BAND_ID"));
                         result.add(resultSet.getString("USERNAME"));
                         result.add(resultSet.getString("BAND_NAME"));
                         return;
@@ -95,8 +96,8 @@ public class BandDataAccess implements DataAccessBand{
             System.out.println("error");
         }
         if(result.size() == 0){
-            return false;
+            return null;
         }
-        return true;
+        return UUID.fromString(result.get(0));
     }
 }

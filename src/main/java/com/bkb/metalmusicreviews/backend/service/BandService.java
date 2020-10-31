@@ -90,7 +90,7 @@ public class BandService {
         dataAccessBand.deleteBandById(id);
     }
 
-    public boolean isBandExist(String bandName, String username) {
+    public UUID isBandExist(String bandName, String username) {
         return dataAccessBand.isBandExist(bandName, username);
     }
 }

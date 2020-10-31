@@ -12,5 +12,5 @@ public interface DataAccessBand {
     Optional<Band> getBandById(UUID id);
     void deleteBandById(UUID id);
     void updateBandById(UUID id, Band band);
-    boolean isBandExist(String bandName, String username);
+    UUID isBandExist(String bandName, String username);
 }

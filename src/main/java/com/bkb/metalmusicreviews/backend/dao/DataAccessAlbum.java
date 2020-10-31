@@ -12,4 +12,5 @@ public interface DataAccessAlbum {
     Optional<Album> getAlbumById(UUID id);
     int deleteAlbumById(UUID id);
     int updateAlbumById(UUID id, Album album);
+    boolean isAlbumExistForSameUser(String albumName, UUID bandId, String username);
 }
