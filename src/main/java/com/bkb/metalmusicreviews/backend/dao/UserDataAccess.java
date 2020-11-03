@@ -122,7 +122,7 @@ public class UserDataAccess implements DataAccessUserProfile{
     }
 
     @Override
-    public boolean usernameIsAvailable(String username) {
+    public boolean usernameIsExist(String username) {
         final String sql = "SELECT USERNAME, FULLNAME FROM user_details Where USERNAME = ?";
         List<String> result = new ArrayList<>();
         try {

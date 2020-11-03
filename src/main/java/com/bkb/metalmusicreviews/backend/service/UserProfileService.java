@@ -52,8 +52,8 @@ public class UserProfileService implements UserDetailsService {
         dataAccessUserProfile.addUserProfile(userProfile);
     }
 
-    public boolean usernameIsAvailable(String username) {
-        return dataAccessUserProfile.usernameIsAvailable(username);
+    public boolean usernameIsExist(String username) {
+        return dataAccessUserProfile.usernameIsExist(username);
     }
 
     public void registerAdmin(UserProfile userProfile) {

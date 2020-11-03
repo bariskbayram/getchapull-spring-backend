@@ -56,7 +56,7 @@ public class UserProfileController {
 
     @GetMapping("/search-username")
     public boolean usernameIsAvailable(@RequestParam(name = "username") String username){
-        return userProfileService.usernameIsAvailable(username);
+        return userProfileService.usernameIsExist(username);
     }
 
     @DeleteMapping(path = "{username}")
