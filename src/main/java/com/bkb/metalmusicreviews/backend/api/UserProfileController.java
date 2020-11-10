@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,6 +38,19 @@ public class UserProfileController {
     public byte[] downloadProfilePhoto(@PathVariable("username") String username){
         byte[] arrayBase64 = Base64.getEncoder().encode(userProfileService.downloadProfilePhoto(username));
         return arrayBase64;
+    }
+
+    @PostMapping(
+            path = "/{username}/image/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    @PreAuthorize("hasAuthority('review:write')")
+    public void uploadProfilePhoto(@RequestParam("profile_photo")MultipartFile multipartFile,
+                                   @PathVariable("username") String username){
+
+
+        userProfileService.uploadProfilePhoto(username, multipartFile);
+
     }
 
     @GetMapping("/get-user")

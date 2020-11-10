@@ -9,9 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
+
+import static org.apache.http.entity.ContentType.IMAGE_JPEG;
+import static org.apache.http.entity.ContentType.IMAGE_PNG;
 
 @Service
 public class UserProfileService implements UserDetailsService {
@@ -33,6 +38,25 @@ public class UserProfileService implements UserDetailsService {
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
                 "profiles/" + username + "/profilephotos");
         return fileStoreService.download(path, username + ".jpg");
+    }
+
+    public void uploadProfilePhoto(String username, MultipartFile profilePhoto) {
+        isImage(profilePhoto);
+        isFileEmpty(profilePhoto);
+
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("Content-Type", profilePhoto.getContentType());
+        metadata.put("Content-Length", String.valueOf(profilePhoto.getSize()));
+
+        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username + "/profilephotos");
+
+        String filename = String.format("%s.jpg", username);
+
+        try {
+            fileStoreService.save(path, filename, Optional.of(metadata), profilePhoto.getInputStream());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     @Override
@@ -68,5 +92,17 @@ public class UserProfileService implements UserDetailsService {
 
     public void deleteUserProfile(String username) {
         dataAccessUserProfile.deleteUserProfileByUsername(username);
+    }
+
+    private void isFileEmpty(MultipartFile profilePhoto) {
+        if(!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType()).contains(profilePhoto.getContentType())){
+            throw new IllegalStateException("BandFile type is not correct! [" + profilePhoto.getContentType() + "]");
+        }
+    }
+
+    private void isImage(MultipartFile profilePhoto) {
+        if(profilePhoto.isEmpty()){
+            throw new IllegalStateException("BandFile is empty!");
+        }
     }
 }

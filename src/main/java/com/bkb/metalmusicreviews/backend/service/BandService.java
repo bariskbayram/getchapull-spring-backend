@@ -62,7 +62,7 @@ public class BandService {
 
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username + "/bands");
 
-        String filename = String.format("%s-%s", bandFile.getOriginalFilename(), UUID.randomUUID());
+        String filename = String.format("%s-%s", bandFile.getOriginalFilename(), randomId);
 
         try {
             fileStoreService.save(path, filename, Optional.of(metadata), bandFile.getInputStream());

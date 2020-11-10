@@ -66,7 +66,7 @@ public class AlbumService {
 
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username +"/albums");
 
-        String filename = String.format("%s-%s", albumFile.getOriginalFilename(), UUID.randomUUID());
+        String filename = String.format("%s-%s", albumFile.getOriginalFilename(), randomId);
 
         try {
             fileStoreService.save(path, filename, Optional.of(metadata), albumFile.getInputStream());
