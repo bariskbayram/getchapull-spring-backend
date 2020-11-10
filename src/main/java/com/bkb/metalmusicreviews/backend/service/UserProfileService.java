@@ -67,8 +67,8 @@ public class UserProfileService implements UserDetailsService {
     }
 
     public void registerUser(UserProfile userProfile) {
-        fileStoreService.createFolder(BucketName.IMAGE.getBucketName(), "profiles/" + userProfile.getUsername() + "/albums");
-        fileStoreService.createFolder(BucketName.IMAGE.getBucketName(), "profiles/" + userProfile.getUsername() + "/bands");
+        fileStoreService.createFolder(BucketName.IMAGE.getBucketName(), "profiles/" + userProfile.getUsername() + "/albums/");
+        fileStoreService.createFolder(BucketName.IMAGE.getBucketName(), "profiles/" + userProfile.getUsername() + "/bands/");
         fileStoreService.putProfilePhoto(
                 BucketName.IMAGE.getBucketName(),
                 "profiles/" + userProfile.getUsername() + "/profilephotos/" + userProfile.getUsername() + ".jpg",
