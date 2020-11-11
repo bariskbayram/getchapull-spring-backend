@@ -63,8 +63,9 @@ public class AlbumController {
 
     @DeleteMapping(path = "{albumId}")
     @PreAuthorize("hasAuthority('review:write')")
-    public void deleteAlbumById(@PathVariable("albumId") UUID id){
-        albumService.deleteAlbumById(id);
+    public void deleteAlbumById(@PathVariable("albumId") UUID id,
+                                @RequestParam("username") String username){
+        albumService.deleteAlbumById(id, username);
     }
 
     @PutMapping(path = "{albumId}")

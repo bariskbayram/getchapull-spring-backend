@@ -41,13 +41,13 @@ public class UserProfileController {
     }
 
     @PostMapping(
-            path = "/{username}/image/upload",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+            path = "/image/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAuthority('review:write')")
-    public void uploadProfilePhoto(@RequestParam("profile_photo")MultipartFile multipartFile,
-                                   @PathVariable("username") String username){
-
+    public void uploadProfilePhoto(@RequestParam(value = "profile_photo") MultipartFile multipartFile,
+                                   @RequestParam("username") String username){
 
         userProfileService.uploadProfilePhoto(username, multipartFile);
 
@@ -77,5 +77,12 @@ public class UserProfileController {
     @PreAuthorize("hasAuthority('member:write')")
     public void deleteUserProfile(@PathVariable("username") String username){
         userProfileService.deleteUserProfile(username);
+    }
+
+    @PutMapping(path= "{username}")
+    @PreAuthorize("hasAuthority('review:write')")
+    public void updateUserProfile(@PathVariable("username") String username,
+                                  @RequestBody UserProfile userProfile){
+        userProfileService.updateUserProfieByUsername(username, userProfile);
     }
 }

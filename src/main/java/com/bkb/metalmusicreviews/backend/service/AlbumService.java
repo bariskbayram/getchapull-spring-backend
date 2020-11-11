@@ -94,7 +94,10 @@ public class AlbumService {
         return dataAccessAlbum.getAlbumById(id);
     }
 
-    public int deleteAlbumById(UUID id){
+    public int deleteAlbumById(UUID id, String username){
+        String filename = String.format("%s-%s", "blob", id);
+        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username + "/albums");
+        fileStoreService.deleteImage(path, filename);
         return dataAccessAlbum.deleteAlbumById(id);
     }
 

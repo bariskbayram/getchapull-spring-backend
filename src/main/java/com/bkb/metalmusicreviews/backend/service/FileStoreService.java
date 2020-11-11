@@ -77,4 +77,8 @@ public class FileStoreService {
         amazonS3.putObject(new PutObjectRequest(bucketname, fileName, file));
     }
 
+    public void deleteImage(String path, String key){
+        amazonS3.deleteObject(path, key);
+    }
+
 }

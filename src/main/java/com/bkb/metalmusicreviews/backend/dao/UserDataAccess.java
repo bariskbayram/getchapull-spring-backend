@@ -118,7 +118,15 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public void updateUserProfileByUsername(String username, UserProfile userProfile) {
-
+        final String sql = "UPDATE user_details SET FULLNAME = ?, PASSWORD = ? WHERE USERNAME = ?";
+        jdbcTemplate.update(
+                sql,
+                new Object[]{
+                        userProfile.getFullName(),
+                        passwordEncoder.encode(userProfile.getPassword()),
+                        username
+                }
+        );
     }
 
     @Override

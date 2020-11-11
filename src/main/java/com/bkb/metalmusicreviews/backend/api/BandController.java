@@ -54,8 +54,9 @@ public class BandController {
 
     @DeleteMapping(path = "{bandId}")
     @PreAuthorize("hasAuthority('review:write')")
-    public void deleteBandById(@PathVariable("bandId") UUID id){
-        bandService.deleteBandById(id);
+    public void deleteBandById(@PathVariable("bandId") UUID id,
+                               @RequestParam("username") String username){
+        bandService.deleteBandById(id, username);
     }
 
     @GetMapping(path = "{bandName}")

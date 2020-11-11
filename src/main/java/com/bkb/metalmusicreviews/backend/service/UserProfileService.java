@@ -53,6 +53,7 @@ public class UserProfileService implements UserDetailsService {
         String filename = String.format("%s.jpg", username);
 
         try {
+            fileStoreService.deleteImage(path,filename);
             fileStoreService.save(path, filename, Optional.of(metadata), profilePhoto.getInputStream());
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -104,5 +105,9 @@ public class UserProfileService implements UserDetailsService {
         if(profilePhoto.isEmpty()){
             throw new IllegalStateException("BandFile is empty!");
         }
+    }
+
+    public void updateUserProfieByUsername(String username, UserProfile userProfile) {
+        dataAccessUserProfile.updateUserProfileByUsername(username, userProfile);
     }
 }

@@ -86,8 +86,12 @@ public class BandService {
         }
     }
 
-    public void deleteBandById(UUID id) {
+    public void deleteBandById(UUID id, String username) {
         dataAccessBand.deleteBandById(id);
+        String filename = String.format("%s-%s", "blob", id);
+        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username + "/bands");
+        fileStoreService.deleteImage(path, filename);
+
     }
 
     public UUID isBandExist(String bandName, String username) {
