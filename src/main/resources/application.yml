@@ -12,7 +12,7 @@ app:
 
 application:
   jwt:
-    secretKey: mustbesecuremustbesecuremustbesecuremustbesecure
+    secretKey: mustbesecuremustbesecuremustbesecuremustbesecurekk
     tokenPrefix: "Bearer "
     tokenExpirationAfterDays: 14
 
