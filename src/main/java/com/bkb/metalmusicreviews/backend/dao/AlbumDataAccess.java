@@ -111,4 +111,24 @@ public class AlbumDataAccess implements DataAccessAlbum {
         }
         return true;
     }
+
+    @Override
+    public List<Album> getAlbumByBandIdAndUsername(String username, UUID bandId) {
+        final String sql = "SELECT ALBUM_ID, ALBUM_NAME, BAND_ID, ALBUM_YEAR, ALBUM_COVER, USERNAME FROM album WHERE USERNAME = ? AND BAND_ID = ?";
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{
+                        username,
+                        bandId
+                },
+                (resultSet,i) -> {
+                    UUID id = UUID.fromString(resultSet.getString("ALBUM_ID"));
+                    String name = resultSet.getString("ALBUM_NAME");
+                    UUID band_id = UUID.fromString(resultSet.getString("BAND_ID"));
+                    String year = resultSet.getString("ALBUM_YEAR");
+                    String cover_link = resultSet.getString("ALBUM_COVER");
+                    String author = resultSet.getString("USERNAME");
+                    return new Album(id, name, band_id, year, cover_link, author);
+                });
+    }
 }

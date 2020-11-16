@@ -30,6 +30,14 @@ public class AlbumController {
         return albumService.getAllAlbums(username);
     }
 
+    @GetMapping("/albums-of-band")
+    @PreAuthorize("hasAuthority('review:read')")
+    public List<Album> getAlbumsByBandIdAndUsername(
+            @RequestParam(name = "username") String username,
+            @RequestParam(name = "bandId") String bandId){
+        return albumService.getAlbumsByBandIdAndUsername(username, UUID.fromString(bandId));
+    }
+
     @GetMapping(path = "{albumId}/image/download")
     @PreAuthorize("hasAuthority('review:read')")
     public byte[] downloadAlbumImage(@PathVariable("albumId") UUID albumId,

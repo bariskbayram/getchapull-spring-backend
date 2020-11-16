@@ -108,4 +108,8 @@ public class AlbumService {
     public boolean isAlbumExistForSameUser(String albumName, UUID bandId, String username) {
         return dataAccessAlbum.isAlbumExistForSameUser(albumName, bandId, username);
     }
+
+    public List<Album> getAlbumsByBandIdAndUsername(String username, UUID bandId) {
+        return dataAccessAlbum.getAlbumByBandIdAndUsername(username, bandId);
+    }
 }

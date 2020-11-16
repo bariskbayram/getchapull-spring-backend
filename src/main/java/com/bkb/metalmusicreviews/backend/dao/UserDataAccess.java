@@ -13,6 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Array;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -34,7 +36,7 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public List<UserProfile> getAllUserProfiles() {
-        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE FROM user_details";
+        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE FROM user_profile";
         return jdbcTemplate.query(
                 sql,
                 (resultSet,i) -> {
@@ -62,7 +64,7 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public void addUserProfile(UserProfile userProfile) {
-        final String sql = "INSERT INTO user_details(USERNAME, PASSWORD, FULLNAME, USER_ROLE, IS_ACCOUNT_NON_EXPIRED, IS_ACCOUNT_NON_LOCKED, IS_CREDENTIALS_NON_EXPIRED, IS_ENABLED) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO user_profile(USERNAME, PASSWORD, FULLNAME, USER_ROLE, IS_ACCOUNT_NON_EXPIRED, IS_ACCOUNT_NON_LOCKED, IS_CREDENTIALS_NON_EXPIRED, IS_ENABLED, FRIENDS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, string_to_array(?,','))";
         jdbcTemplate.update(
                 sql,
                 new Object[]{
@@ -73,13 +75,14 @@ public class UserDataAccess implements DataAccessUserProfile{
                         "true",
                         "true",
                         "true",
-                        "true"
+                        "true",
+                        userProfile.getUsername()
                 });
     }
 
     @Override
     public Optional<UserProfile> getUserProfileByUsername(String input_username) {
-        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE FROM user_details Where USERNAME = ?";
+        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE FROM user_profile Where USERNAME = ?";
         UserProfile userProfile = jdbcTemplate.queryForObject(
                 sql,
                 new Object[]{input_username},
@@ -110,7 +113,7 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public void deleteUserProfileByUsername(String username) {
-        final String sql = "DELETE FROM user_details WHERE USERNAME = ?";
+        final String sql = "DELETE FROM user_profile WHERE USERNAME = ?";
         jdbcTemplate.update(
                 sql,
                 new Object[]{username});
@@ -118,7 +121,7 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public void updateUserProfileByUsername(String username, UserProfile userProfile) {
-        final String sql = "UPDATE user_details SET FULLNAME = ?, PASSWORD = ? WHERE USERNAME = ?";
+        final String sql = "UPDATE user_profile SET FULLNAME = ?, PASSWORD = ? WHERE USERNAME = ?";
         jdbcTemplate.update(
                 sql,
                 new Object[]{
@@ -131,7 +134,7 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public boolean usernameIsExist(String username) {
-        final String sql = "SELECT USERNAME, FULLNAME FROM user_details Where USERNAME = ?";
+        final String sql = "SELECT USERNAME, FULLNAME FROM user_profile Where USERNAME = ?";
         List<String> result = new ArrayList<>();
         try {
             jdbcTemplate.query(sql, new Object[]{username}, resultSet -> {
@@ -149,7 +152,7 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public void addUserProfileForAdmin(UserProfile userProfile) {
-        final String sql = "INSERT INTO user_details(USERNAME, PASSWORD, FULLNAME, USER_ROLE, IS_ACCOUNT_NON_EXPIRED, IS_ACCOUNT_NON_LOCKED, IS_CREDENTIALS_NON_EXPIRED, IS_ENABLED) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO user_profile(USERNAME, PASSWORD, FULLNAME, USER_ROLE, IS_ACCOUNT_NON_EXPIRED, IS_ACCOUNT_NON_LOCKED, IS_CREDENTIALS_NON_EXPIRED, IS_ENABLED) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(
                 sql,
                 new Object[]{
