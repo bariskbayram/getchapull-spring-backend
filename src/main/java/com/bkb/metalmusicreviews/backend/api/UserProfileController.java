@@ -25,7 +25,6 @@ public class UserProfileController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('member:read')")
     public List<UserProfile> getAllUserProfiles(){
         return userProfileService.getAllUserProfileS();
     }
@@ -63,7 +62,7 @@ public class UserProfileController {
         userProfileService.registerUser(userProfile);
     }
 
-    @PostMapping("admin/signup")
+    @PostMapping("/admin/signup")
     public void registerAdmin(@RequestBody UserProfile userProfile){
         userProfileService.registerAdmin(userProfile);
     }
@@ -84,5 +83,12 @@ public class UserProfileController {
     public void updateUserProfile(@PathVariable("username") String username,
                                   @RequestBody UserProfile userProfile){
         userProfileService.updateUserProfieByUsername(username, userProfile);
+    }
+
+    @PutMapping(path = "/add-friend")
+    @PreAuthorize("hasAuthority('review:write')")
+    public void addFriend(@RequestParam("username") String username,
+                          @RequestParam("friend_username") String friendUsername){
+        userProfileService.addFriend(username, friendUsername);
     }
 }

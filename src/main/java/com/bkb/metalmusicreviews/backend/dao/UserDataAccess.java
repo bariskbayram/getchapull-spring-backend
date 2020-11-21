@@ -1,21 +1,14 @@
 package com.bkb.metalmusicreviews.backend.dao;
 
-import com.amazonaws.services.quicksight.model.PostgreSqlParameters;
 import com.bkb.metalmusicreviews.backend.model.UserProfile;
-import org.flywaydb.core.internal.database.postgresql.PostgreSQLParser;
-import org.flywaydb.core.internal.database.postgresql.PostgreSQLType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Array;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -36,7 +29,7 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public List<UserProfile> getAllUserProfiles() {
-        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE FROM user_profile";
+        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE, FRIENDS FROM user_profile";
         return jdbcTemplate.query(
                 sql,
                 (resultSet,i) -> {
@@ -44,13 +37,14 @@ public class UserDataAccess implements DataAccessUserProfile{
                     String password = resultSet.getString("PASSWORD");
                     String fullname = resultSet.getString("FULLNAME");
                     String role = resultSet.getString("USER_ROLE");
+                    Array friends = resultSet.getArray("FRIENDS");
                     Set<? extends GrantedAuthority> grantedAuthorities = null;
                     if(role.equals("ADMIN")){
                         grantedAuthorities = ADMIN.getGrantedAuthorities();
                     }else{
                         grantedAuthorities = NORMAL.getGrantedAuthorities();
                     }
-                    return new UserProfile(
+                    UserProfile u = new UserProfile(
                             username,
                             password,
                             fullname,
@@ -59,6 +53,8 @@ public class UserDataAccess implements DataAccessUserProfile{
                             true,
                             true,
                             true);
+                    u.setObjectFriend(friends);
+                    return u;
                 });
     }
 
@@ -82,7 +78,7 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public Optional<UserProfile> getUserProfileByUsername(String input_username) {
-        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE FROM user_profile Where USERNAME = ?";
+        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE, FRIENDS FROM user_profile Where USERNAME = ?";
         UserProfile userProfile = jdbcTemplate.queryForObject(
                 sql,
                 new Object[]{input_username},
@@ -91,13 +87,14 @@ public class UserDataAccess implements DataAccessUserProfile{
                     String password = resultSet.getString("PASSWORD");
                     String fullname = resultSet.getString("FULLNAME");
                     String role = resultSet.getString("USER_ROLE");
+                    Array friends = resultSet.getArray("FRIENDS");
                     Set<? extends GrantedAuthority> grantedAuthorities = null;
                     if(role.equals("ADMIN")){
                         grantedAuthorities = ADMIN.getGrantedAuthorities();
                     }else{
                         grantedAuthorities = NORMAL.getGrantedAuthorities();
                     }
-                    return new UserProfile(
+                    UserProfile u = new UserProfile(
                             username,
                             password,
                             fullname,
@@ -106,6 +103,8 @@ public class UserDataAccess implements DataAccessUserProfile{
                             true,
                             true,
                             true);
+                    u.setObjectFriend(friends);
+                    return u;
                 });
 
         return Optional.ofNullable(userProfile);
@@ -165,5 +164,17 @@ public class UserDataAccess implements DataAccessUserProfile{
                         "true",
                         "true"
                 });
+    }
+
+    @Override
+    public void addFriend(String username, String friendUsername) {
+        final String sqlPut = "UPDATE user_profile SET FRIENDS = array_append(FRIENDS, ?::text) WHERE USERNAME = ?";
+        jdbcTemplate.update(
+                sqlPut,
+                new Object[]{
+                        friendUsername,
+                        username
+                }
+        );
     }
 }

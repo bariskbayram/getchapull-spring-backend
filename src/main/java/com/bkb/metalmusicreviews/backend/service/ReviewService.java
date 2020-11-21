@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,7 +28,11 @@ public class ReviewService {
         return dataAccessReview.getReviewByAlbumId(albumId, username);
     }
 
-    public void deteReviewByReviewId(UUID reviewId) {
+    public void deteReviewByReviewId(Integer reviewId) {
         dataAccessReview.deleteReviewById(reviewId);
+    }
+
+    public List<Review> getReviewsForPosts(List<String> friend_list) {
+        return dataAccessReview.getReviewsForPosts(friend_list);
     }
 }

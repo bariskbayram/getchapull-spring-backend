@@ -110,4 +110,8 @@ public class UserProfileService implements UserDetailsService {
     public void updateUserProfieByUsername(String username, UserProfile userProfile) {
         dataAccessUserProfile.updateUserProfileByUsername(username, userProfile);
     }
+
+    public void addFriend(String username, String friendUsername) {
+        dataAccessUserProfile.addFriend(username, friendUsername);
+    }
 }

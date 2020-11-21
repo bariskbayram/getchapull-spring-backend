@@ -1,5 +1,6 @@
 package com.bkb.metalmusicreviews.backend.dao;
 
+import com.bkb.metalmusicreviews.backend.model.Album;
 import com.bkb.metalmusicreviews.backend.model.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,26 +27,28 @@ public class ReviewDataAccess implements DataAccessReview {
 
     @Override
     public void addReview(Review review) {
-        final String sql = "INSERT INTO review(REVIEW_ID, REVIEW_TITLE, REVIEW_CONTENT, REVIEW_POINT, ALBUM_ID, USERNAME) VALUES (?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO review(REVIEW_TITLE, REVIEW_CONTENT, REVIEW_POINT, ALBUM_ID, ALBUM_NAME, BAND_NAME, USERNAME, DATE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(
                 sql,
                 new Object[]{
-                        review.getReviewId(),
                         review.getTitle(),
                         review.getContent(),
                         review.getPoint(),
                         review.getAlbumId(),
-                        review.getUsername()
+                        review.getAlbumName(),
+                        review.getBandName(),
+                        review.getUsername(),
+                        review.getDate()
                 });
     }
 
     @Override
-    public Optional<Review> getReviewById(UUID id) {
+    public Optional<Review> getReviewById(Integer id) {
         return Optional.empty();
     }
 
     @Override
-    public void deleteReviewById(UUID id) {
+    public void deleteReviewById(Integer id) {
         final String sql = "DELETE FROM review WHERE REVIEW_ID = ?";
         jdbcTemplate.update(
                 sql,
@@ -53,7 +56,7 @@ public class ReviewDataAccess implements DataAccessReview {
     }
 
     @Override
-    public void updateReviewById(UUID id, Review review) {
+    public void updateReviewById(Integer id, Review review) {
 
     }
 
@@ -67,13 +70,47 @@ public class ReviewDataAccess implements DataAccessReview {
                         username
                 },
                 (resultSet, i) -> {
-                    UUID id = UUID.fromString(resultSet.getString("REVIEW_ID"));
+                    Integer id = resultSet.getInt("REVIEW_ID");
                     String title = resultSet.getString("REVIEW_TITLE");
                     String content = resultSet.getString("REVIEW_CONTENT");
                     String review_point = resultSet.getString("REVIEW_POINT");
-                    return new Review(id, title, content, review_point, albumId, username);
+                    String album_name = resultSet.getString("ALBUM_NAME");
+                    String band_name = resultSet.getString("BAND_NAME");
+                    String date = resultSet.getString("DATE");
+                    return new Review(id, title, content, review_point, albumId, album_name, band_name, username, date);
                 }
         );
         return Optional.ofNullable(review);
+    }
+
+    @Override
+    public List<Review> getReviewsForPosts(List<String> friend_list) {
+        StringBuilder stringBuilder = new StringBuilder("SELECT * FROM review WHERE ");
+        int count = 0;
+        for(String friend: friend_list){
+            String temp = String.format("'%s'", friend);
+            if(count == 0){
+                stringBuilder.insert(stringBuilder.length(), "USERNAME = " + temp);
+            }else{
+                stringBuilder.insert(stringBuilder.length(), " OR USERNAME = " + temp);
+            }
+            count++;
+        }
+        stringBuilder.insert(stringBuilder.length(), " ORDER BY review_id DESC LIMIT 10");
+        final String sql = stringBuilder.toString();
+        return jdbcTemplate.query(
+                sql,
+                (resultSet,i) -> {
+                    Integer id = resultSet.getInt("REVIEW_ID");
+                    String title = resultSet.getString("REVIEW_TITLE");
+                    String content = resultSet.getString("REVIEW_CONTENT");
+                    String review_point = resultSet.getString("REVIEW_POINT");
+                    UUID albumId = UUID.fromString(resultSet.getString("ALBUM_ID"));
+                    String album_name = resultSet.getString("ALBUM_NAME");
+                    String band_name = resultSet.getString("BAND_NAME");
+                    String username = resultSet.getString("USERNAME");
+                    String date = resultSet.getString("DATE");
+                    return new Review(id, title, content, review_point, albumId, album_name, band_name, username, date);
+                });
     }
 }

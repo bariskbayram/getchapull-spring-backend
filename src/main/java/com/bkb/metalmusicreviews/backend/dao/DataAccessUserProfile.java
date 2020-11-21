@@ -13,4 +13,5 @@ public interface DataAccessUserProfile {
     void updateUserProfileByUsername(String username, UserProfile userProfile);
     boolean usernameIsExist(String username);
     void addUserProfileForAdmin(UserProfile userProfile);
+    void addFriend(String username, String friendUsername);
 }

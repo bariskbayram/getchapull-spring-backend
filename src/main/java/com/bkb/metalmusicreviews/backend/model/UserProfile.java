@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Array;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -13,6 +15,7 @@ public class UserProfile implements UserDetails {
     private final String username;
     private final String password;
     private final Set<? extends GrantedAuthority> grantedAuthorities;
+    private Object friends = null;
     private final boolean isAccountNonExpired;
     private final boolean isAccountNonLocked;
     private final boolean isCredentialsNonExpired;
@@ -35,6 +38,14 @@ public class UserProfile implements UserDetails {
         this.isAccountNonLocked = isAccountNonLocked;
         this.isCredentialsNonExpired = isCredentialsNonExpired;
         this.isEnabled = isEnabled;
+    }
+
+    public void setObjectFriend(Array friends) {
+        try {
+            this.friends = friends.getArray();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
@@ -74,6 +85,10 @@ public class UserProfile implements UserDetails {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public Object getFriends() {
+        return friends;
     }
 
 }

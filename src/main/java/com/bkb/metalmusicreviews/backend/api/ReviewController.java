@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,16 +27,22 @@ public class ReviewController {
                           @RequestParam("review_content") String reviewContent,
                           @RequestParam("review_point") String reviewPoint,
                           @RequestParam("album_id") UUID albumId,
-                          @RequestParam("username") String username){
+                          @RequestParam("album_name") String albumName,
+                          @RequestParam("band_name") String bandName,
+                          @RequestParam("username") String username,
+                          @RequestParam("date") String date){
 
         reviewService.addReview(
                 new Review(
-                        UUID.randomUUID(),
+                        1,
                         reviewTitle,
                         reviewContent,
                         reviewPoint,
                         albumId,
-                        username));
+                        albumName,
+                        bandName,
+                        username,
+                        date));
 
     }
 
@@ -49,10 +56,14 @@ public class ReviewController {
 
     @DeleteMapping(path = "{reviewId}")
     @PreAuthorize("hasAuthority('review:write')")
-    public void deleteReviewByReviewId(@PathVariable("reviewId") UUID reviewId){
+    public void deleteReviewByReviewId(@PathVariable("reviewId") Integer reviewId){
         reviewService.deteReviewByReviewId(reviewId);
     }
 
-
+    @PostMapping(path = "/get-for-posts")
+    @PreAuthorize("hasAuthority('review:read')")
+    public List<Review> getReviewsForPosts(@RequestBody List<String> friend_list){
+        return reviewService.getReviewsForPosts(friend_list);
+    }
 
 }

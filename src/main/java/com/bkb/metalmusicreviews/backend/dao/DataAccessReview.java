@@ -9,8 +9,9 @@ import java.util.UUID;
 public interface DataAccessReview {
     List<Review> getAllReviews();
     void addReview(Review review);
-    Optional<Review> getReviewById(UUID id);
-    void deleteReviewById(UUID id);
-    void updateReviewById(UUID id, Review review);
+    Optional<Review> getReviewById(Integer id);
+    void deleteReviewById(Integer id);
+    void updateReviewById(Integer id, Review review);
     Optional<Review> getReviewByAlbumId(UUID albumId, String username);
+    List<Review> getReviewsForPosts(List<String> friend_list);
 }
