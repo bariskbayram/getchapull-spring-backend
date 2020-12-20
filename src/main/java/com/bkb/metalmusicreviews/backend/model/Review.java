@@ -10,6 +10,7 @@ public class Review {
     private final String point;
     private final UUID albumId;
     private final String albumName;
+    private final UUID bandId;
     private final String bandName;
     private final String username;
     private final String date;
@@ -21,6 +22,7 @@ public class Review {
             String point,
             UUID albumId,
             String albumName,
+            UUID bandId,
             String bandName,
             String username,
             String date) {
@@ -30,6 +32,7 @@ public class Review {
         this.point = point;
         this.albumId = albumId;
         this.albumName = albumName;
+        this.bandId = bandId;
         this.bandName = bandName;
         this.username = username;
         this.date = date;
@@ -57,6 +60,10 @@ public class Review {
 
     public String getAlbumName() {
         return albumName;
+    }
+
+    public UUID getBandId() {
+        return bandId;
     }
 
     public String getBandName() {

@@ -1,6 +1,5 @@
 package com.bkb.metalmusicreviews.backend.dao;
 
-import com.bkb.metalmusicreviews.backend.model.Album;
 import com.bkb.metalmusicreviews.backend.model.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,7 +26,7 @@ public class ReviewDataAccess implements DataAccessReview {
 
     @Override
     public void addReview(Review review) {
-        final String sql = "INSERT INTO review(REVIEW_TITLE, REVIEW_CONTENT, REVIEW_POINT, ALBUM_ID, ALBUM_NAME, BAND_NAME, USERNAME, DATE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO review(REVIEW_TITLE, REVIEW_CONTENT, REVIEW_POINT, ALBUM_ID, ALBUM_NAME, BAND_ID, BAND_NAME, USERNAME, DATE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(
                 sql,
                 new Object[]{
@@ -36,6 +35,7 @@ public class ReviewDataAccess implements DataAccessReview {
                         review.getPoint(),
                         review.getAlbumId(),
                         review.getAlbumName(),
+                        review.getBandId(),
                         review.getBandName(),
                         review.getUsername(),
                         review.getDate()
@@ -75,9 +75,10 @@ public class ReviewDataAccess implements DataAccessReview {
                     String content = resultSet.getString("REVIEW_CONTENT");
                     String review_point = resultSet.getString("REVIEW_POINT");
                     String album_name = resultSet.getString("ALBUM_NAME");
+                    UUID band_id = UUID.fromString(resultSet.getString("BAND_ID"));
                     String band_name = resultSet.getString("BAND_NAME");
                     String date = resultSet.getString("DATE");
-                    return new Review(id, title, content, review_point, albumId, album_name, band_name, username, date);
+                    return new Review(id, title, content, review_point, albumId, album_name, band_id, band_name, username, date);
                 }
         );
         return Optional.ofNullable(review);
@@ -107,10 +108,11 @@ public class ReviewDataAccess implements DataAccessReview {
                     String review_point = resultSet.getString("REVIEW_POINT");
                     UUID albumId = UUID.fromString(resultSet.getString("ALBUM_ID"));
                     String album_name = resultSet.getString("ALBUM_NAME");
+                    UUID bandId = UUID.fromString(resultSet.getString("BAND_ID"));
                     String band_name = resultSet.getString("BAND_NAME");
                     String username = resultSet.getString("USERNAME");
                     String date = resultSet.getString("DATE");
-                    return new Review(id, title, content, review_point, albumId, album_name, band_name, username, date);
+                    return new Review(id, title, content, review_point, albumId, album_name, bandId, band_name, username, date);
                 });
     }
 }

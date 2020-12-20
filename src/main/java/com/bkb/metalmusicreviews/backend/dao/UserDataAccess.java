@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Array;
-import java.sql.SQLException;
 import java.util.*;
 
 import static com.bkb.metalmusicreviews.backend.security.ApplicationUserRole.ADMIN;
@@ -29,7 +28,7 @@ public class UserDataAccess implements DataAccessUserProfile{
 
     @Override
     public List<UserProfile> getAllUserProfiles() {
-        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE, FRIENDS FROM user_profile";
+        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE, FRIENDS, FOLLOWERS FROM user_profile";
         return jdbcTemplate.query(
                 sql,
                 (resultSet,i) -> {
@@ -38,6 +37,7 @@ public class UserDataAccess implements DataAccessUserProfile{
                     String fullname = resultSet.getString("FULLNAME");
                     String role = resultSet.getString("USER_ROLE");
                     Array friends = resultSet.getArray("FRIENDS");
+                    int followers = resultSet.getInt("FOLLOWERS");
                     Set<? extends GrantedAuthority> grantedAuthorities = null;
                     if(role.equals("ADMIN")){
                         grantedAuthorities = ADMIN.getGrantedAuthorities();
@@ -53,14 +53,14 @@ public class UserDataAccess implements DataAccessUserProfile{
                             true,
                             true,
                             true);
-                    u.setObjectFriend(friends);
+                    u.setObjectFriend(friends, followers);
                     return u;
                 });
     }
 
     @Override
     public void addUserProfile(UserProfile userProfile) {
-        final String sql = "INSERT INTO user_profile(USERNAME, PASSWORD, FULLNAME, USER_ROLE, IS_ACCOUNT_NON_EXPIRED, IS_ACCOUNT_NON_LOCKED, IS_CREDENTIALS_NON_EXPIRED, IS_ENABLED, FRIENDS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, string_to_array(?,','))";
+        final String sql = "INSERT INTO user_profile(USERNAME, PASSWORD, FULLNAME, USER_ROLE, IS_ACCOUNT_NON_EXPIRED, IS_ACCOUNT_NON_LOCKED, IS_CREDENTIALS_NON_EXPIRED, IS_ENABLED, FRIENDS, FOLLOWERS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, string_to_array(?,','), ?)";
         jdbcTemplate.update(
                 sql,
                 new Object[]{
@@ -72,13 +72,14 @@ public class UserDataAccess implements DataAccessUserProfile{
                         "true",
                         "true",
                         "true",
-                        userProfile.getUsername()
+                        userProfile.getUsername(),
+                        0
                 });
     }
 
     @Override
     public Optional<UserProfile> getUserProfileByUsername(String input_username) {
-        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE, FRIENDS FROM user_profile Where USERNAME = ?";
+        final String sql = "SELECT USERNAME, PASSWORD, FULLNAME, USER_ROLE, FRIENDS, FOLLOWERS FROM user_profile Where USERNAME = ?";
         UserProfile userProfile = jdbcTemplate.queryForObject(
                 sql,
                 new Object[]{input_username},
@@ -88,6 +89,7 @@ public class UserDataAccess implements DataAccessUserProfile{
                     String fullname = resultSet.getString("FULLNAME");
                     String role = resultSet.getString("USER_ROLE");
                     Array friends = resultSet.getArray("FRIENDS");
+                    int followers = resultSet.getInt("FOLLOWERS");
                     Set<? extends GrantedAuthority> grantedAuthorities = null;
                     if(role.equals("ADMIN")){
                         grantedAuthorities = ADMIN.getGrantedAuthorities();
@@ -103,7 +105,7 @@ public class UserDataAccess implements DataAccessUserProfile{
                             true,
                             true,
                             true);
-                    u.setObjectFriend(friends);
+                    u.setObjectFriend(friends, followers);
                     return u;
                 });
 
@@ -176,5 +178,46 @@ public class UserDataAccess implements DataAccessUserProfile{
                         username
                 }
         );
+        final String sqlFriendCount = "UPDATE user_profile SET followers = followers + 1 WHERE USERNAME = ?";
+        jdbcTemplate.update(
+                sqlFriendCount,
+                new Object[]{
+                        friendUsername
+                }
+        );
+    }
+
+    @Override
+    public void deleteFriend(String username, String friendUsername) {
+        final String sqlPut = "UPDATE user_profile SET FRIENDS = array_remove(FRIENDS, ?::text) WHERE USERNAME = ?";
+        jdbcTemplate.update(
+                sqlPut,
+                new Object[]{
+                        friendUsername,
+                        username
+                }
+        );
+        final String sqlFriendCount = "UPDATE user_profile SET followers = followers - 1 WHERE USERNAME = ?";
+        jdbcTemplate.update(
+                sqlFriendCount,
+                new Object[]{
+                        friendUsername
+                }
+        );
+    }
+
+    @Override
+    public boolean isYourFriend(String username, String friendUsername) {
+        final String sqlFind = "SELECT * FROM user_profile WHERE username = ? AND ? = ANY(friends)";
+        List<String> result = new ArrayList<>();
+        jdbcTemplate.query(sqlFind, new Object[]{username, friendUsername}, resultSet -> {
+            result.add(resultSet.getString("USERNAME"));
+            System.out.println(resultSet.getString("USERNAME"));
+            return;
+        });
+        if(result.size() == 1){
+            return true;
+        }
+        return false;
     }
 }

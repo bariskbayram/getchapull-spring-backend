@@ -14,4 +14,6 @@ public interface DataAccessUserProfile {
     boolean usernameIsExist(String username);
     void addUserProfileForAdmin(UserProfile userProfile);
     void addFriend(String username, String friendUsername);
+    void deleteFriend(String username, String friendUsername);
+    boolean isYourFriend(String username, String friendUsername);
 }

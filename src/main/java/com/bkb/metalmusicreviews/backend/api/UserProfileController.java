@@ -67,8 +67,8 @@ public class UserProfileController {
         userProfileService.registerAdmin(userProfile);
     }
 
-    @GetMapping("/search-username")
-    public boolean usernameIsAvailable(@RequestParam(name = "username") String username){
+    @GetMapping("/check-username-exist")
+    public boolean usernameIsExist(@RequestParam(name = "username") String username){
         return userProfileService.usernameIsExist(username);
     }
 
@@ -90,5 +90,19 @@ public class UserProfileController {
     public void addFriend(@RequestParam("username") String username,
                           @RequestParam("friend_username") String friendUsername){
         userProfileService.addFriend(username, friendUsername);
+    }
+
+    @PutMapping(path = "/delete-friend")
+    @PreAuthorize("hasAuthority('review:write')")
+    public void deleteFriend(@RequestParam("username") String username,
+                          @RequestParam("friend_username") String friendUsername){
+        userProfileService.deleteFriend(username, friendUsername);
+    }
+
+    @GetMapping(path = "/is-your-friend")
+    @PreAuthorize("hasAuthority('review:write')")
+    public boolean isYourFriend(@RequestParam("username") String username,
+                             @RequestParam("friend_username") String friendUsername){
+        return userProfileService.isYourFriend(username, friendUsername);
     }
 }

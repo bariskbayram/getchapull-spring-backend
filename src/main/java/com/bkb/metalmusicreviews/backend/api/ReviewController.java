@@ -28,6 +28,7 @@ public class ReviewController {
                           @RequestParam("review_point") String reviewPoint,
                           @RequestParam("album_id") UUID albumId,
                           @RequestParam("album_name") String albumName,
+                          @RequestParam("band_id") UUID bandId,
                           @RequestParam("band_name") String bandName,
                           @RequestParam("username") String username,
                           @RequestParam("date") String date){
@@ -40,6 +41,7 @@ public class ReviewController {
                         reviewPoint,
                         albumId,
                         albumName,
+                        bandId,
                         bandName,
                         username,
                         date));

@@ -114,4 +114,12 @@ public class UserProfileService implements UserDetailsService {
     public void addFriend(String username, String friendUsername) {
         dataAccessUserProfile.addFriend(username, friendUsername);
     }
+
+    public void deleteFriend(String username, String friendUsername) {
+        dataAccessUserProfile.deleteFriend(username, friendUsername);
+    }
+
+    public boolean isYourFriend(String username, String friendUsername) {
+        return dataAccessUserProfile.isYourFriend(username, friendUsername);
+    }
 }

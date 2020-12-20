@@ -63,7 +63,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").permitAll()
                 .antMatchers("/api/user-profiles/signup").permitAll()
                 .antMatchers("/api/user-profiles/admin/signup").permitAll()
-                .antMatchers("/api/user-profiles/search-username").permitAll()
+                .antMatchers("/api/user-profiles/check-username-exist").permitAll()
                 .antMatchers("/api/user-profiles/get-user").permitAll()
                 .anyRequest()
                 .authenticated();

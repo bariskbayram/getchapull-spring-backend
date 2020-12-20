@@ -16,6 +16,7 @@ public class UserProfile implements UserDetails {
     private final String password;
     private final Set<? extends GrantedAuthority> grantedAuthorities;
     private Object friends = null;
+    private int followers;
     private final boolean isAccountNonExpired;
     private final boolean isAccountNonLocked;
     private final boolean isCredentialsNonExpired;
@@ -40,9 +41,10 @@ public class UserProfile implements UserDetails {
         this.isEnabled = isEnabled;
     }
 
-    public void setObjectFriend(Array friends) {
+    public void setObjectFriend(Array friends, int followers) {
         try {
             this.friends = friends.getArray();
+            this.followers = followers;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -91,4 +93,7 @@ public class UserProfile implements UserDetails {
         return friends;
     }
 
+    public int getFollowers() {
+        return followers;
+    }
 }
