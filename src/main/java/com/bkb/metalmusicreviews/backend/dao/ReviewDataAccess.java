@@ -1,13 +1,13 @@
 package com.bkb.metalmusicreviews.backend.dao;
 
-import com.bkb.metalmusicreviews.backend.model.Review;
+import com.bkb.metalmusicreviews.backend.dto.PostDTO;
+import com.bkb.metalmusicreviews.backend.dto.ReviewDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository("postgresReview")
 public class ReviewDataAccess implements DataAccessReview {
@@ -20,99 +20,85 @@ public class ReviewDataAccess implements DataAccessReview {
     }
 
     @Override
-    public List<Review> getAllReviews() {
-        return null;
-    }
-
-    @Override
-    public void addReview(Review review) {
-        final String sql = "INSERT INTO review(REVIEW_TITLE, REVIEW_CONTENT, REVIEW_POINT, ALBUM_ID, ALBUM_NAME, BAND_ID, BAND_NAME, USERNAME, DATE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void addReview(ReviewDTO reviewDTO) {
+        final String sql = "INSERT INTO reviews(review_title, review_content, review_point, album_id, user_id) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(
                 sql,
                 new Object[]{
-                        review.getTitle(),
-                        review.getContent(),
-                        review.getPoint(),
-                        review.getAlbumId(),
-                        review.getAlbumName(),
-                        review.getBandId(),
-                        review.getBandName(),
-                        review.getUsername(),
-                        review.getDate()
+                        reviewDTO.getReviewTitle(),
+                        reviewDTO.getReviewContent(),
+                        reviewDTO.getReviewPoint(),
+                        reviewDTO.getAlbumId(),
+                        reviewDTO.getUserId()
                 });
     }
 
     @Override
-    public Optional<Review> getReviewById(Integer id) {
-        return Optional.empty();
-    }
-
-    @Override
-    public void deleteReviewById(Integer id) {
-        final String sql = "DELETE FROM review WHERE REVIEW_ID = ?";
-        jdbcTemplate.update(
-                sql,
-                new Object[]{id});
-    }
-
-    @Override
-    public void updateReviewById(Integer id, Review review) {
-
-    }
-
-    @Override
-    public Optional<Review> getReviewByAlbumId(UUID albumId, String username) {
-        final String sql = "SELECT * FROM review WHERE ALBUM_ID = ? AND USERNAME = ?";
-        Review review = jdbcTemplate.queryForObject(
+    public Optional<PostDTO> getPostByAlbumIdAndUsername(int inputAlbumId, String username) {
+        final String sql = "SELECT  reviews.review_id, reviews.review_title, reviews.review_content, reviews.review_point, reviews.posting_date, reviews.album_id, albums.album_name, bands.band_id, bands.band_name FROM reviews INNER JOIN albums ON reviews.album_id = albums.album_id AND albums.album_id = ? INNER JOIN bands ON bands.band_id = albums.band_id INNER JOIN users ON reviews.user_id = users.user_id WHERE username = ?";
+        PostDTO postDto = jdbcTemplate.queryForObject(
                 sql,
                 new Object[]{
-                        albumId,
+                        inputAlbumId,
                         username
                 },
                 (resultSet, i) -> {
-                    Integer id = resultSet.getInt("REVIEW_ID");
-                    String title = resultSet.getString("REVIEW_TITLE");
-                    String content = resultSet.getString("REVIEW_CONTENT");
-                    String review_point = resultSet.getString("REVIEW_POINT");
-                    String album_name = resultSet.getString("ALBUM_NAME");
-                    UUID band_id = UUID.fromString(resultSet.getString("BAND_ID"));
-                    String band_name = resultSet.getString("BAND_NAME");
-                    String date = resultSet.getString("DATE");
-                    return new Review(id, title, content, review_point, albumId, album_name, band_id, band_name, username, date);
+                    int reviewId = resultSet.getInt("review_id");
+                    String reviewTitle = resultSet.getString("review_title");
+                    String reviewContent = resultSet.getString("review_content");
+                    int reviewPoint = resultSet.getInt("review_point");
+                    String reviewPostingDate = resultSet.getString("posting_date");
+                    int albumId = resultSet.getInt("album_id");
+                    String albumName = resultSet.getString("album_name");
+                    int bandId = resultSet.getInt("band_id");
+                    String bandName = resultSet.getString("band_name");
+                    return new PostDTO(username, reviewId, reviewTitle, reviewContent, reviewPoint, reviewPostingDate, albumId, albumName, bandId, bandName);
                 }
         );
-        return Optional.ofNullable(review);
+        return Optional.ofNullable(postDto);
     }
 
     @Override
-    public List<Review> getReviewsForPosts(List<String> friend_list) {
-        StringBuilder stringBuilder = new StringBuilder("SELECT * FROM review WHERE ");
-        int count = 0;
-        for(String friend: friend_list){
-            String temp = String.format("'%s'", friend);
-            if(count == 0){
-                stringBuilder.insert(stringBuilder.length(), "USERNAME = " + temp);
-            }else{
-                stringBuilder.insert(stringBuilder.length(), " OR USERNAME = " + temp);
-            }
-            count++;
-        }
-        stringBuilder.insert(stringBuilder.length(), " ORDER BY review_id DESC LIMIT 10");
-        final String sql = stringBuilder.toString();
+    public void deleteReviewById(int reviewId) {
+        final String sql = "DELETE FROM reviews WHERE review_id = ?";
+        jdbcTemplate.update(
+                sql,
+                new Object[]{reviewId});
+    }
+
+    @Override
+    public void updateReviewById(int id, ReviewDTO reviewDTO) {
+        final String sql = "UPDATE reviews SET review_title = ?, review_content = ?, review_point = ? WHERE review_id = ?";
+        jdbcTemplate.update(
+                sql,
+                new Object[]{
+                        reviewDTO.getReviewTitle(),
+                        reviewDTO.getReviewContent(),
+                        reviewDTO.getReviewPoint()
+                }
+        );
+    }
+
+    @Override
+    public List<PostDTO> getPostsByUserId(int userId) {
+        final String sql = "SELECT users.username, reviews.review_id, reviews.review_title, reviews.review_content, reviews.review_point, reviews.posting_date, albums.album_id, albums.album_name, albums.band_id, bands.band_name FROM reviews INNER JOIN albums ON reviews.album_id = albums.album_id INNER JOIN bands ON albums.band_id = bands.band_id INNER JOIN users ON reviews.user_id = users.user_id INNER JOIN users_following ON users.user_id = users_following.following_id WHERE users_following.user_id = ? ORDER BY reviews.posting_date DESC";
         return jdbcTemplate.query(
                 sql,
+                new Object[]{
+                        userId
+                },
                 (resultSet,i) -> {
-                    Integer id = resultSet.getInt("REVIEW_ID");
-                    String title = resultSet.getString("REVIEW_TITLE");
-                    String content = resultSet.getString("REVIEW_CONTENT");
-                    String review_point = resultSet.getString("REVIEW_POINT");
-                    UUID albumId = UUID.fromString(resultSet.getString("ALBUM_ID"));
-                    String album_name = resultSet.getString("ALBUM_NAME");
-                    UUID bandId = UUID.fromString(resultSet.getString("BAND_ID"));
-                    String band_name = resultSet.getString("BAND_NAME");
-                    String username = resultSet.getString("USERNAME");
-                    String date = resultSet.getString("DATE");
-                    return new Review(id, title, content, review_point, albumId, album_name, bandId, band_name, username, date);
+                    String postUsername = resultSet.getString("username");
+                    int reviewId = resultSet.getInt("review_id");
+                    String reviewTitle = resultSet.getString("review_title");
+                    String reviewContent = resultSet.getString("review_content");
+                    int reviewPoint = resultSet.getInt("review_point");
+                    String postingDate = resultSet.getString("posting_date");
+                    int albumId = resultSet.getInt("album_id");
+                    String albumName = resultSet.getString("album_name");
+                    int bandId = resultSet.getInt("band_id");
+                    String bandName = resultSet.getString("band_name");
+                    return new PostDTO(postUsername, reviewId, reviewTitle, reviewContent, reviewPoint,  postingDate,  albumId, albumName, bandId, bandName);
                 });
     }
 }

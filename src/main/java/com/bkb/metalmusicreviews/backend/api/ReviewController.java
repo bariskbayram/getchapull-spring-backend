@@ -1,16 +1,17 @@
 package com.bkb.metalmusicreviews.backend.api;
 
-import com.bkb.metalmusicreviews.backend.model.Review;
+import com.bkb.metalmusicreviews.backend.dto.PostDTO;
+import com.bkb.metalmusicreviews.backend.dto.ReviewDTO;
+import com.bkb.metalmusicreviews.backend.entity.Review;
 import com.bkb.metalmusicreviews.backend.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/reviews")
+@RequestMapping("/api/v1/reviews")
 @CrossOrigin("*")
 public class ReviewController {
 
@@ -21,51 +22,36 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping()
+    @PostMapping("/upload_review")
     @PreAuthorize("hasAuthority('review:write')")
-    public void addReview(@RequestParam("review_title") String reviewTitle,
-                          @RequestParam("review_content") String reviewContent,
-                          @RequestParam("review_point") String reviewPoint,
-                          @RequestParam("album_id") UUID albumId,
-                          @RequestParam("album_name") String albumName,
-                          @RequestParam("band_id") UUID bandId,
-                          @RequestParam("band_name") String bandName,
-                          @RequestParam("username") String username,
-                          @RequestParam("date") String date){
-
-        reviewService.addReview(
-                new Review(
-                        1,
-                        reviewTitle,
-                        reviewContent,
-                        reviewPoint,
-                        albumId,
-                        albumName,
-                        bandId,
-                        bandName,
-                        username,
-                        date));
-
+    public void addReview(@RequestPart("review_dto") ReviewDTO reviewDTO){
+        reviewService.addReview(reviewDTO);
     }
 
-    @GetMapping(path = "{albumId}")
+    @GetMapping(path = "/get_post_by_album_id_and_username")
     @PreAuthorize("hasAuthority('review:read')")
-    public Review getReviewByAlbumId(
-            @PathVariable("albumId") UUID albumId,
+    public PostDTO getReviewByAlbumIdAndUsername(
+            @RequestParam(name = "album_id") int albumId,
             @RequestParam(name = "username") String username){
-        return reviewService.getReviewByAlbumId(albumId, username).orElse(null);
+        return reviewService.getPostByAlbumIdAndUsername(albumId, username).orElse(null);
     }
 
-    @DeleteMapping(path = "{reviewId}")
+    @DeleteMapping(path = "/delete_review_by_review_id")
     @PreAuthorize("hasAuthority('review:write')")
-    public void deleteReviewByReviewId(@PathVariable("reviewId") Integer reviewId){
+    public void deleteReviewByReviewId(@RequestParam(name = "review_id") int reviewId){
         reviewService.deteReviewByReviewId(reviewId);
     }
 
-    @PostMapping(path = "/get-for-posts")
+    @PutMapping("/update_review_by_review_id")
+    @PreAuthorize("hasAuthority('review:write')")
+    public void updateReviewByReviewId(@RequestBody ReviewDTO reviewDTO, @RequestParam(name = "review_id") int reviewId){
+        reviewService.updateReviewByReviewId(reviewId, reviewDTO);
+    }
+
+    @PostMapping(path = "/get_all_post_by_user_id")
     @PreAuthorize("hasAuthority('review:read')")
-    public List<Review> getReviewsForPosts(@RequestBody List<String> friend_list){
-        return reviewService.getReviewsForPosts(friend_list);
+    public List<PostDTO> getPostsByUserId(@RequestParam(name = "user_id") int userId){
+        return reviewService.getPostsByUserId(userId);
     }
 
 }

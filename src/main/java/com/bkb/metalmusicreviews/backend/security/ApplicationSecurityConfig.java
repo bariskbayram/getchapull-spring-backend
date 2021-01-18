@@ -61,10 +61,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthFilter.class)
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/api/user-profiles/signup").permitAll()
-                .antMatchers("/api/user-profiles/admin/signup").permitAll()
-                .antMatchers("/api/user-profiles/check-username-exist").permitAll()
-                .antMatchers("/api/user-profiles/get-user").permitAll()
+                .antMatchers("/api/v1/users/signup").permitAll()
+                .antMatchers("/api/v1/users/admin/signup").permitAll()
+                .antMatchers("/api/v1/users/check_username_exist").permitAll()
+                .antMatchers("/api/v1/users/check_email_exist").permitAll()
+                .antMatchers("/api/v1/users/get_user_by_username").permitAll()
                 .anyRequest()
                 .authenticated();
 

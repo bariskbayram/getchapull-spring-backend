@@ -1,12 +1,12 @@
 app:
   datasource:
-    jdbc-url: ${JDBC_DATABASE_URL}
-    username: ${JDBC_DATABASE_USERNAME}
-    password: ${JDBC_DATABASE_PASSWORD}
-
-#    jdbc-url: jdbc:postgresql://localhost:5432/springmetaldb
-#    username: postgres
-#    password: password
+#    jdbc-url: ${JDBC_DATABASE_URL}
+#    username: ${JDBC_DATABASE_USERNAME}
+#    password: ${JDBC_DATABASE_PASSWORD}
+#
+    jdbc-url: jdbc:postgresql://localhost:5432/refactor_postgres
+    username: postgres
+    password: 16121995
 
     pool-size: 30
 
@@ -15,4 +15,3 @@ application:
     secretKey: mustbesecuremustbesecuremustbesecuremustbesecurekk
     tokenPrefix: "Bearer "
     tokenExpirationAfterDays: 14
-

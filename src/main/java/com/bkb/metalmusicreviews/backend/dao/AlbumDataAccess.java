@@ -1,6 +1,7 @@
 package com.bkb.metalmusicreviews.backend.dao;
 
-import com.bkb.metalmusicreviews.backend.model.Album;
+import com.bkb.metalmusicreviews.backend.dto.AlbumDTO;
+import com.bkb.metalmusicreviews.backend.entity.Album;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository("postgresAlbum")
 public class AlbumDataAccess implements DataAccessAlbum {
@@ -22,113 +22,127 @@ public class AlbumDataAccess implements DataAccessAlbum {
     }
 
     @Override
-    public List<Album> getAllAlbums(String username) {
-        final String sql = "SELECT ALBUM_ID, ALBUM_NAME, BAND_ID, ALBUM_YEAR, ALBUM_COVER, USERNAME FROM album WHERE USERNAME = ?";
+    public List<Album> getAlbumsByUsername(String username) {
+        final String sql = "SELECT albums.album_id, albums.album_spotify_id, albums.album_name, albums.album_year, albums.band_id FROM albums JOIN users_albums ON albums.album_id = users_albums.album_id JOIN users ON users_albums.user_id = users.user_id WHERE username = ?";
         return jdbcTemplate.query(
                 sql,
                 new Object[]{
                         username
                 },
                 (resultSet,i) -> {
-                    UUID id = UUID.fromString(resultSet.getString("ALBUM_ID"));
-                    String name = resultSet.getString("ALBUM_NAME");
-                    UUID band_id = UUID.fromString(resultSet.getString("BAND_ID"));
-                    String year = resultSet.getString("ALBUM_YEAR");
-                    String cover_link = resultSet.getString("ALBUM_COVER");
-                    String author = resultSet.getString("USERNAME");
-                    return new Album(id, name, band_id, year, cover_link, author);
+                    int albumId = resultSet.getInt("album_id");
+                    String albumSpotifyId = resultSet.getString("album_spotify_id");
+                    String albumName = resultSet.getString("album_name");
+                    int albumYear = resultSet.getInt("album_year");
+                    int bandId = resultSet.getInt("band_id");
+                    return new Album(albumId, albumSpotifyId, albumName, albumYear, bandId);
                 });
     }
 
     @Override
-    public void addAlbum(Album album) {
-        final String sql = "INSERT INTO album(ALBUM_ID, ALBUM_NAME, BAND_ID, ALBUM_YEAR, ALBUM_COVER, USERNAME) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(
+    public List<Album> getAlbumsByBandIdAndUsername(String username, int inputBandId) {
+        final String sql = "SELECT albums.album_id, albums.album_spotify_id, albums.album_name, albums.album_year, albums.band_id FROM albums JOIN users_albums ON albums.album_id = users_albums.album_id AND albums.band_id = ? JOIN users ON users_albums.user_id = users.user_id WHERE username = ?";
+        return jdbcTemplate.query(
                 sql,
                 new Object[]{
-                        album.getId(),
-                        album.getName(),
-                        album.getBand(),
-                        album.getYear(),
-                        album.getCoverLink().get(),
-                        album.getAuthor()
+                        inputBandId,
+                        username
+                },
+                (resultSet,i) -> {
+                    int albumId = resultSet.getInt("album_id");
+                    String albumSpotifyId = resultSet.getString("album_spotify_id");
+                    String albumName = resultSet.getString("album_name");
+                    int albumYear = resultSet.getInt("album_year");
+                    int bandId = resultSet.getInt("band_id");
+                    return new Album(albumId, albumSpotifyId, albumName, albumYear, bandId);
                 });
     }
 
     @Override
-    public Optional<Album> getAlbumById(UUID id) {
-        final String sql = "SELECT ALBUM_ID, ALBUM_NAME, BAND_ID, ALBUM_YEAR, ALBUM_COVER, USERNAME FROM album Where ALBUM_ID = ?";
-        Album album = jdbcTemplate.queryForObject(
-                sql,
-                new Object[]{id},
-                (resultSet, i) -> {
-                    UUID album_id = UUID.fromString(resultSet.getString("ALBUM_ID"));
-                    String name = resultSet.getString("ALBUM_NAME");
-                    UUID band_id =  UUID.fromString(resultSet.getString("BAND_ID"));
-                    String year = resultSet.getString("ALBUM_YEAR");
-                    String cover_link = resultSet.getString("ALBUM_COVER");
-                    String author = resultSet.getString("USERNAME");
-                    return new Album(album_id, name, band_id, year, cover_link, author);
-                });
+    public int isAlbumExistBySpotifyId(String albumSpotifyId) {
 
-        return Optional.ofNullable(album);
-    }
-
-    @Override
-    public int deleteAlbumById(UUID id) {
-        final String sql = "DELETE FROM album WHERE ALBUM_ID = ?";
-        jdbcTemplate.update(
-                sql,
-                new Object[]{id});
-        return 1;
-    }
-
-    @Override
-    public int updateAlbumById(UUID id, Album album) {
-        return 0;
-    }
-
-    @Override
-    public boolean isAlbumExistForSameUser(String albumName, UUID bandId, String username) {
-
-        final String sql = "SELECT ALBUM_ID, ALBUM_NAME, ALBUM_YEAR FROM album Where ALBUM_NAME = ? AND BAND_ID = ? AND USERNAME = ?";
-        List<String> result = new ArrayList<>();
+        final String sql = "SELECT album_id FROM albums Where album_spotify_id = ?";
+        List<Integer> result = new ArrayList<>();
         try {
             jdbcTemplate.query(
                     sql,
-                    new Object[]{albumName, bandId, username},
+                    new Object[]{albumSpotifyId},
                     resultSet -> {
-                        result.add(resultSet.getString("ALBUM_ID"));
-                        result.add(resultSet.getString("ALBUM_NAME"));
-                        result.add(resultSet.getString("ALBUM_YEAR"));
+                        result.add(resultSet.getInt("album_id"));
                         return;
                     });
         }catch (IncorrectResultSizeDataAccessException e){
             System.out.println("error");
         }
         if(result.size() == 0){
-            return false;
+            return -1;
         }
-        return true;
+        return result.get(0);
     }
 
     @Override
-    public List<Album> getAlbumByBandIdAndUsername(String username, UUID bandId) {
-        final String sql = "SELECT ALBUM_ID, ALBUM_NAME, BAND_ID, ALBUM_YEAR, ALBUM_COVER, USERNAME FROM album WHERE USERNAME = ? AND BAND_ID = ?";
-        return jdbcTemplate.query(
+    public int addAlbum(AlbumDTO albumDTO) {
+        final String sql = "INSERT INTO albums(album_spotify_id, album_name, album_year, band_id) VALUES (?, ?, ?, ?)";
+        return jdbcTemplate.update(
                 sql,
                 new Object[]{
-                        username,
-                        bandId
-                },
-                (resultSet,i) -> {
-                    UUID id = UUID.fromString(resultSet.getString("ALBUM_ID"));
-                    String name = resultSet.getString("ALBUM_NAME");
-                    UUID band_id = UUID.fromString(resultSet.getString("BAND_ID"));
-                    String year = resultSet.getString("ALBUM_YEAR");
-                    String cover_link = resultSet.getString("ALBUM_COVER");
-                    String author = resultSet.getString("USERNAME");
-                    return new Album(id, name, band_id, year, cover_link, author);
+                        albumDTO.getAlbumSpotifyId(),
+                        albumDTO.getAlbumName(),
+                        albumDTO.getAlbumYear(),
+                        albumDTO.getBandId()
                 });
     }
+
+    @Override
+    public int addAlbumForThisUser(int userId, int albumId) {
+        final String sql = "INSERT INTO users_albums(user_id, album_id) VALUES(?, ?)";
+        return jdbcTemplate.update(
+                sql,
+                new Object[]{
+                        userId,
+                        albumId
+                });
+    }
+
+    @Override
+    public Optional<Album> getAlbumById(int inputAlbumId) {
+        final String sql = "SELECT album_id, album_spotify_id, album_name, album_year, band_id FROM albums Where album_id = ?";
+        Album album = jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{inputAlbumId},
+                (resultSet, i) -> {
+                    int albumId = resultSet.getInt("album_id");
+                    String albumSpotifyId= resultSet.getString("album_spotify_id");
+                    String albumName = resultSet.getString("album_name");
+                    int albumYear = resultSet.getInt("album_year");
+                    int bandId =  resultSet.getInt("band_id");
+                    return new Album(albumId, albumSpotifyId, albumName, albumYear, bandId);
+                });
+
+        return Optional.ofNullable(album);
+    }
+
+    @Override
+    public int deleteAlbumByIdAndUserId(int albumId, int userId) {
+        final String sql = "DELETE FROM users_albums WHERE user_id = ? AND album_id = ?";
+        jdbcTemplate.update(
+                sql,
+                new Object[]{userId, albumId});
+        return 1;
+    }
+
+    @Override
+    public int getAlbumCountByUsername(String username) {
+        final String sql = "SELECT count(*) FROM users_albums WHERE user_id IN (SELECT user_id FROM users WHERE username = ?)";
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{
+                        username
+                },
+                (resultSet,i) -> {
+                    int count = resultSet.getInt("count");
+                    return count;
+                });
+    }
+
 }

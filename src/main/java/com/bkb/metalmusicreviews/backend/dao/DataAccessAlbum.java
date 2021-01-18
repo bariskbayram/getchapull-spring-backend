@@ -1,17 +1,19 @@
 package com.bkb.metalmusicreviews.backend.dao;
 
-import com.bkb.metalmusicreviews.backend.model.Album;
+import com.bkb.metalmusicreviews.backend.dto.AlbumDTO;
+import com.bkb.metalmusicreviews.backend.entity.Album;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface DataAccessAlbum {
-    List<Album> getAllAlbums(String username);
-    void addAlbum(Album album);
-    Optional<Album> getAlbumById(UUID id);
-    int deleteAlbumById(UUID id);
-    int updateAlbumById(UUID id, Album album);
-    boolean isAlbumExistForSameUser(String albumName, UUID bandId, String username);
-    List<Album> getAlbumByBandIdAndUsername(String username, UUID bandId);
+
+    List<Album> getAlbumsByUsername(String username);
+    List<Album> getAlbumsByBandIdAndUsername(String username, int bandId);
+    int addAlbum(AlbumDTO albumDTO);
+    int isAlbumExistBySpotifyId(String albumSpotifyId);
+    int addAlbumForThisUser(int userId, int albumId);
+    Optional<Album> getAlbumById(int id);
+    int deleteAlbumByIdAndUserId(int albumId, int userId);
+    int getAlbumCountByUsername(String username);
 }

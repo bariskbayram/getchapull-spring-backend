@@ -2,7 +2,8 @@ package com.bkb.metalmusicreviews.backend.service;
 
 import com.bkb.metalmusicreviews.backend.bucket.BucketName;
 import com.bkb.metalmusicreviews.backend.dao.DataAccessAlbum;
-import com.bkb.metalmusicreviews.backend.model.Album;
+import com.bkb.metalmusicreviews.backend.dto.AlbumDTO;
+import com.bkb.metalmusicreviews.backend.entity.Album;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,61 +27,47 @@ public class AlbumService {
         this.fileStoreService = fileStoreService;
     }
 
-    public List<Album> getAllAlbums(String username){
-        return dataAccessAlbum.getAllAlbums(username);
+    public List<Album> getAlbumsByUsername(String username){
+        return dataAccessAlbum.getAlbumsByUsername(username);
     }
 
-    public byte[] downloadAlbumImage(UUID albumId, String username) {
-        Album album = getAlbumOrThrow(albumId, username);
+    public List<Album> getAlbumsByBandIdAndUsername(String username, int bandId) {
+        return dataAccessAlbum.getAlbumsByBandIdAndUsername(username, bandId);
+    }
+
+    public byte[] downloadAlbumImage(int albumId) {
+        Album album = getAlbumOrThrow(albumId);
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
-                "profiles/" + username +"/albums");
+                "albums");
 
-        return album.getCoverLink()
-                .map(key -> fileStoreService.download(path, key))
-                .orElse(new byte[0]);
+        String key = String.format("%s-%s", album.getAlbumName(), album.getAlbumSpotifyId());
+
+        return fileStoreService.download(path, key);
     }
 
-    private Album getAlbumOrThrow(UUID albumId, String username) {
-        return getAllAlbums(username)
-                .stream()
-                .filter(s -> s.getId().equals(albumId))
-                .findFirst()
+    private Album getAlbumOrThrow(int albumId) {
+        return getAlbumById(albumId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Album is not found!", albumId)));
     }
 
-    public UUID uploadAlbum(MultipartFile albumFile,
-                            String albumTitle,
-                            UUID bandId,
-                            String year,
-                            String username) {
-        isImage(albumFile);
-        isFileEmpty(albumFile);
+    public int uploadAlbumFile(AlbumDTO albumDTO, MultipartFile file) {
 
-        UUID randomId = UUID.randomUUID();
-
-        Album new_album = new Album(randomId, albumTitle, bandId, year,"", username);
+        isImage(file);
+        isFileEmpty(file);
 
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("Content-Type", albumFile.getContentType());
-        metadata.put("Content-Length", String.valueOf(albumFile.getSize()));
+        metadata.put("Content-Type", file.getContentType());
+        metadata.put("Content-Length", String.valueOf(file.getSize()));
 
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username +"/albums");
+        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "albums");
 
-        String filename = String.format("%s-%s", albumFile.getOriginalFilename(), randomId);
+        String filename = String.format("%s-%s", albumDTO.getAlbumName(), albumDTO.getAlbumSpotifyId());
 
         try {
-            fileStoreService.save(path, filename, Optional.of(metadata), albumFile.getInputStream());
-            new_album.setCoverLink(filename);
-            dataAccessAlbum.addAlbum(new_album);
-            return randomId;
+            fileStoreService.save(path, filename, Optional.of(metadata), file.getInputStream());
+            return dataAccessAlbum.addAlbum(albumDTO);
         } catch (IOException e) {
             throw new IllegalStateException(e);
-        }
-    }
-
-    private void isFileEmpty(MultipartFile albumFile) {
-        if(!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType()).contains(albumFile.getContentType())){
-            throw new IllegalStateException("AlbumFile type is not correct! [" + albumFile.getContentType() + "]");
         }
     }
 
@@ -90,26 +77,29 @@ public class AlbumService {
         }
     }
 
-    public Optional<Album> getAlbumById(UUID id) {
-        return dataAccessAlbum.getAlbumById(id);
+    private void isFileEmpty(MultipartFile albumFile) {
+        if(!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType()).contains(albumFile.getContentType())){
+            throw new IllegalStateException("AlbumFile type is not correct! [" + albumFile.getContentType() + "]");
+        }
     }
 
-    public int deleteAlbumById(UUID id, String username){
-        String filename = String.format("%s-%s", "blob", id);
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username + "/albums");
-        fileStoreService.deleteImage(path, filename);
-        return dataAccessAlbum.deleteAlbumById(id);
+    public int isAlbumExistBySpotifyId(String albumSpotifyId) {
+        return dataAccessAlbum.isAlbumExistBySpotifyId(albumSpotifyId);
     }
 
-    public int updateAlbumById(UUID id, Album album){
-        return dataAccessAlbum.updateAlbumById(id, album);
+    public int addAlbumForThisUser(int userId, int albumId) {
+        return dataAccessAlbum.addAlbumForThisUser(userId, albumId);
     }
 
-    public boolean isAlbumExistForSameUser(String albumName, UUID bandId, String username) {
-        return dataAccessAlbum.isAlbumExistForSameUser(albumName, bandId, username);
+    public Optional<Album> getAlbumById(int albumId) {
+        return dataAccessAlbum.getAlbumById(albumId);
     }
 
-    public List<Album> getAlbumsByBandIdAndUsername(String username, UUID bandId) {
-        return dataAccessAlbum.getAlbumByBandIdAndUsername(username, bandId);
+    public int deleteAlbumByIdAndUserId(int albumId, int userId){
+        return dataAccessAlbum.deleteAlbumByIdAndUserId(albumId, userId);
+    }
+
+    public int getAlbumCountByUsername(String username) {
+        return dataAccessAlbum.getAlbumCountByUsername(username);
     }
 }

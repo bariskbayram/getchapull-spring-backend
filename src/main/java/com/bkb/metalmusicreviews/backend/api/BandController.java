@@ -1,19 +1,20 @@
 package com.bkb.metalmusicreviews.backend.api;
 
-import com.bkb.metalmusicreviews.backend.model.Band;
+import com.bkb.metalmusicreviews.backend.dto.BandDTO;
+import com.bkb.metalmusicreviews.backend.entity.Band;
 import com.bkb.metalmusicreviews.backend.service.BandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("api/bands")
+@RequestMapping("/api/v1/bands")
 @CrossOrigin("*")
 public class BandController {
 
@@ -24,46 +25,44 @@ public class BandController {
         this.bandService = bandService;
     }
 
-    @GetMapping()
+    @GetMapping("/get_bands_by_username")
     @PreAuthorize("hasAuthority('review:read')")
-    public List<Band> getAllBands(@RequestParam(name = "username") String username){
-        return bandService.getAllBands(username);
+    public List<Band> getBandsByUsername(@RequestParam(name = "username") String username){
+        return bandService.getBandsByUsername(username);
     }
 
-    @GetMapping(path = "{bandId}/image/download")
+    @GetMapping(path = "/download_band_image")
     @PreAuthorize("hasAuthority('review:read')")
-    public byte[] downloadBandImage(@PathVariable("bandId") UUID bandId,
-                                    @RequestParam(name = "username") String username){
-        byte[] arrayBase64 = Base64.getEncoder().encode(bandService.downloadBandImage(bandId, username));
+    public byte[] downloadBandImage(@RequestParam(name = "band_id") int bandId){
+        byte[] arrayBase64 = Base64.getEncoder().encode(bandService.downloadBandImage(bandId));
         return arrayBase64;
     }
 
     @PostMapping(
-            path="/image/upload",
+            path="/upload_band_with_image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAuthority('review:write')")
-    public UUID uploadBand(@RequestParam("band_file") MultipartFile bandFile,
-                            @RequestParam("band_name") String bandName,
-                            @RequestParam("username") String username) {
-
-
-        return bandService.uploadBandFile(bandFile, bandName, username);
+    public int uploadBand(@RequestPart("band_dto") BandDTO bandDTO, @RequestPart("multipart_file") MultipartFile file) {
+        int bandId = bandService.isBandExistBySpotifyId(bandDTO.getBandSpotifyId());
+        if(bandId == -1){
+            bandService.uploadBandFile(bandDTO, file);
+            return bandService.isBandExistBySpotifyId(bandDTO.getBandSpotifyId());
+        }
+        return bandId;
     }
 
-    @DeleteMapping(path = "{bandId}")
-    @PreAuthorize("hasAuthority('review:write')")
-    public void deleteBandById(@PathVariable("bandId") UUID id,
-                               @RequestParam("username") String username){
-        bandService.deleteBandById(id, username);
+    //orElse yerine 404 fırtlatman mantıklı olabilir bunu dene.
+    @GetMapping(path = "/get_band_by_id")
+    @PreAuthorize("hasAuthority('review:read')")
+    public Band getBandById(@RequestParam(name = "band_id") int bandId){
+        return bandService.getBandById(bandId).orElse(null);
     }
 
-    @GetMapping(path = "{bandName}")
-    @PreAuthorize("hasAuthority('review:write')")
-    public UUID isBandExist(
-            @PathVariable("bandName") String bandName,
-            @RequestParam(name = "username") String username){
-        return bandService.isBandExist(bandName, username);
+    @GetMapping("/get_band_count_by_username")
+    @PreAuthorize("hasAuthority('review:read')")
+    public int getBandCountByUsername(@RequestParam(name = "username") String username){
+        return bandService.getBandCountByUsername(username);
     }
 }

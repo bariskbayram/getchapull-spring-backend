@@ -2,7 +2,8 @@ package com.bkb.metalmusicreviews.backend.service;
 
 import com.bkb.metalmusicreviews.backend.bucket.BucketName;
 import com.bkb.metalmusicreviews.backend.dao.DataAccessBand;
-import com.bkb.metalmusicreviews.backend.model.Band;
+import com.bkb.metalmusicreviews.backend.dto.BandDTO;
+import com.bkb.metalmusicreviews.backend.entity.Band;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,57 +27,43 @@ public class BandService {
         this.fileStoreService = fileStoreService;
     }
 
-    public List<Band> getAllBands(String username) {
-        return dataAccessBand.getAllBands(username);
+    public List<Band> getBandsByUsername(String username) {
+        return dataAccessBand.getBandsByUsername(username);
     }
 
-    public byte[] downloadBandImage(UUID bandId, String username) {
-        Band band = getBandOrThrow(bandId, username);
+    public byte[] downloadBandImage(int bandId) {
+        Band band = getBandOrThrow(bandId);
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
-                "profiles/" + username + "/bands");
+                "bands");
 
-        return band.getBandPhoto()
-                .map(key -> fileStoreService.download(path, key))
-                .orElse(new byte[0]);
+        String key = String.format("%s-%s", band.getBandName(), band.getBandSpotifyId());
+
+        return fileStoreService.download(path, key);
     }
 
-    private Band getBandOrThrow(UUID bandId, String username) {
-        return getAllBands(username)
-                .stream()
-                .filter(s -> s.getBandId().equals(bandId))
-                .findFirst()
+    private Band getBandOrThrow(int bandId) {
+        return getBandById(bandId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Band is not found!", bandId)));
     }
 
-    public UUID uploadBandFile(MultipartFile bandFile, String bandName, String username) {
-        isImage(bandFile);
-        isFileEmpty(bandFile);
+    public int uploadBandFile(BandDTO bandDTO, MultipartFile file) {
 
-        UUID randomId = UUID.randomUUID();
-
-        Band new_band = new Band(randomId, bandName, "", username);
+        isImage(file);
+        isFileEmpty(file);
 
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("Content-Type", bandFile.getContentType());
-        metadata.put("Content-Length", String.valueOf(bandFile.getSize()));
+        metadata.put("Content-Type", file.getContentType());
+        metadata.put("Content-Length", String.valueOf(file.getSize()));
 
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username + "/bands");
+        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "bands");
 
-        String filename = String.format("%s-%s", bandFile.getOriginalFilename(), randomId);
+        String filename = String.format("%s-%s", bandDTO.getBandName(), bandDTO.getBandSpotifyId());
 
         try {
-            fileStoreService.save(path, filename, Optional.of(metadata), bandFile.getInputStream());
-            new_band.setBandPhoto(filename);
-            dataAccessBand.addBand(new_band);
-            return randomId;
+            fileStoreService.save(path, filename, Optional.of(metadata), file.getInputStream());
+            return dataAccessBand.addBand(bandDTO);
         } catch (IOException e) {
             throw new IllegalStateException(e);
-        }
-    }
-
-    private void isFileEmpty(MultipartFile bandFile) {
-        if(!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType()).contains(bandFile.getContentType())){
-            throw new IllegalStateException("BandFile type is not correct! [" + bandFile.getContentType() + "]");
         }
     }
 
@@ -86,15 +73,21 @@ public class BandService {
         }
     }
 
-    public void deleteBandById(UUID id, String username) {
-        dataAccessBand.deleteBandById(id);
-        String filename = String.format("%s-%s", "blob", id);
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username + "/bands");
-        fileStoreService.deleteImage(path, filename);
-
+    private void isFileEmpty(MultipartFile bandFile) {
+        if(!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType()).contains(bandFile.getContentType())){
+            throw new IllegalStateException("BandFile type is not correct! [" + bandFile.getContentType() + "]");
+        }
     }
 
-    public UUID isBandExist(String bandName, String username) {
-        return dataAccessBand.isBandExist(bandName, username);
+    public int isBandExistBySpotifyId(String bandSpotifyId) {
+        return dataAccessBand.isBandExistBySpotifyId(bandSpotifyId);
+    }
+
+    public Optional<Band> getBandById(int bandId) {
+        return dataAccessBand.getBandById(bandId);
+    }
+
+    public int getBandCountByUsername(String username) {
+        return dataAccessBand.getBandCountByUsername(username);
     }
 }

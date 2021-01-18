@@ -1,6 +1,8 @@
 package com.bkb.metalmusicreviews.backend.api;
 
-import com.bkb.metalmusicreviews.backend.model.Album;
+import com.bkb.metalmusicreviews.backend.dto.AlbumDTO;
+import com.bkb.metalmusicreviews.backend.dto.BandDTO;
+import com.bkb.metalmusicreviews.backend.entity.Album;
 import com.bkb.metalmusicreviews.backend.service.AlbumService;
 import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/albums")
+@RequestMapping("/api/v1/albums")
 @CrossOrigin("*")
 public class AlbumController {
 
@@ -24,72 +25,65 @@ public class AlbumController {
         this.albumService = albumService;
     }
 
-    @GetMapping()
+    @GetMapping("/get_albums_by_username")
     @PreAuthorize("hasAuthority('review:read')")
-    public List<Album> getAllAlbums(@RequestParam(name = "username") String username){
-        return albumService.getAllAlbums(username);
+    public List<Album> getAlbumsByUsername(@RequestParam(name = "username") String username){
+        return albumService.getAlbumsByUsername(username);
     }
 
-    @GetMapping("/albums-of-band")
+    @GetMapping("/get_albums_by_band_id_and_username")
     @PreAuthorize("hasAuthority('review:read')")
     public List<Album> getAlbumsByBandIdAndUsername(
             @RequestParam(name = "username") String username,
-            @RequestParam(name = "bandId") String bandId){
-        return albumService.getAlbumsByBandIdAndUsername(username, UUID.fromString(bandId));
+            @RequestParam(name = "band_id") int bandId){
+        return albumService.getAlbumsByBandIdAndUsername(username, bandId);
     }
 
-    @GetMapping(path = "{albumId}/image/download")
+    @GetMapping(path = "/download_album_image")
     @PreAuthorize("hasAuthority('review:read')")
-    public byte[] downloadAlbumImage(@PathVariable("albumId") UUID albumId,
-                                     @RequestParam(name = "username") String username){
-        byte[] arrayBase64 = Base64.getEncoder().encode(albumService.downloadAlbumImage(albumId, username));
+    public byte[] downloadAlbumImage(@RequestParam(name = "album_id") int albumId){
+        byte[] arrayBase64 = Base64.getEncoder().encode(albumService.downloadAlbumImage(albumId));
         return arrayBase64;
     }
 
-    //Çok fazla parametre var onun yerine direkt album nesnesi yollayıp @RequestBody ile Json çevirebiliriz.
     @PostMapping(
-            path="/image/upload",
+            path="/upload_album_with_image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAuthority('review:write')")
-    public UUID uploadAlbum(@RequestParam("album_file") MultipartFile albumFile,
-                            @RequestParam("album_title") String albumTitle,
-                            @RequestParam("band_id") UUID bandId,
-                            @RequestParam("year") String year,
-                            @RequestParam("username") String username){
-
-        return albumService.uploadAlbum(albumFile, albumTitle, bandId, year, username);
+    public int uploadAlbum(@RequestPart("album_dto") AlbumDTO albumDTO, @RequestPart("multipart_file") MultipartFile file){
+        int albumId = albumService.isAlbumExistBySpotifyId(albumDTO.getAlbumSpotifyId());
+        System.out.println("getAlbumName: " + albumDTO.getAlbumName());
+        System.out.println("getAlbumYear: " + albumDTO.getAlbumYear());
+        System.out.println("getAlbumSpotifyId: " + albumDTO.getAlbumSpotifyId());
+        System.out.println("getBandId: " + albumDTO.getBandId());
+        if(albumId == -1){
+            albumService.uploadAlbumFile(albumDTO, file);
+            albumId = albumService.isAlbumExistBySpotifyId(albumDTO.getAlbumSpotifyId());
+        }
+        albumService.addAlbumForThisUser(albumDTO.getUserId(), albumId);
+        return albumId;
     }
 
     //orElse yerine 404 fırtlatman mantıklı olabilir bunu dene.
-    @GetMapping(path = "{albumId}")
+    @GetMapping(path = "/get_album_by_album_id")
     @PreAuthorize("hasAuthority('review:read')")
-    public Album getAlbumById(@PathVariable("albumId") UUID id){
-        return albumService.getAlbumById(id).orElse(null);
+    public Album getAlbumById(@RequestParam(name = "album_id") int albumId){
+        return albumService.getAlbumById(albumId).orElse(null);
     }
 
-    @DeleteMapping(path = "{albumId}")
+    @DeleteMapping(path = "/delete_album_by_album_id_for_user")
     @PreAuthorize("hasAuthority('review:write')")
-    public void deleteAlbumById(@PathVariable("albumId") UUID id,
-                                @RequestParam("username") String username){
-        albumService.deleteAlbumById(id, username);
+    public int deleteAlbumByIdAndUserId(@RequestParam(name = "album_id") int albumId,
+                                @RequestParam(name = "user_id") int userId){
+        return albumService.deleteAlbumByIdAndUserId(albumId, userId);
     }
 
-    @PutMapping(path = "{albumId}")
-    @PreAuthorize("hasAuthority('review:write')")
-    public void updateAlbumById(@PathVariable("albumId") UUID id, Album album){
-        albumService.updateAlbumById(id, album);
-    }
-
-    @GetMapping(path = "/isExist/{albumName}")
-    @PreAuthorize("hasAuthority('review:write')")
-    public boolean isAlbumExistForSameUser(
-            @PathVariable("albumName") String albumName,
-            @RequestParam(name = "bandId") String bandId,
-            @RequestParam(name = "username") String username){
-
-        return albumService.isAlbumExistForSameUser(albumName, UUID.fromString(bandId), username);
+    @GetMapping("/get_album_count_by_username")
+    @PreAuthorize("hasAuthority('review:read')")
+    public int getAlbumCountByUserId(@RequestParam(name = "username") String username){
+        return albumService.getAlbumCountByUsername(username);
     }
 
 }

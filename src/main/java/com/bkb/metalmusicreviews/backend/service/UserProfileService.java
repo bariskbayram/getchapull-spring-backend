@@ -2,7 +2,8 @@ package com.bkb.metalmusicreviews.backend.service;
 
 import com.bkb.metalmusicreviews.backend.bucket.BucketName;
 import com.bkb.metalmusicreviews.backend.dao.DataAccessUserProfile;
-import com.bkb.metalmusicreviews.backend.model.UserProfile;
+import com.bkb.metalmusicreviews.backend.dto.UserDTO;
+import com.bkb.metalmusicreviews.backend.entity.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,8 +21,8 @@ import static org.apache.http.entity.ContentType.IMAGE_PNG;
 
 @Service
 public class UserProfileService implements UserDetailsService {
-
     private final DataAccessUserProfile dataAccessUserProfile;
+
     private final FileStoreService fileStoreService;
 
     @Autowired
@@ -30,13 +31,25 @@ public class UserProfileService implements UserDetailsService {
         this.fileStoreService = fileStoreService;
     }
 
-    public List<UserProfile> getAllUserProfileS() {
-        return dataAccessUserProfile.getAllUserProfiles();
+    public List<UserProfile> getAllUsers() {
+        return dataAccessUserProfile.getAllUsers();
+    }
+
+    public List<UserProfile> getFollowers(int userId) {
+        return dataAccessUserProfile.getFollowers(userId);
+    }
+
+    public List<UserProfile> getFollowings(int userId) {
+        return dataAccessUserProfile.getFollowings(userId);
+    }
+
+    public List<UserProfile> getUserSuggestion(int userId) {
+        return dataAccessUserProfile.getUserSuggestion(userId);
     }
 
     public byte[] downloadProfilePhoto(String username) {
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
-                "profiles/" + username + "/profilephotos");
+                "profilephotos");
         return fileStoreService.download(path, username + ".jpg");
     }
 
@@ -48,7 +61,7 @@ public class UserProfileService implements UserDetailsService {
         metadata.put("Content-Type", profilePhoto.getContentType());
         metadata.put("Content-Length", String.valueOf(profilePhoto.getSize()));
 
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profiles/" + username + "/profilephotos");
+        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profilephotos");
 
         String filename = String.format("%s.jpg", username);
 
@@ -62,33 +75,33 @@ public class UserProfileService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return dataAccessUserProfile.getUserProfileByUsername(username)
+        return dataAccessUserProfile.loadUserByUsername(username)
                 .orElseThrow(
                         () ->new UsernameNotFoundException(String.format("Username %s not found.", username)));
     }
 
-    public void registerUser(UserProfile userProfile) {
-        fileStoreService.createFolder(BucketName.IMAGE.getBucketName(), "profiles/" + userProfile.getUsername() + "/albums/");
-        fileStoreService.createFolder(BucketName.IMAGE.getBucketName(), "profiles/" + userProfile.getUsername() + "/bands/");
+    public void registerUser(UserDTO userDTO) {
         fileStoreService.putProfilePhoto(
                 BucketName.IMAGE.getBucketName(),
-                "profiles/" + userProfile.getUsername() + "/profilephotos/" + userProfile.getUsername() + ".jpg",
+                "profilephotos/" + userDTO.getUsername() + ".jpg",
                 new File("src/main/resources/static/default.jpg"));
-        dataAccessUserProfile.addUserProfile(userProfile);
+        dataAccessUserProfile.addUserProfile(userDTO);
     }
 
-    public boolean usernameIsExist(String username) {
-        return dataAccessUserProfile.usernameIsExist(username);
-    }
-
-    public void registerAdmin(UserProfile userProfile) {
-        fileStoreService.createFolder(BucketName.IMAGE.getBucketName(), "profiles/" + userProfile.getUsername() + "/albums");
-        fileStoreService.createFolder(BucketName.IMAGE.getBucketName(), "profiles/" + userProfile.getUsername() + "/bands");
+    public void registerAdmin(UserDTO userDTO) {
         fileStoreService.putProfilePhoto(
                 BucketName.IMAGE.getBucketName(),
-                "profiles/" + userProfile.getUsername() + "/profilephotos/" + userProfile.getUsername() + ".jpg",
+                "profilephotos/" + userDTO.getUsername() + ".jpg",
                 new File("src/main/resources/static/default.jpg"));
-        dataAccessUserProfile.addUserProfileForAdmin(userProfile);
+        dataAccessUserProfile.addUserProfileForAdmin(userDTO);
+    }
+
+    public boolean isUsernameExist(String username) {
+        return dataAccessUserProfile.isUsernameExist(username);
+    }
+
+    public boolean isEmailExist(String email) {
+        return dataAccessUserProfile.isEmailExist(email);
     }
 
     public void deleteUserProfile(String username) {
@@ -107,19 +120,19 @@ public class UserProfileService implements UserDetailsService {
         }
     }
 
-    public void updateUserProfieByUsername(String username, UserProfile userProfile) {
-        dataAccessUserProfile.updateUserProfileByUsername(username, userProfile);
+    public void updateUserProfieByUsername(UserDTO userDTO) {
+        dataAccessUserProfile.updateUserProfileByUsername(userDTO);
     }
 
-    public void addFriend(String username, String friendUsername) {
-        dataAccessUserProfile.addFriend(username, friendUsername);
+    public void followSomeone(Integer userId, Integer followingId) {
+        dataAccessUserProfile.followSomeone(userId, followingId);
     }
 
-    public void deleteFriend(String username, String friendUsername) {
-        dataAccessUserProfile.deleteFriend(username, friendUsername);
+    public void unfollowSomeone(Integer userId, Integer unfollowingId) {
+        dataAccessUserProfile.unfollowSomeone(userId, unfollowingId);
     }
 
-    public boolean isYourFriend(String username, String friendUsername) {
-        return dataAccessUserProfile.isYourFriend(username, friendUsername);
+    public boolean isYourFriend(Integer userId, String otherUsername) {
+        return dataAccessUserProfile.isYourFriend(userId, otherUsername);
     }
 }
