@@ -2,7 +2,7 @@ package com.bkb.metalmusicreviews.backend.bucket;
 
 public enum BucketName {
 
-    IMAGE("metal-spring-web");
+    IMAGE(System.getenv("BUCKET_NAME"));
 
     private final String bucketName;
 
