@@ -10,9 +10,9 @@ GetchaPull website -> http://www.getchapull.wtf
 
 This version of GetchaPull was not intended to be to have that kind of functionality. So, it has a very bad implementation especially for Postgresql schemas and related things. :)
 
-GetchaPull is a Twitter-like web page for sharing music reviews with others. In the begining, I was trying to make a web page just for myself on same aim. Then it became a more larger project than I thought. GetchaPull has 2 repo in Github, one of them is Spring-Backend and other one is VueJS-Frontend. 
+GetchaPull is a Twitter-like web page for sharing music reviews with others. In the begining, I was trying to make a web page just for myself on same aim. Then it became a more larger project than I thought. GetchaPull has 2 repo in Github, one of them is [Spring-Backend](https://github.com/bariskbayram/getchapull-spring-backend) and other one is [VueJS-Frontend](https://github.com/bariskbayram/getchapull-vuejs-frontend). 
 
-Spring-Backend side of GetchaPull is a API that handles VueJS-Fronetend requests. In this awful implementation, 4 table is used for representing object in database and tables did not have any relation with each other(no FK or something). In GetchaPull web site, I am using AWS S3 for storing profile photos, album covers and band photos for now. When you wanna add a new review for one album, it's getting band and album informations from Spotify API, then stores informations in DB and images in AWS S3.
+Spring-Backend side of GetchaPull is a API that handles VueJS-Fronetend requests. In this awful implementation, 4 table is used for representing object in database and tables did not have any relation with each other(no FK or something). In GetchaPull web site, I am using AWS S3 for storing profile photos, album covers and band photos for now. When you wanna add a new review for one album, it's getting band and album informations from [Spotify API](https://developer.spotify.com/documentation/web-api/reference/#category-browse), then stores informations in DB and images in AWS S3.
 
 * You can add new reviews to your profile.
 * You can follow or unfollow other users.
