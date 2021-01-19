@@ -1,5 +1,6 @@
 package com.bkb.metalmusicreviews.backend.service;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.bkb.metalmusicreviews.backend.bucket.BucketName;
 import com.bkb.metalmusicreviews.backend.dao.DataAccessUserProfile;
 import com.bkb.metalmusicreviews.backend.dto.UserDTO;
@@ -14,6 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 
 import static org.apache.http.entity.ContentType.IMAGE_JPEG;
@@ -83,16 +87,16 @@ public class UserProfileService implements UserDetailsService {
     public void registerUser(UserDTO userDTO) {
         fileStoreService.putProfilePhoto(
                 BucketName.IMAGE.getBucketName(),
-                "profilephotos/" + userDTO.getUsername() + ".jpg",
-                new File("src/main/resources/static/default.jpg"));
+                "default.jpg",
+                "profilephotos/" + userDTO.getUsername() + ".jpg");
         dataAccessUserProfile.addUserProfile(userDTO);
     }
 
     public void registerAdmin(UserDTO userDTO) {
         fileStoreService.putProfilePhoto(
                 BucketName.IMAGE.getBucketName(),
-                "profilephotos/" + userDTO.getUsername() + ".jpg",
-                new File("src/main/resources/static/default.jpg"));
+                "default.jpg",
+                "profilephotos/" + userDTO.getUsername() + ".jpg");
         dataAccessUserProfile.addUserProfileForAdmin(userDTO);
     }
 

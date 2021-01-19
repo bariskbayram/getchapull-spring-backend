@@ -1,14 +1,8 @@
 app:
   datasource:
-#    jdbc-url: ${JDBC_DATABASE_URL}
-#    username: ${JDBC_DATABASE_USERNAME}
-#    password: ${JDBC_DATABASE_PASSWORD}
-#
-    jdbc-url: jdbc:postgresql://localhost:5432/refactor_postgres
+    jdbc-url: jdbc:postgresql://postgres:5432/getchapull
     username: postgres
-    password: 16121995
-
-    pool-size: 30
+    password: postgres
 
 application:
   jwt:
