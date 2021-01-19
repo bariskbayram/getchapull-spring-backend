@@ -5,10 +5,22 @@
 
 GetchaPull website -> http://www.getchapull.wtf
 
+<li><strong>Branches:</strong>
+ <ul> <strong> master: </strong><br/>
+   <ul>last version with using Spring-Data-JPA</ul>
+ </ul>
+ <ul><strong> refactor-postgres-spring-jdbc: </strong><br/>
+   <ul>refactoring with using Spring-Jdbc</ul>
+ </ul>
+ <ul> <strong> v1-without_refactoring: </strong><br/>
+   <ul>first version of project, bad implementation</ul>
+ </ul>
+</li>
+
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This version of GetchaPull is refactored version of [this](https://github.com/bariskbayram/getchapull-spring-backend/tree/v1-without_refactoring). It became more flexible and useful. PostgreSQL tables are designed from begining and implemented. In this version, I was using spring-jdbc for database operations. Next version is planned to be with spring-data-jdbc or spring-data-jpa.
+This version of GetchaPull is refactored version of [this](https://github.com/bariskbayram/getchapull-spring-backend/tree/v1-without_refactoring). It became more flexible and useful. PostgreSQL tables are designed from begining and implemented. In this version, I was using Spring-Data-JPA for database operations. Next version is planned to be with Spring-Data-JDBC.
 
 GetchaPull is a Twitter-like web page for sharing music reviews with others. In the begining, I was trying to make a web page just for myself on same aim. Then it became a more larger project than I thought. GetchaPull has 2 repo in Github, one of them is [Spring-Backend](https://github.com/bariskbayram/getchapull-spring-backend) and other one is [VueJS-Frontend](https://github.com/bariskbayram/getchapull-vuejs-frontend). 
 
@@ -50,7 +62,7 @@ Spring-Backend side of GetchaPull is a API that handles VueJS-Fronetend requests
 
 ### Build with and Third-party
 
-* SpringBoot ( SpringBootWeb, SpringBootJdbc, SpringBootSecurity )
+* SpringBoot ( SpringBootWeb, SpringDataJPA, SpringBootSecurity )
 * PostgreSQL
 * Guava
 * Flyway
