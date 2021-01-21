@@ -7,7 +7,7 @@ GetchaPull website -> http://www.getchapull.wtf
 
 <li><strong>Branches:</strong>
  <ul> <strong> master: </strong><br/>
-   <ul>last version with using Spring-Data-JPA(not implemented yet)</ul>
+   <ul>last version with using Spring-Data-JPA(not fully implemented yet)</ul>
  </ul>
  <ul><strong> refactor-postgres-spring-jdbc: </strong><br/>
    <ul>refactoring with using Spring-Jdbc</ul>
@@ -20,7 +20,7 @@ GetchaPull website -> http://www.getchapull.wtf
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This version of GetchaPull is refactored version of [this](https://github.com/bariskbayram/getchapull-spring-backend/tree/v1-without_refactoring). It became more flexible and useful. PostgreSQL tables are designed from begining and implemented. In this version, I was using spring-jdbc for database operations. Next version is planned to be with spring-data-jdbc or spring-data-jpa.
+This version of GetchaPull is refactored version of [this](https://github.com/bariskbayram/getchapull-spring-backend/tree/spring-jdbc-postgres) with Spring Data JPA. This is not a best implementation of using Spring Data JPA, there are a few performance issues. In some cases, there are n+1 cases, so trying to improve performance and reduce the count of queries that are sended to DB is my next plan in this project. And then, Spring-Data-JDBC. :)
 
 GetchaPull is a Twitter-like web page for sharing music reviews with others. In the begining, I was trying to make a web page just for myself on same aim. Then it became a more larger project than I thought. GetchaPull has 2 repo in Github, one of them is [Spring-Backend](https://github.com/bariskbayram/getchapull-spring-backend) and other one is [VueJS-Frontend](https://github.com/bariskbayram/getchapull-vuejs-frontend). 
 
@@ -62,12 +62,13 @@ Spring-Backend side of GetchaPull is a API that handles VueJS-Fronetend requests
 
 ### Build with and Third-party
 
-* SpringBoot ( SpringBootWeb, SpringBootJdbc, SpringBootSecurity )
+* SpringBoot ( SpringBootWeb, SpringBootJPA, SpringBootSecurity )
 * PostgreSQL
 * Guava
 * Flyway
 * JWT
 * AWS-Java-SDK
+* Lombok
 
 [linkedin-shield]: https://img.shields.io/static/v1?label=LINKEDIN&message=BKB&color=<COLOR>
 [linkedin-url]: https://www.linkedin.com/in/bar%C4%B1%C5%9F-kaan-bayram-121850101
