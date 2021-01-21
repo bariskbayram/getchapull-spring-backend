@@ -5,6 +5,18 @@
 
 GetchaPull website -> http://www.getchapull.wtf
 
+<li><strong>Branches:</strong>
+ <ul> <strong> master: </strong><br/>
+   <ul>last version with using Spring-Data-JPA(not implemented yet)</ul>
+ </ul>
+ <ul><strong> refactor-postgres-spring-jdbc: </strong><br/>
+   <ul>refactoring with using Spring-Jdbc</ul>
+ </ul>
+ <ul> <strong> v1-without_refactoring: </strong><br/>
+   <ul>first version of project, bad implementation</ul>
+ </ul>
+</li>
+
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
