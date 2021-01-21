@@ -1,71 +1,152 @@
 package com.bkb.metalmusicreviews.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Set;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.*;
 
+@ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity(name = "UserProfile")
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "email_unique", columnNames = "email"),
+                @UniqueConstraint(name = "username_unique", columnNames = "username")
+        }
+)
 public class UserProfile implements UserDetails {
 
-    private final int userId;
-    private final String username;
-    private final String email;
-    private final String password;
-    private final String fullname;
-    private final String bioInfo;
-    private final String userCreated;
-    private final Set<? extends GrantedAuthority> grantedAuthorities;
-    private final boolean isAccountNonExpired;
-    private final boolean isAccountNonLocked;
-    private final boolean isCredentialsNonExpired;
-    private final boolean isEnabled;
+    @Id
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
+    @Column(
+            name = "user_id",
+            updatable = false
+    )
+    private int userId;
 
-    public UserProfile(int userId,
-                       String username,
-                       String email,
-                       String password,
-                       String fullname,
-                       String bioInfo,
-                       String userCreated,
-                       Set<? extends GrantedAuthority> grantedAuthorities,
-                       boolean isAccountNonExpired,
-                       boolean isAccountNonLocked,
-                       boolean isCredentialsNonExpired,
-                       boolean isEnabled) {
+    @Column(
+            name = "username",
+            nullable = false,
+            length = 50,
+            unique = true
+    )
+    private String username;
 
+    @Column(
+            name = "email",
+            nullable = false,
+            length = 100,
+            unique = true
+    )
+    private String email;
+
+    @Column(
+            name = "password",
+            nullable = false,
+            length = 1000
+    )
+    private String password;
+
+    @Column(
+            name = "fullname",
+            nullable = false,
+            length = 80
+    )
+    private String fullname;
+
+    @Column(
+            name = "bio_info",
+            length = 140
+    )
+    private String bioInfo;
+
+    @Column(
+            name = "user_created",
+            nullable = false,
+            updatable = false,
+            insertable = false,
+            columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP"
+    )
+    private LocalDateTime userCreated;
+
+    @Column(
+            name = "user_role",
+            nullable = false,
+            length = 50
+    )
+    private String userRole;
+
+    @OneToMany(
+            mappedBy = "userProfile",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonManagedReference
+    private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonManagedReference
+    private List<UserAlbum> userAlbums = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonManagedReference
+    private List<UserFollowing> userList = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "following",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonManagedReference
+    private List<UserFollowing> followingList = new ArrayList<>();
+
+    @Transient
+    private Set<? extends GrantedAuthority> grantedAuthorities;
+    @Transient
+    private boolean isAccountNonExpired;
+    @Transient
+    private boolean isAccountNonLocked;
+    @Transient
+    private boolean isCredentialsNonExpired;
+    @Transient
+    private boolean isEnabled;
+
+    public UserProfile(int userId) {
         this.userId = userId;
+    }
+
+    public UserProfile(String username, String email, String password, String fullname, String userRole) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.fullname = fullname;
-        this.bioInfo = bioInfo;
-        this.userCreated = userCreated;
-        this.grantedAuthorities = grantedAuthorities;
-        this.isAccountNonExpired = isAccountNonExpired;
-        this.isAccountNonLocked = isAccountNonLocked;
-        this.isCredentialsNonExpired = isCredentialsNonExpired;
-        this.isEnabled = isEnabled;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getFullname() {
-        return fullname;
-    }
-
-    public String getBioInfo() {
-        return bioInfo;
-    }
-
-    public String getUserCreated() {
-        return userCreated;
+        this.userRole = userRole;
     }
 
     @Override
@@ -73,34 +154,36 @@ public class UserProfile implements UserDetails {
         return grantedAuthorities;
     }
 
-    @Override
-    public String getPassword() {
-        return this.password;
+    public void setGrantedAuthorities(Set<? extends GrantedAuthority> grantedAuthorities) {
+        this.grantedAuthorities = grantedAuthorities;
     }
 
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    @Override
     public boolean isAccountNonExpired() {
         return isAccountNonExpired;
     }
 
-    @Override
     public boolean isAccountNonLocked() {
         return isAccountNonLocked;
     }
 
-    @Override
     public boolean isCredentialsNonExpired() {
         return isCredentialsNonExpired;
     }
 
-    @Override
     public boolean isEnabled() {
         return isEnabled;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        UserProfile u = (UserProfile) obj;
+        return Objects.equals(username, u.getUsername());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
+    }
 }

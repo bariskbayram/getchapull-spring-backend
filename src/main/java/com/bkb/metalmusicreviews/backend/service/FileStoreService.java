@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -52,22 +51,6 @@ public class FileStoreService {
         }catch (AmazonServiceException | IOException e){
             throw new IllegalStateException("Failed to download", e);
         }
-    }
-
-    public void createFolder(String bucketName, String folderName) {
-        // create meta-data for your folder and set content-length to 0
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(0);
-
-        // create empty content
-        InputStream emptyContent = new ByteArrayInputStream(new byte[0]);
-
-        // create a PutObjectRequest passing the folder name suffixed by /
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName,
-                folderName , emptyContent, metadata);
-
-        // send request to S3 to create folder
-        amazonS3.putObject(putObjectRequest);
     }
 
     public void putProfilePhoto(String bucketname, String fileName, String copyFileName){

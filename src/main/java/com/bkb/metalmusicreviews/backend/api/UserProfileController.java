@@ -4,8 +4,9 @@ import java.util.Base64;
 
 import com.bkb.metalmusicreviews.backend.dto.UserDTO;
 import com.bkb.metalmusicreviews.backend.entity.UserProfile;
-import com.bkb.metalmusicreviews.backend.service.UserProfileService;
+import com.bkb.metalmusicreviews.backend.service.interfaces.UserProfileServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,10 +20,10 @@ import java.util.List;
 @CrossOrigin("*")
 public class UserProfileController {
 
-    private final UserProfileService userProfileService;
+    private final UserProfileServiceInterface userProfileService;
 
     @Autowired
-    public UserProfileController(UserProfileService userProfileService) {
+    public UserProfileController(@Qualifier("jpaServiceUserProfile") UserProfileServiceInterface userProfileService) {
         this.userProfileService = userProfileService;
     }
 
@@ -106,7 +107,7 @@ public class UserProfileController {
     @PutMapping("/update_user_by_username")
     @PreAuthorize("hasAuthority('review:write')")
     public void updateUserProfile(@RequestBody UserDTO userDTO){
-        userProfileService.updateUserProfieByUsername(userDTO);
+        userProfileService.updateUserProfileByUsername(userDTO);
     }
 
     @PutMapping(path = "/follow_someone")

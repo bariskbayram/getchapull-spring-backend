@@ -1,66 +1,103 @@
 package com.bkb.metalmusicreviews.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
+@ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity(name = "Review")
+@Table(name = "reviews")
 public class Review {
 
-    private final int reviewId;
-    private final String reviewTitle;
-    private final String reviewContent;
-    private final int reviewPoint;
-    private final String postingDate;
-    private final int albumId;
-    private final int userId;
+    @Id
+    @SequenceGenerator(
+            name = "review_sequence",
+            sequenceName = "review_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "review_sequence"
+    )
+    @Column(
+            name = "review_id",
+            updatable = false
+    )
+    private int reviewId;
 
-    public Review(
-            int reviewId,
-            String reviewTitle,
-            String reviewContent,
-            int reviewPoint,
-            String postingDate,
-            int albumId,
-            int userId) {
+    @Column(
+            name = "review_title",
+            nullable = false,
+            length = 100
+    )
+    private String reviewTitle;
 
-        this.reviewId = reviewId;
+    @Column(
+            name = "review_content",
+            nullable = false,
+            length = 1000
+    )
+    private String reviewContent;
+
+    @Column(
+            name = "review_point",
+            nullable = false
+    )
+    private int reviewPoint;
+
+    @Column(
+            name = "posting_date",
+            nullable = false,
+            updatable = false,
+            insertable = false,
+            columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP"
+    )
+    private LocalDateTime postingDate;
+
+    @ManyToOne(
+            optional = false,
+            fetch = FetchType.LAZY
+    )
+    @JsonBackReference
+    private Album album;
+
+    @ManyToOne(
+            optional = false,
+            fetch = FetchType.LAZY
+    )
+    @JsonBackReference
+    private UserProfile userProfile;
+
+    public Review(String reviewTitle, String reviewContent, int reviewPoint) {
         this.reviewTitle = reviewTitle;
         this.reviewContent = reviewContent;
         this.reviewPoint = reviewPoint;
-        this.albumId = albumId;
-        this.userId = userId;
-        this.postingDate = postingDate;
-
     }
 
-    public int getReviewId() {
-        return reviewId;
-    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
 
-    public String getReviewTitle() {
-        return reviewTitle;
-    }
+        if (obj == null || getClass() != obj.getClass())
+            return false;
 
-    public String getReviewContent() {
-        return reviewContent;
-    }
-
-    public int getReviewPoint() {
-        return reviewPoint;
-    }
-
-    public String getPostingDate() {
-        return postingDate;
-    }
-
-    public int getAlbumId() {
-        return albumId;
-    }
-
-    public int getUserId() {
-        return userId;
+        Review review = (Review) obj;
+        return Objects.equals(reviewId, review.getReviewId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reviewId, reviewTitle, reviewContent, reviewPoint, postingDate, albumId, userId);
+        return Objects.hash(reviewId);
     }
+
 }

@@ -1,7 +1,11 @@
 package com.bkb.metalmusicreviews.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class AlbumDTO {
 
     @JsonProperty("album_name")
@@ -18,47 +22,5 @@ public class AlbumDTO {
 
     @JsonProperty("user_id")
     private int userId;
-
-    public AlbumDTO() {}
-
-    public String getAlbumName() {
-        return albumName;
-    }
-
-    public void setAlbumName(String albumName) {
-        this.albumName = albumName;
-    }
-
-    public String getAlbumSpotifyId() {
-        return albumSpotifyId;
-    }
-
-    public void setAlbumSpotifyId(String albumSpotifyId) {
-        this.albumSpotifyId = albumSpotifyId;
-    }
-
-    public int getAlbumYear() {
-        return albumYear;
-    }
-
-    public void setAlbumYear(int albumYear) {
-        this.albumYear = albumYear;
-    }
-
-    public int getBandId() {
-        return bandId;
-    }
-
-    public void setBandId(int bandId) {
-        this.bandId = bandId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
 }

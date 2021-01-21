@@ -4,12 +4,10 @@ package com.bkb.metalmusicreviews.backend.security;
 import com.bkb.metalmusicreviews.backend.jwt.JwtConfig;
 import com.bkb.metalmusicreviews.backend.jwt.JwtTokenVerifier;
 import com.bkb.metalmusicreviews.backend.jwt.JwtUsernameAndPasswordAuthFilter;
-import com.bkb.metalmusicreviews.backend.service.UserProfileService;
+import com.bkb.metalmusicreviews.backend.service.implementations.UserProfileServie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -18,9 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -28,20 +23,18 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import javax.crypto.SecretKey;
 import java.util.Arrays;
 
-import static com.bkb.metalmusicreviews.backend.security.ApplicationUserPermission.*;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
-    private final UserProfileService userProfileService;
+    private final UserProfileServie userProfileService;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
 
     @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserProfileService userProfileService, SecretKey secretKey, JwtConfig jwtConfig){
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserProfileServie userProfileService, SecretKey secretKey, JwtConfig jwtConfig){
         this.passwordEncoder = passwordEncoder;
         this.userProfileService = userProfileService;
         this.secretKey = secretKey;

@@ -1,5 +1,10 @@
 package com.bkb.metalmusicreviews.backend.dto;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 public class PostDTO {
 
     private String postUsername;
@@ -36,85 +41,5 @@ public class PostDTO {
         this.albumId = albumId;
         this.albumName = albumName;
 
-    }
-
-    public String getPostUsername() {
-        return postUsername;
-    }
-
-    public void setPostUsername(String postUsername) {
-        this.postUsername = postUsername;
-    }
-
-    public int getReviewId() {
-        return reviewId;
-    }
-
-    public void setReviewId(int reviewId) {
-        this.reviewId = reviewId;
-    }
-
-    public String getReviewTitle() {
-        return reviewTitle;
-    }
-
-    public void setReviewTitle(String reviewTitle) {
-        this.reviewTitle = reviewTitle;
-    }
-
-    public String getReviewContent() {
-        return reviewContent;
-    }
-
-    public void setReviewContent(String reviewContent) {
-        this.reviewContent = reviewContent;
-    }
-
-    public int getReviewPoint() {
-        return reviewPoint;
-    }
-
-    public void setReviewPoint(int reviewPoint) {
-        this.reviewPoint = reviewPoint;
-    }
-
-    public String getPostingDate() {
-        return postingDate;
-    }
-
-    public void setPostingDate(String postingDate) {
-        this.postingDate = postingDate;
-    }
-
-    public int getBandId() {
-        return bandId;
-    }
-
-    public void setBandId(int bandId) {
-        this.bandId = bandId;
-    }
-
-    public String getBandName() {
-        return bandName;
-    }
-
-    public void setBandName(String bandName) {
-        this.bandName = bandName;
-    }
-
-    public int getAlbumId() {
-        return albumId;
-    }
-
-    public void setAlbumId(int albumId) {
-        this.albumId = albumId;
-    }
-
-    public String getAlbumName() {
-        return albumName;
-    }
-
-    public void setAlbumName(String albumName) {
-        this.albumName = albumName;
     }
 }

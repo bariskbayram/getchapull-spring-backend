@@ -3,8 +3,9 @@ package com.bkb.metalmusicreviews.backend.api;
 import com.bkb.metalmusicreviews.backend.dto.PostDTO;
 import com.bkb.metalmusicreviews.backend.dto.ReviewDTO;
 import com.bkb.metalmusicreviews.backend.entity.Review;
-import com.bkb.metalmusicreviews.backend.service.ReviewService;
+import com.bkb.metalmusicreviews.backend.service.interfaces.ReviewServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +16,10 @@ import java.util.List;
 @CrossOrigin("*")
 public class ReviewController {
 
-    private ReviewService reviewService;
+    private ReviewServiceInterface reviewService;
 
     @Autowired
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(@Qualifier("jpaServiceReview") ReviewServiceInterface reviewService) {
         this.reviewService = reviewService;
     }
 
@@ -30,7 +31,7 @@ public class ReviewController {
 
     @GetMapping(path = "/get_post_by_album_id_and_username")
     @PreAuthorize("hasAuthority('review:read')")
-    public PostDTO getReviewByAlbumIdAndUsername(
+    public Review getReviewByAlbumIdAndUsername(
             @RequestParam(name = "album_id") int albumId,
             @RequestParam(name = "username") String username){
         return reviewService.getPostByAlbumIdAndUsername(albumId, username).orElse(null);
@@ -50,7 +51,7 @@ public class ReviewController {
 
     @PostMapping(path = "/get_all_post_by_user_id")
     @PreAuthorize("hasAuthority('review:read')")
-    public List<PostDTO> getPostsByUserId(@RequestParam(name = "user_id") int userId){
+    public List<Review> getPostsByUserId(@RequestParam(name = "user_id") int userId){
         return reviewService.getPostsByUserId(userId);
     }
 

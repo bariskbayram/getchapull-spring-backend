@@ -1,9 +1,11 @@
-package com.bkb.metalmusicreviews.backend.service;
+package com.bkb.metalmusicreviews.backend.service.implementations;
 
 import com.bkb.metalmusicreviews.backend.bucket.BucketName;
-import com.bkb.metalmusicreviews.backend.dao.DataAccessBand;
 import com.bkb.metalmusicreviews.backend.dto.BandDTO;
 import com.bkb.metalmusicreviews.backend.entity.Band;
+import com.bkb.metalmusicreviews.backend.repository.BandRepository;
+import com.bkb.metalmusicreviews.backend.service.FileStoreService;
+import com.bkb.metalmusicreviews.backend.service.interfaces.BandServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,22 +17,24 @@ import java.util.*;
 import static org.apache.http.entity.ContentType.IMAGE_JPEG;
 import static org.apache.http.entity.ContentType.IMAGE_PNG;
 
-@Service
-public class BandService {
+@Service("jpaServiceBand")
+public class BandService implements BandServiceInterface {
 
-    private final DataAccessBand dataAccessBand;
+    private final BandRepository bandRepository;
     private final FileStoreService fileStoreService;
 
     @Autowired
-    public BandService(@Qualifier("postresBand") DataAccessBand dataAccessBand, FileStoreService fileStoreService) {
-        this.dataAccessBand = dataAccessBand;
+    public BandService(@Qualifier("jpaRepoBand") BandRepository bandRepository, FileStoreService fileStoreService) {
+        this.bandRepository = bandRepository;
         this.fileStoreService = fileStoreService;
     }
 
+    @Override
     public List<Band> getBandsByUsername(String username) {
-        return dataAccessBand.getBandsByUsername(username);
+        return bandRepository.findBandsByUsername(username);
     }
 
+    @Override
     public byte[] downloadBandImage(int bandId) {
         Band band = getBandOrThrow(bandId);
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
@@ -46,8 +50,8 @@ public class BandService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Band is not found!", bandId)));
     }
 
-    public int uploadBandFile(BandDTO bandDTO, MultipartFile file) {
-
+    @Override
+    public Band uploadBandFile(BandDTO bandDTO, MultipartFile file) {
         isImage(file);
         isFileEmpty(file);
 
@@ -59,9 +63,11 @@ public class BandService {
 
         String filename = String.format("%s-%s", bandDTO.getBandName(), bandDTO.getBandSpotifyId());
 
+        Band band = new Band(bandDTO.getBandSpotifyId(), bandDTO.getBandName());
+
         try {
             fileStoreService.save(path, filename, Optional.of(metadata), file.getInputStream());
-            return dataAccessBand.addBand(bandDTO);
+            return bandRepository.save(band);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -79,15 +85,18 @@ public class BandService {
         }
     }
 
-    public int isBandExistBySpotifyId(String bandSpotifyId) {
-        return dataAccessBand.isBandExistBySpotifyId(bandSpotifyId);
+    @Override
+    public Band findBandByBandSpotifyId(String bandSpotifyId) {
+        return bandRepository.findBandByBandSpotifyId(bandSpotifyId).orElse(null);
     }
 
+    @Override
     public Optional<Band> getBandById(int bandId) {
-        return dataAccessBand.getBandById(bandId);
+        return bandRepository.findById(bandId);
     }
 
+    @Override
     public int getBandCountByUsername(String username) {
-        return dataAccessBand.getBandCountByUsername(username);
+        return bandRepository.getBandCountByUsername(username);
     }
 }

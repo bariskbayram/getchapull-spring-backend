@@ -2,11 +2,11 @@ package com.bkb.metalmusicreviews.backend.api;
 
 import com.bkb.metalmusicreviews.backend.dto.BandDTO;
 import com.bkb.metalmusicreviews.backend.entity.Band;
-import com.bkb.metalmusicreviews.backend.service.BandService;
+import com.bkb.metalmusicreviews.backend.service.interfaces.BandServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,10 +18,10 @@ import java.util.List;
 @CrossOrigin("*")
 public class BandController {
 
-    private final BandService bandService;
+    private final BandServiceInterface bandService;
 
     @Autowired
-    public BandController(BandService bandService) {
+    public BandController(@Qualifier("jpaServiceBand") BandServiceInterface bandService) {
         this.bandService = bandService;
     }
 
@@ -45,12 +45,11 @@ public class BandController {
     )
     @PreAuthorize("hasAuthority('review:write')")
     public int uploadBand(@RequestPart("band_dto") BandDTO bandDTO, @RequestPart("multipart_file") MultipartFile file) {
-        int bandId = bandService.isBandExistBySpotifyId(bandDTO.getBandSpotifyId());
-        if(bandId == -1){
-            bandService.uploadBandFile(bandDTO, file);
-            return bandService.isBandExistBySpotifyId(bandDTO.getBandSpotifyId());
+        Band band = bandService.findBandByBandSpotifyId(bandDTO.getBandSpotifyId());
+        if(band == null){
+            return bandService.uploadBandFile(bandDTO, file).getBandId();
         }
-        return bandId;
+        return band.getBandId();
     }
 
     //orElse yerine 404 fırtlatman mantıklı olabilir bunu dene.

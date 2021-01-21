@@ -1,11 +1,13 @@
 package com.bkb.metalmusicreviews.backend.api;
 
 import com.bkb.metalmusicreviews.backend.dto.AlbumDTO;
-import com.bkb.metalmusicreviews.backend.dto.BandDTO;
 import com.bkb.metalmusicreviews.backend.entity.Album;
-import com.bkb.metalmusicreviews.backend.service.AlbumService;
+
 import java.util.Base64;
+
+import com.bkb.metalmusicreviews.backend.service.interfaces.AlbumServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +20,10 @@ import java.util.List;
 @CrossOrigin("*")
 public class AlbumController {
 
-    private final AlbumService albumService;
+    private final AlbumServiceInterface albumService;
 
     @Autowired
-    public AlbumController(AlbumService albumService) {
+    public AlbumController(@Qualifier("jpaServiceAlbum") AlbumServiceInterface albumService) {
         this.albumService = albumService;
     }
 
@@ -53,17 +55,12 @@ public class AlbumController {
     )
     @PreAuthorize("hasAuthority('review:write')")
     public int uploadAlbum(@RequestPart("album_dto") AlbumDTO albumDTO, @RequestPart("multipart_file") MultipartFile file){
-        int albumId = albumService.isAlbumExistBySpotifyId(albumDTO.getAlbumSpotifyId());
-        System.out.println("getAlbumName: " + albumDTO.getAlbumName());
-        System.out.println("getAlbumYear: " + albumDTO.getAlbumYear());
-        System.out.println("getAlbumSpotifyId: " + albumDTO.getAlbumSpotifyId());
-        System.out.println("getBandId: " + albumDTO.getBandId());
-        if(albumId == -1){
-            albumService.uploadAlbumFile(albumDTO, file);
-            albumId = albumService.isAlbumExistBySpotifyId(albumDTO.getAlbumSpotifyId());
+        Album album = albumService.findAlbumByAlbumSpotifyId(albumDTO.getAlbumSpotifyId());
+        if(album == null){
+            album = albumService.uploadAlbumFile(albumDTO, file);
         }
-        albumService.addAlbumForThisUser(albumDTO.getUserId(), albumId);
-        return albumId;
+        albumService.addAlbumForThisUser(albumDTO.getUserId(), album.getAlbumId());
+        return album.getAlbumId();
     }
 
     //orElse yerine 404 fırtlatman mantıklı olabilir bunu dene.
