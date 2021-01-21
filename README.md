@@ -3,7 +3,13 @@
 [![Apache-2.0 License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-GetchaPull website -> http://www.getchapull.wtf
+GetchaPull website -> https://getchapull.wtf
+
+* PostgreSQL -> Google Cloud SQL
+* spring-backend -> Google Cloud Run
+* vuejs-frontend -> Google Cloud Run
+
+Note: Website is builded with using spring-jdbc-postgres branch.
 
 <li><strong>Branches:</strong>
  <ul> <strong> master: </strong><br/>
