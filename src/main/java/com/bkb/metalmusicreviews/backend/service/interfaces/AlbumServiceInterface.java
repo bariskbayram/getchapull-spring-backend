@@ -15,9 +15,9 @@ public interface AlbumServiceInterface {
 
     byte[] downloadAlbumImage(int albumId);
 
-    Album uploadAlbumFile(AlbumDTO albumDTO, MultipartFile file);
-
     Album findAlbumByAlbumSpotifyId(String albumSpotifyId);
+
+    Album uploadAlbumFile(AlbumDTO albumDTO, MultipartFile file);
 
     int addAlbumForThisUser(int userId, int albumId);
 

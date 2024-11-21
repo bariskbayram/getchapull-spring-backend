@@ -79,7 +79,7 @@ public class AlbumController {
 
     @GetMapping("/get_album_count_by_username")
     @PreAuthorize("hasAuthority('review:read')")
-    public int getAlbumCountByUserId(@RequestParam(name = "username") String username){
+    public int getAlbumCountByUsername(@RequestParam(name = "username") String username){
         return albumService.getAlbumCountByUsername(username);
     }
 

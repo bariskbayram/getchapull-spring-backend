@@ -43,9 +43,7 @@ public class AlbumService implements AlbumServiceInterface {
     @Override
     public byte[] downloadAlbumImage(int albumId) {
         Album album = getAlbumOrThrow(albumId);
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
-                "albums");
-
+        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "albums");
         String key = String.format("%s-%s", album.getAlbumName(), album.getAlbumSpotifyId());
 
         return fileStoreService.download(path, key);
@@ -57,8 +55,8 @@ public class AlbumService implements AlbumServiceInterface {
     }
 
     @Override
-    public Optional<Album> getAlbumById(int albumId) {
-        return albumRepository.findById(albumId);
+    public Album findAlbumByAlbumSpotifyId(String albumSpotifyId) {
+        return albumRepository.findAlbumByAlbumSpotifyId(albumSpotifyId).orElse(null);
     }
 
     @Override
@@ -71,7 +69,6 @@ public class AlbumService implements AlbumServiceInterface {
         metadata.put("Content-Length", String.valueOf(file.getSize()));
 
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "albums");
-
         String filename = String.format("%s-%s", albumDTO.getAlbumName(), albumDTO.getAlbumSpotifyId());
 
         Album album = new Album(albumDTO.getAlbumSpotifyId(), albumDTO.getAlbumName(), albumDTO.getAlbumYear());
@@ -89,25 +86,25 @@ public class AlbumService implements AlbumServiceInterface {
     }
 
     private void isImage(MultipartFile albumFile) {
-        if(albumFile.isEmpty()){
-            throw new IllegalStateException("AlbumFile is empty!");
-        }
-    }
-
-    private void isFileEmpty(MultipartFile albumFile) {
         if(!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType()).contains(albumFile.getContentType())){
             throw new IllegalStateException("AlbumFile type is not correct! [" + albumFile.getContentType() + "]");
         }
     }
 
-    @Override
-    public Album findAlbumByAlbumSpotifyId(String albumSpotifyId) {
-        return albumRepository.findAlbumByAlbumSpotifyId(albumSpotifyId).orElse(null);
+    private void isFileEmpty(MultipartFile albumFile) {
+        if(albumFile.isEmpty()){
+            throw new IllegalStateException("AlbumFile is empty!");
+        }
     }
 
     @Override
     public int addAlbumForThisUser(int userId, int albumId) {
         return albumRepository.insertUserAlbum(userId, albumId);
+    }
+
+    @Override
+    public Optional<Album> getAlbumById(int albumId) {
+        return albumRepository.findById(albumId);
     }
 
     @Override
