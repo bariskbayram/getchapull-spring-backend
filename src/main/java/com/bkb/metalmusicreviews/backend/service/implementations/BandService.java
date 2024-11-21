@@ -37,9 +37,7 @@ public class BandService implements BandServiceInterface {
     @Override
     public byte[] downloadBandImage(int bandId) {
         Band band = getBandOrThrow(bandId);
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
-                "bands");
-
+        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "bands");
         String key = String.format("%s-%s", band.getBandName(), band.getBandSpotifyId());
 
         return fileStoreService.download(path, key);
@@ -48,6 +46,11 @@ public class BandService implements BandServiceInterface {
     private Band getBandOrThrow(int bandId) {
         return getBandById(bandId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Band is not found!", bandId)));
+    }
+
+    @Override
+    public Band findBandByBandSpotifyId(String bandSpotifyId) {
+        return bandRepository.findBandByBandSpotifyId(bandSpotifyId).orElse(null);
     }
 
     @Override
@@ -60,7 +63,6 @@ public class BandService implements BandServiceInterface {
         metadata.put("Content-Length", String.valueOf(file.getSize()));
 
         String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "bands");
-
         String filename = String.format("%s-%s", bandDTO.getBandName(), bandDTO.getBandSpotifyId());
 
         Band band = new Band(bandDTO.getBandSpotifyId(), bandDTO.getBandName());
@@ -74,20 +76,15 @@ public class BandService implements BandServiceInterface {
     }
 
     private void isImage(MultipartFile bandFile) {
-        if(bandFile.isEmpty()){
-            throw new IllegalStateException("BandFile is empty!");
-        }
-    }
-
-    private void isFileEmpty(MultipartFile bandFile) {
         if(!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType()).contains(bandFile.getContentType())){
             throw new IllegalStateException("BandFile type is not correct! [" + bandFile.getContentType() + "]");
         }
     }
 
-    @Override
-    public Band findBandByBandSpotifyId(String bandSpotifyId) {
-        return bandRepository.findBandByBandSpotifyId(bandSpotifyId).orElse(null);
+    private void isFileEmpty(MultipartFile bandFile) {
+        if(bandFile.isEmpty()){
+            throw new IllegalStateException("BandFile is empty!");
+        }
     }
 
     @Override

@@ -12,9 +12,9 @@ public interface BandServiceInterface {
 
     byte[] downloadBandImage(int bandId);
 
-    Band uploadBandFile(BandDTO bandDTO, MultipartFile file);
-
     Band findBandByBandSpotifyId(String bandSpotifyId);
+
+    Band uploadBandFile(BandDTO bandDTO, MultipartFile file);
 
     Optional<Band> getBandById(int bandId);
 
