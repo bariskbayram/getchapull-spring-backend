@@ -3,6 +3,8 @@ package com.bkb.metalmusicreviews.backend.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Data
 @NoArgsConstructor
 public class PostDTO {
@@ -12,7 +14,7 @@ public class PostDTO {
     private String reviewTitle;
     private String reviewContent;
     private int reviewPoint;
-    private String postingDate;
+    private Timestamp postingDate;
     private int albumId;
     private String albumName;
     private int bandId;
@@ -24,7 +26,7 @@ public class PostDTO {
             String reviewTitle,
             String reviewContent,
             int reviewPoint,
-            String postingDate,
+            Timestamp postingDate,
             int albumId,
             String albumName,
             int bandId,

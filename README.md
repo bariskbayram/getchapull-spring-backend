@@ -38,8 +38,9 @@ The Spring-Backend side of GetchaPull is an API that handles VueJS-Frontend requ
 * You can see the posts belonging to other users that are followed by you on the main page.
 
 ### Build and Run on your localhost
-
-  * It requires AWS AccessKey ID and Secret AccessKey, so firstly you need to get these.  
+ 
+  * java version: openjdk 11.0.25 2024-10-15
+    * It requires AWS AccessKey ID and Secret AccessKey, so firstly you need to get these.  
 
 1. Download and unzip the source repo, or clone it using Git:
   ```sh
@@ -57,7 +58,7 @@ The Spring-Backend side of GetchaPull is an API that handles VueJS-Frontend requ
    ```
 4. Build jar: 
   ```sh 
-    mvnw package && java -jar target/getchapull-spring-backend-0.1.0.jar 
+    ./mvnw package && java -jar target/metal-music-reviews-0.0.1-SNAPSHOT.jar 
   ```
 5. Build images and run with Docker
   ```sh
