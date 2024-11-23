@@ -124,10 +124,10 @@ public class UserProfileController {
         userProfileService.unfollowSomeone(userId, unfollowingId);
     }
 
-    @GetMapping(path = "/is_your_friend")
+    @GetMapping(path = "/is_followed_by_user")
     @PreAuthorize("hasAuthority('review:write')")
-    public boolean isYourFriendByUsername(@RequestParam("user_id") Integer userId,
+    public boolean isFollowedByUser(@RequestParam("user_id") Integer userId,
                              @RequestParam("other_username") String otherUsername){
-        return userProfileService.isYourFriend(userId, otherUsername);
+        return userProfileService.isFollowedByUser(userId, otherUsername);
     }
 }

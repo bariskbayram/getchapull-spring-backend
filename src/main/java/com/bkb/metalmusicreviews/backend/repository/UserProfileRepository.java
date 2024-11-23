@@ -13,11 +13,11 @@ import java.util.Optional;
 @Repository("jpaRepoUserProfile")
 public interface UserProfileRepository extends JpaRepository<UserProfile, Integer> {
 
-    @Query("select u from UserProfile u inner join u.userList ul where ul.following.userId = :userId")
+    @Query("select u from UserProfile u inner join u.userList ul where ul.following.userId = :userId and ul.user.userId != :userId")
     List<UserProfile> getFollowersByUserId(int userId);
 
     @Query(
-            value = "select u2.user_id, u2.username, u2.email, u2.password, u2.fullname, u2.user_created, u2.bio_info, u2.user_role from users u inner join user_following uf on u.user_id = uf.user_user_id and u.user_id = :userId inner join users u2 ON uf.following_user_id = u2.user_id",
+            value = "select u2.user_id, u2.username, u2.email, u2.password, u2.fullname, u2.user_created, u2.bio_info, u2.user_role from users u inner join user_following uf on u.user_id = uf.user_user_id and u.user_id = :userId inner join users u2 ON uf.following_user_id = u2.user_id WHERE uf.following_user_id != :userId",
             nativeQuery = true
     )
     List<UserProfile> getFollowingsByUserId(int userId);
@@ -46,5 +46,5 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Intege
     void unfollowSomeone(int userId, int followingId);
 
     @Query(value = "SELECT username FROM user_following inner join users on users.user_id = user_following.following_user_id where user_following.user_user_id = :userId and users.username = :otherUsername", nativeQuery = true)
-    String isYourFriend(Integer userId, String otherUsername);
+    String isFollowedByUser(Integer userId, String otherUsername);
 }

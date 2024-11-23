@@ -38,7 +38,7 @@ public interface UserProfileServiceInterface {
 
     void unfollowSomeone(Integer userId, Integer unfollowingId);
 
-    boolean isYourFriend(Integer userId, String otherUsername);
+    boolean isFollowedByUser(Integer userId, String otherUsername);
 
     UserDetails loadUserByUsername(String username);
 }

@@ -175,12 +175,9 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
     }
 
     @Override
-    public boolean isYourFriend(Integer userId, String otherUsername) {
-        String username = userProfileRepository.isYourFriend(userId, otherUsername);
-        if(username == ""){
-            return false;
-        }
-        return true;
+    public boolean isFollowedByUser(Integer userId, String otherUsername) {
+        String username = userProfileRepository.isFollowedByUser(userId, otherUsername);
+        return username != null;
     }
 
     @Override
