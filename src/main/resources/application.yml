@@ -1,8 +1,8 @@
 app:
   datasource:
-    jdbc-url: jdbc:postgresql://postgres:5432/refactor_postgres
-    username: postgres
-    password: postgres
+    jdbc-url: ${JDBC_HOST}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
 
 spring:
   jpa:
