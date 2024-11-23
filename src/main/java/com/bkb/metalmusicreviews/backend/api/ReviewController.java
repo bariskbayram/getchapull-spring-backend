@@ -31,7 +31,7 @@ public class ReviewController {
 
     @GetMapping(path = "/get_post_by_album_id_and_username")
     @PreAuthorize("hasAuthority('review:read')")
-    public Review getReviewByAlbumIdAndUsername(
+    public Review getPostByAlbumIdAndUsername(
             @RequestParam(name = "album_id") int albumId,
             @RequestParam(name = "username") String username){
         return reviewService.getPostByAlbumIdAndUsername(albumId, username).orElse(null);
@@ -51,7 +51,7 @@ public class ReviewController {
 
     @PostMapping(path = "/get_all_post_by_user_id")
     @PreAuthorize("hasAuthority('review:read')")
-    public List<Review> getPostsByUserId(@RequestParam(name = "user_id") int userId){
+    public List<PostDTO> getPostsByUserId(@RequestParam(name = "user_id") int userId){
         return reviewService.getPostsByUserId(userId);
     }
 

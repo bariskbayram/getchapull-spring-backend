@@ -13,10 +13,10 @@ import java.util.Optional;
 @Repository("jpaRepoReview")
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
-    @Query(value = "select users.username, reviews.review_id, reviews.review_title, reviews.review_content, reviews.review_point, reviews.posting_date, albums.album_id, albums.album_name, albums.band_band_id, bands.band_name from reviews inner join albums on reviews.album_album_id = albums.album_id inner join bands on albums.band_band_id = bands.band_id inner join users on reviews.user_profile_user_id = users.user_id inner join user_following on users.user_id = user_following.following_user_id WHERE user_following.user_user_id = :userId ORDER BY reviews.posting_date DESC", nativeQuery = true)
-    List<Review> getPostsByUserId(int userId);
+    @Query(value = "select users.username, reviews.review_id, reviews.review_title, reviews.review_content, reviews.review_point, reviews.posting_date, reviews.album_album_id, reviews.user_profile_user_id, albums.album_id, albums.album_name, albums.band_band_id, bands.band_name from reviews inner join albums on reviews.album_album_id = albums.album_id inner join bands on albums.band_band_id = bands.band_id inner join users on reviews.user_profile_user_id = users.user_id inner join user_following on users.user_id = user_following.following_user_id WHERE user_following.user_user_id = :userId ORDER BY reviews.posting_date DESC", nativeQuery = true)
+    List<Object[]> getPostsByUserId(int userId);
 
-    @Query(value = "select reviews.review_id, reviews.review_title, reviews.review_content, reviews.review_point, reviews.posting_date, reviews.album_album_id, albums.album_name, bands.band_id, bands.band_name from reviews inner join albums on reviews.album_album_id = albums.album_id and albums.album_id = :albumId inner join bands on bands.band_id = albums.band_band_id inner join users ON reviews.user_profile_user_id = users.user_id WHERE username = :username", nativeQuery = true)
+    @Query(value = "select reviews.review_id, reviews.review_title, reviews.review_content, reviews.review_point, reviews.posting_date, reviews.album_album_id, reviews.user_profile_user_id, albums.album_name, bands.band_id, bands.band_name from reviews inner join albums on reviews.album_album_id = albums.album_id and albums.album_id = :albumId inner join bands on bands.band_id = albums.band_band_id inner join users ON reviews.user_profile_user_id = users.user_id WHERE username = :username", nativeQuery = true)
     Optional<Review> getPostByAlbumIdAndUsername(int albumId, String username);
 
     @Modifying

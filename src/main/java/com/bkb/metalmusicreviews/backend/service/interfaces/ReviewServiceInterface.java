@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface ReviewServiceInterface {
 
-    List<Review> getPostsByUserId(int userId);
-
     void addReview(ReviewDTO reviewDTO);
 
     Optional<Review> getPostByAlbumIdAndUsername(int albumId, String username);
@@ -18,5 +16,7 @@ public interface ReviewServiceInterface {
     void deteReviewByReviewId(int reviewId);
 
     void updateReviewByReviewId(int reviewId, ReviewDTO reviewDTO);
+
+    List<PostDTO> getPostsByUserId(int userId);
 
 }
