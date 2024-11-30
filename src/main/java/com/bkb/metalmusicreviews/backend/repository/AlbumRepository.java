@@ -29,7 +29,7 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
     @Modifying
     @Transactional
     @Query(value = "delete from user_album where user_user_id = :userId and album_album_id = :albumId", nativeQuery = true)
-    int deleteUserAlbum(int userId, int albumId);
+    int deleteUserAlbum(int albumId, int userId);
 
     @Query(value = "select count(*) from user_album WHERE user_user_id IN (SELECT user_id FROM users WHERE username = :username)", nativeQuery = true)
     int getAlbumCountByUsername(String username);

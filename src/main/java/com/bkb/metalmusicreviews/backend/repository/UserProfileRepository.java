@@ -22,14 +22,13 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Intege
     )
     List<UserProfile> getFollowingsByUserId(int userId);
 
-
     Optional<UserProfile> findByUsername(String username);
 
-    void deleteUserProfileByUsername(String username);
+    boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
 
-    boolean existsByUsername(String username);
+    void deleteUserProfileByUsername(String username);
 
     @Modifying
     @Query("update UserProfile u set u.fullname = :fullname, u.bioInfo = :bioInfo, u.password = :password where u.username = :username")

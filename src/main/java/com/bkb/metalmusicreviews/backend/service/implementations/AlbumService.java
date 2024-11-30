@@ -109,7 +109,7 @@ public class AlbumService implements AlbumServiceInterface {
 
     @Override
     public int deleteAlbumByIdAndUserId(int albumId, int userId) {
-        return albumRepository.deleteUserAlbum(userId, albumId);
+        return albumRepository.deleteUserAlbum(albumId, userId);
     }
 
     @Override
