@@ -20,7 +20,9 @@ public interface UserProfileServiceInterface {
 
     byte[] downloadProfilePhoto(String username);
 
-    void uploadProfilePhoto(String username, MultipartFile profilePhoto);
+    void uploadProfilePhoto(MultipartFile profilePhoto, String username);
+
+    UserDetails loadUserByUsername(String username);
 
     void registerUser(UserDTO userDTO);
 
@@ -39,6 +41,4 @@ public interface UserProfileServiceInterface {
     void unfollowSomeone(Integer userId, Integer unfollowingId);
 
     boolean isFollowedByUser(Integer userId, String otherUsername);
-
-    UserDetails loadUserByUsername(String username);
 }

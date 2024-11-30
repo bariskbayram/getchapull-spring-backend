@@ -56,8 +56,7 @@ public class UserProfileController {
     )
     @PreAuthorize("hasAuthority('review:read')")
     public byte[] downloadProfilePhoto(@RequestParam(name = "username") String username){
-        byte[] arrayBase64 = Base64.getEncoder().encode(userProfileService.downloadProfilePhoto(username));
-        return arrayBase64;
+        return Base64.getEncoder().encode(userProfileService.downloadProfilePhoto(username));
     }
 
     @PostMapping(
@@ -69,7 +68,7 @@ public class UserProfileController {
     public void uploadProfilePhoto(@RequestParam(name = "profile_photo") MultipartFile multipartFile,
                                    @RequestParam(name = "username") String username){
 
-        userProfileService.uploadProfilePhoto(username, multipartFile);
+        userProfileService.uploadProfilePhoto(multipartFile, username);
 
     }
 

@@ -69,7 +69,7 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
     }
 
     @Override
-    public void uploadProfilePhoto(String username, MultipartFile profilePhoto) {
+    public void uploadProfilePhoto(MultipartFile profilePhoto, String username) {
         isImage(profilePhoto);
         isFileEmpty(profilePhoto);
 
@@ -89,16 +89,36 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
         }
     }
 
-    private void isFileEmpty(MultipartFile profilePhoto) {
+    private void isImage(MultipartFile profilePhoto) {
         if(!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType()).contains(profilePhoto.getContentType())){
             throw new IllegalStateException("BandFile type is not correct! [" + profilePhoto.getContentType() + "]");
         }
     }
 
-    private void isImage(MultipartFile profilePhoto) {
+    private void isFileEmpty(MultipartFile profilePhoto) {
         if(profilePhoto.isEmpty()){
             throw new IllegalStateException("BandFile is empty!");
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        UserProfile userProfile = userProfileRepository.findByUsername(username).get();
+
+        Set<? extends GrantedAuthority> grantedAuthorities;
+        if(userProfile.getUserRole().equals("ADMIN")){
+            grantedAuthorities = ADMIN.getGrantedAuthorities();
+        }else{
+            grantedAuthorities = NORMAL.getGrantedAuthorities();
+        }
+
+        userProfile.setGrantedAuthorities(grantedAuthorities);
+        userProfile.setEnabled(true);
+        userProfile.setAccountNonExpired(true);
+        userProfile.setAccountNonLocked(true);
+        userProfile.setCredentialsNonExpired(true);
+        return userProfile;
     }
 
     @Override
@@ -178,25 +198,5 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
     public boolean isFollowedByUser(Integer userId, String otherUsername) {
         String username = userProfileRepository.isFollowedByUser(userId, otherUsername);
         return username != null;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        UserProfile userProfile = userProfileRepository.findByUsername(username).get();
-
-        Set<? extends GrantedAuthority> grantedAuthorities = null;
-        if(userProfile.getUserRole().equals("ADMIN")){
-            grantedAuthorities = ADMIN.getGrantedAuthorities();
-        }else{
-            grantedAuthorities = NORMAL.getGrantedAuthorities();
-        }
-
-        userProfile.setGrantedAuthorities(grantedAuthorities);
-        userProfile.setEnabled(true);
-        userProfile.setAccountNonExpired(true);
-        userProfile.setAccountNonLocked(true);
-        userProfile.setCredentialsNonExpired(true);
-        return userProfile;
     }
 }
