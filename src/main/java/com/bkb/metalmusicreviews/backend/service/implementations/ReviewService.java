@@ -7,6 +7,7 @@ import com.bkb.metalmusicreviews.backend.entity.Review;
 import com.bkb.metalmusicreviews.backend.entity.UserProfile;
 import com.bkb.metalmusicreviews.backend.repository.ReviewRepository;
 import com.bkb.metalmusicreviews.backend.service.interfaces.ReviewServiceInterface;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

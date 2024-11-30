@@ -1,9 +1,10 @@
 package com.bkb.metalmusicreviews.backend.jwt;
 
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
 

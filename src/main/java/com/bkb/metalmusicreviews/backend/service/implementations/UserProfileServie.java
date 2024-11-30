@@ -7,6 +7,7 @@ import com.bkb.metalmusicreviews.backend.entity.UserProfile;
 import com.bkb.metalmusicreviews.backend.repository.UserProfileRepository;
 import com.bkb.metalmusicreviews.backend.service.FileStoreService;
 import com.bkb.metalmusicreviews.backend.service.interfaces.UserProfileServiceInterface;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;

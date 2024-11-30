@@ -2,11 +2,11 @@ package com.bkb.metalmusicreviews.backend.service.interfaces;
 
 import com.bkb.metalmusicreviews.backend.dto.UserDTO;
 import com.bkb.metalmusicreviews.backend.entity.UserProfile;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-
 
 public interface UserProfileServiceInterface {
 

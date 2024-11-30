@@ -1,10 +1,9 @@
 package com.bkb.metalmusicreviews.backend.api;
 
-import java.util.Base64;
-
 import com.bkb.metalmusicreviews.backend.dto.UserDTO;
 import com.bkb.metalmusicreviews.backend.entity.UserProfile;
 import com.bkb.metalmusicreviews.backend.service.interfaces.UserProfileServiceInterface;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -13,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
 import java.util.List;
 
 @RestController

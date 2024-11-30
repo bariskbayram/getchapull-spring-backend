@@ -5,6 +5,7 @@ import com.bkb.metalmusicreviews.backend.jwt.JwtConfig;
 import com.bkb.metalmusicreviews.backend.jwt.JwtTokenVerifier;
 import com.bkb.metalmusicreviews.backend.jwt.JwtUsernameAndPasswordAuthFilter;
 import com.bkb.metalmusicreviews.backend.service.implementations.UserProfileServie;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -2,10 +2,8 @@ package com.bkb.metalmusicreviews.backend.api;
 
 import com.bkb.metalmusicreviews.backend.dto.AlbumDTO;
 import com.bkb.metalmusicreviews.backend.entity.Album;
-
-import java.util.Base64;
-
 import com.bkb.metalmusicreviews.backend.service.interfaces.AlbumServiceInterface;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -13,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
 import java.util.List;
 
 @RestController

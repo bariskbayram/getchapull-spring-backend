@@ -1,6 +1,7 @@
 package com.bkb.metalmusicreviews.backend.repository;
 
 import com.bkb.metalmusicreviews.backend.entity.Album;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

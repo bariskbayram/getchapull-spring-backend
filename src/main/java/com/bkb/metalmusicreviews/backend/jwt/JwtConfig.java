@@ -1,7 +1,8 @@
 package com.bkb.metalmusicreviews.backend.jwt;
 
-import com.google.common.net.HttpHeaders;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import com.google.common.net.HttpHeaders;
 
 @ConfigurationProperties(prefix = "application.jwt")
 public class JwtConfig {
