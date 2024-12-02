@@ -6,13 +6,13 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.3.4.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com.bkb</groupId>
-    <artifactId>metal-music-reviews</artifactId>
+    <artifactId>getchapull</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>metal-music-reviews</name>
-    <description>Spring web applications with Vue.js</description>
+    <name>getchapull</name>
+    <description>Spring API</description>
 
     <properties>
         <java.version>8</java.version>

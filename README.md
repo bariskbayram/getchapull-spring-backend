@@ -58,7 +58,7 @@ The Spring-Backend side of GetchaPull is an API that handles VueJS-Frontend requ
    ```
 4. Build jar: 
   ```sh 
-    ./mvnw package && java -jar target/metal-music-reviews-0.0.1-SNAPSHOT.jar 
+    ./mvnw package && java -jar target/getchapull-0.0.1-SNAPSHOT.jar 
   ```
 5. Build images and run with Docker
   ```sh
