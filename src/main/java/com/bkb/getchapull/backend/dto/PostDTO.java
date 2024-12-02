@@ -3,7 +3,7 @@ package com.bkb.getchapull.backend.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -14,7 +14,7 @@ public class PostDTO {
     private String reviewTitle;
     private String reviewContent;
     private int reviewPoint;
-    private Timestamp postingDate;
+    private OffsetDateTime postingDate;
     private int albumId;
     private String albumName;
     private int bandId;
@@ -26,7 +26,7 @@ public class PostDTO {
             String reviewTitle,
             String reviewContent,
             int reviewPoint,
-            Timestamp postingDate,
+            OffsetDateTime postingDate,
             int albumId,
             String albumName,
             int bandId,

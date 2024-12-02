@@ -12,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,7 +68,7 @@ public class ReviewService implements ReviewServiceInterface {
                         (String) row[2],     // reviews.review_title
                         (String) row[3],     // reviews.review_content
                         (Integer) row[4],    // reviews.review_point
-                        (Timestamp) row[5],  // reviews.posting_date TODO: not sure about using Timestamp, better check Saul
+                        ((Instant) row[5]).atOffset(ZoneOffset.UTC),  // reviews.posting_date TODO: not sure about using OffsetDateTime, better check Saul.Timezone da hatalı
                         (Integer) row[8],    // albums.album_id
                         (String) row[9],     // albums.album_name
                         (Integer) row[10],   // albums.band_band_id

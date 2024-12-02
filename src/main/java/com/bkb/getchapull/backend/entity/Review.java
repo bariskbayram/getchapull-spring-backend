@@ -6,8 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @ToString
@@ -61,7 +62,7 @@ public class Review {
             insertable = false,
             columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP"
     )
-    private LocalDateTime postingDate;
+    private OffsetDateTime postingDate;
 
     @ManyToOne(
             optional = false,

@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.*;
 
@@ -64,9 +64,8 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
 
     @Override
     public byte[] downloadProfilePhoto(String username) {
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(),
-                "profilephotos");
-        return fileStoreService.download(path, username + ".jpg");
+        String key = String.format("profilephotos/%s", username + ".jpg");
+        return fileStoreService.download(BucketName.IMAGE.getBucketName(), key);
     }
 
     @Override

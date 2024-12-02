@@ -38,10 +38,9 @@ public class BandService implements BandServiceInterface {
     @Override
     public byte[] downloadBandImage(int bandId) {
         Band band = getBandOrThrow(bandId);
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "bands");
-        String key = String.format("%s-%s", band.getBandName(), band.getBandSpotifyId());
+        String key = String.format("bands/%s-%s", band.getBandName(), band.getBandSpotifyId());
 
-        return fileStoreService.download(path, key);
+        return fileStoreService.download(BucketName.IMAGE.getBucketName(), key);
     }
 
     private Band getBandOrThrow(int bandId) {

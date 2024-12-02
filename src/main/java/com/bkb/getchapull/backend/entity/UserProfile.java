@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @ToString
@@ -86,7 +86,7 @@ public class UserProfile implements UserDetails {
             insertable = false,
             columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP"
     )
-    private LocalDateTime userCreated;
+    private OffsetDateTime userCreated;
 
     @Column(
             name = "user_role",

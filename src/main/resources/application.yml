@@ -6,7 +6,7 @@ app:
 
 spring:
   flyway:
-    enabled: true
+    enabled: false
     url: ${JDBC_HOST}
     user: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
