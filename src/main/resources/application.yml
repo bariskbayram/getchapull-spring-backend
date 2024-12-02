@@ -5,6 +5,11 @@ app:
     password: ${DATABASE_PASSWORD}
 
 spring:
+  flyway:
+    enabled: true
+    url: ${JDBC_HOST}
+    user: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
