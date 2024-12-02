@@ -22,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.SecretKey;
 import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -77,12 +78,10 @@ public class ApplicationSecurityConfig {
         return provider;
     }
 
-    // 8081'in 8080 ile iletişim kurabilmesi için CORS izinlerini set ettik herkese izin var
-    // yukarda .cors().configurationSource(corsConfigurationSource()) olarak aktif ettik
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:8080", "http://localhost:8081"));
+        configuration.setAllowedOriginPatterns(Collections.singletonList(System.getenv("CORS_HOSTS")));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList(jwtConfig.getAuthorizationHeader(), "responseType", "content-type", "x-auth-token"));
         configuration.setExposedHeaders(Arrays.asList("x-auth-token", "responseType", jwtConfig.getAuthorizationHeader(), "content-type"));

@@ -23,8 +23,8 @@ public class FileStoreService {
         this.amazonS3 = amazonS3;
     }
 
-    public void save(String path,
-                     String filename,
+    public void save(String bucketName,
+                     String path,
                      Optional<Map<String, String>> optionalMetadata,
                      InputStream inputStream){
 
@@ -36,7 +36,7 @@ public class FileStoreService {
         });
 
         try{
-            amazonS3.putObject(path, filename, inputStream, metadata);
+            amazonS3.putObject(bucketName, path, inputStream, metadata);
         }catch (AmazonServiceException e){
             throw new IllegalStateException("Failed to store file to s3", e);
         }

@@ -39,17 +39,13 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // Authorization key'i ile yollamıştık. Geri aynı şekilde geliyor ve aldık
         String authorizationHeader = request.getHeader("Authorization");
-
-        System.out.println("authorization headerdan alındı");
 
         if(Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())){
             filterChain.doFilter(request, response);
             return;
         }
 
-        // "Bearer " etkiketini sildik, geriye Token kaldı
         String token = authorizationHeader.replace(jwtConfig.getTokenPrefix(), "");
 
         try {
@@ -58,13 +54,9 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     .build()
                     .parseClaimsJws(token);
 
-            // body kısmını aldık yani payload - jwt.io ile bakabilirsin
             Claims body = claimsJws.getBody();
-
-            // body'de subject olarak username tutulur "bariskbayram" gibi
             String username = body.getSubject();
 
-            // body'de authorities olarak array var onu da aldık.
             List<Map<String,String>> authorities = (List<Map<String, String>>) body.get("authorities");
 
             Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
@@ -77,15 +69,12 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     simpleGrantedAuthorities
             );
 
-            System.out.println("token doğrulandı");
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         }catch (JwtException e){
             throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
         }
 
-        // filtreleme işlemi sırayla çalıştığı için ürettiği sonucu bir sonraki filter'a ulaştırmalı
         filterChain.doFilter(request, response);
     }
 }

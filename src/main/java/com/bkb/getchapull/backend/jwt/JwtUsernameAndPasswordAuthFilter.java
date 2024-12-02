@@ -44,7 +44,6 @@ public class JwtUsernameAndPasswordAuthFilter extends UsernamePasswordAuthentica
                     authRequest.getUsername(),
                     authRequest.getPassword()
             );
-            System.out.println("username-parola doğru");
 
             Authentication authenticate = authenticationManager.authenticate(authentication);
             return authenticate;
@@ -68,11 +67,7 @@ public class JwtUsernameAndPasswordAuthFilter extends UsernamePasswordAuthentica
                 .signWith(secretKey)
                 .compact();
 
-        System.out.println("token ürettik");
 
         response.addHeader(jwtConfig.getAuthorizationHeader(),jwtConfig.getTokenPrefix() + token);
-
-        System.out.println("token'ı header'a koyduk");
-
     }
 }

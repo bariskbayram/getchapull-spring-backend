@@ -62,13 +62,12 @@ public class BandService implements BandServiceInterface {
         metadata.put("Content-Type", file.getContentType());
         metadata.put("Content-Length", String.valueOf(file.getSize()));
 
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "bands");
-        String filename = String.format("%s-%s", bandDTO.getBandName(), bandDTO.getBandSpotifyId());
+        String path = String.format("bands/%s-%s", bandDTO.getBandName(), bandDTO.getBandSpotifyId());
 
         Band band = new Band(bandDTO.getBandSpotifyId(), bandDTO.getBandName());
 
         try {
-            fileStoreService.save(path, filename, Optional.of(metadata), file.getInputStream());
+            fileStoreService.save(BucketName.IMAGE.getBucketName(), path, Optional.of(metadata), file.getInputStream());
             return bandRepository.save(band);
         } catch (IOException e) {
             throw new IllegalStateException(e);

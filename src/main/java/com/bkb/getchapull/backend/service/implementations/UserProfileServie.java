@@ -77,13 +77,11 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
         metadata.put("Content-Type", profilePhoto.getContentType());
         metadata.put("Content-Length", String.valueOf(profilePhoto.getSize()));
 
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "profilephotos");
-
-        String filename = String.format("%s.jpg", username);
+        String path = String.format("profilephotos/%s.jpg", username);
 
         try {
-            fileStoreService.deleteImage(path,filename);
-            fileStoreService.save(path, filename, Optional.of(metadata), profilePhoto.getInputStream());
+            fileStoreService.deleteImage(BucketName.IMAGE.getBucketName(),path);
+            fileStoreService.save(BucketName.IMAGE.getBucketName(), path, Optional.of(metadata), profilePhoto.getInputStream());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

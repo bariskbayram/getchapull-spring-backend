@@ -68,8 +68,7 @@ public class AlbumService implements AlbumServiceInterface {
         metadata.put("Content-Type", file.getContentType());
         metadata.put("Content-Length", String.valueOf(file.getSize()));
 
-        String path = String.format("%s/%s", BucketName.IMAGE.getBucketName(), "albums");
-        String filename = String.format("%s-%s", albumDTO.getAlbumName(), albumDTO.getAlbumSpotifyId());
+        String path = String.format("albums/%s-%s", albumDTO.getAlbumName(), albumDTO.getAlbumSpotifyId());
 
         Album album = new Album(albumDTO.getAlbumSpotifyId(), albumDTO.getAlbumName(), albumDTO.getAlbumYear());
 
@@ -78,7 +77,7 @@ public class AlbumService implements AlbumServiceInterface {
         album.setBand(new Band(albumDTO.getBandId()));
 
         try {
-            fileStoreService.save(path, filename, Optional.of(metadata), file.getInputStream());
+            fileStoreService.save(BucketName.IMAGE.getBucketName(), path, Optional.of(metadata), file.getInputStream());
             return albumRepository.save(album);
         } catch (IOException e) {
             throw new IllegalStateException(e);
