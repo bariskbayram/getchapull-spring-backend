@@ -33,7 +33,7 @@ public class Review {
             name = "review_id",
             updatable = false
     )
-    private int reviewId;
+    private Long reviewId;
 
     @Column(
             name = "review_title",

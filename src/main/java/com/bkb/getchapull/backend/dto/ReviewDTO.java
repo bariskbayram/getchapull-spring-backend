@@ -18,9 +18,9 @@ public class ReviewDTO {
     private int reviewPoint;
 
     @JsonProperty("album_id")
-    private int albumId;
+    private Long albumId;
 
     @JsonProperty("user_id")
-    private int userId;
+    private Long userId;
 
 }

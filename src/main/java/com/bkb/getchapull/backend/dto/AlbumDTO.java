@@ -18,9 +18,9 @@ public class AlbumDTO {
     private int albumYear;
 
     @JsonProperty("band_id")
-    private int bandId;
+    private Long bandId;
 
     @JsonProperty("user_id")
-    private int userId;
+    private Long userId;
 
 }

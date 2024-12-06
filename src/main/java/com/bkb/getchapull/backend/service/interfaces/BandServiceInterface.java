@@ -11,13 +11,13 @@ public interface BandServiceInterface {
 
     List<Band> getBandsByUsername(String username);
 
-    byte[] downloadBandImage(int bandId);
+    byte[] downloadBandImage(Long bandId);
 
     Band findBandByBandSpotifyId(String bandSpotifyId);
 
     Band uploadBandFile(BandDTO bandDTO, MultipartFile file);
 
-    Optional<Band> getBandById(int bandId);
+    Optional<Band> getBandById(Long bandId);
 
     int getBandCountByUsername(String username);
 

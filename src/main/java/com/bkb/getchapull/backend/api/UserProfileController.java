@@ -34,19 +34,19 @@ public class UserProfileController {
 
     @GetMapping("/get_followers")
     @PreAuthorize("hasAuthority('review:write')")
-    public List<UserProfile> getFollowers(@RequestParam(name = "user_id") int userId){
+    public List<UserProfile> getFollowers(@RequestParam(name = "user_id") Long userId){
         return userProfileService.getFollowers(userId);
     }
 
     @GetMapping("/get_followings")
     @PreAuthorize("hasAuthority('review:write')")
-    public List<UserProfile> getFollowings(@RequestParam(name = "user_id") int userId){
+    public List<UserProfile> getFollowings(@RequestParam(name = "user_id") Long userId){
         return userProfileService.getFollowings(userId);
     }
 
     @GetMapping("/get_five_user_suggestion")
     @PreAuthorize("hasAuthority('review:write')")
-    public List<UserProfile> getUserSuggestion(@RequestParam(name = "user_id") int userId){
+    public List<UserProfile> getUserSuggestion(@RequestParam(name = "user_id") Long userId){
         return userProfileService.getUserSuggestion(userId);
     }
 
@@ -111,21 +111,21 @@ public class UserProfileController {
 
     @PutMapping(path = "/follow_someone")
     @PreAuthorize("hasAuthority('review:write')")
-    public void followSomeone(@RequestParam(name = "user_id") Integer userId,
-                          @RequestParam(name = "following_id") Integer followingId){
+    public void followSomeone(@RequestParam(name = "user_id") Long userId,
+                          @RequestParam(name = "following_id") Long followingId){
         userProfileService.followSomeone(userId, followingId);
     }
 
     @PutMapping(path = "/unfollow_someone")
     @PreAuthorize("hasAuthority('review:write')")
-    public void unfollowSomeone(@RequestParam(name = "user_id") Integer userId,
-                          @RequestParam(name = "unfollowing_id") Integer unfollowingId){
+    public void unfollowSomeone(@RequestParam(name = "user_id") Long userId,
+                          @RequestParam(name = "unfollowing_id") Long unfollowingId){
         userProfileService.unfollowSomeone(userId, unfollowingId);
     }
 
     @GetMapping(path = "/is_followed_by_user")
     @PreAuthorize("hasAuthority('review:write')")
-    public boolean isFollowedByUser(@RequestParam("user_id") Integer userId,
+    public boolean isFollowedByUser(@RequestParam("user_id") Long userId,
                              @RequestParam("other_username") String otherUsername){
         return userProfileService.isFollowedByUser(userId, otherUsername);
     }

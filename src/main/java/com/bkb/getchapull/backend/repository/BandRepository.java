@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository("jpaRepoBand")
-public interface BandRepository extends JpaRepository<Band, Integer> {
+public interface BandRepository extends JpaRepository<Band, Long> {
 
     @Query("select distinct b from Band b join b.albums a join a.userAlbums ua join ua.user u where u.username = :username")
     List<Band> findBandsByUsername(String username);

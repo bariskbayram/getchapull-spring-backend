@@ -36,14 +36,14 @@ public class BandService implements BandServiceInterface {
     }
 
     @Override
-    public byte[] downloadBandImage(int bandId) {
+    public byte[] downloadBandImage(Long bandId) {
         Band band = getBandOrThrow(bandId);
         String key = String.format("bands/%s-%s", band.getBandName(), band.getBandSpotifyId());
 
         return fileStoreService.download(BucketName.IMAGE.getBucketName(), key);
     }
 
-    private Band getBandOrThrow(int bandId) {
+    private Band getBandOrThrow(Long bandId) {
         return getBandById(bandId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Band is not found!", bandId)));
     }
@@ -87,7 +87,7 @@ public class BandService implements BandServiceInterface {
     }
 
     @Override
-    public Optional<Band> getBandById(int bandId) {
+    public Optional<Band> getBandById(Long bandId) {
         return bandRepository.findById(bandId);
     }
 

@@ -12,11 +12,11 @@ public interface UserProfileServiceInterface {
 
     List<UserProfile> getAllUsers();
 
-    List<UserProfile> getFollowers(int userId);
+    List<UserProfile> getFollowers(Long userId);
 
-    List<UserProfile> getFollowings(int userId);
+    List<UserProfile> getFollowings(Long userId);
 
-    List<UserProfile> getUserSuggestion(int userId);
+    List<UserProfile> getUserSuggestion(Long userId);
 
     byte[] downloadProfilePhoto(String username);
 
@@ -36,9 +36,9 @@ public interface UserProfileServiceInterface {
 
     void updateUserProfileByUsername(UserDTO userDTO);
 
-    void followSomeone(Integer userId, Integer followingId);
+    void followSomeone(Long userId, Long followingId);
 
-    void unfollowSomeone(Integer userId, Integer unfollowingId);
+    void unfollowSomeone(Long userId, Long unfollowingId);
 
-    boolean isFollowedByUser(Integer userId, String otherUsername);
+    boolean isFollowedByUser(Long userId, String otherUsername);
 }

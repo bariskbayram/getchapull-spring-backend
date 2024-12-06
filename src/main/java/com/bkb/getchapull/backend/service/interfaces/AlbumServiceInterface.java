@@ -12,19 +12,19 @@ public interface AlbumServiceInterface {
 
     List<Album> getAlbumsByUsername(String username);
 
-    List<Album> getAlbumsByBandIdAndUsername(String username, int bandId);
+    List<Album> getAlbumsByBandIdAndUsername(String username, Long bandId);
 
-    byte[] downloadAlbumImage(int albumId);
+    byte[] downloadAlbumImage(Long albumId);
 
     Album findAlbumByAlbumSpotifyId(String albumSpotifyId);
 
     Album uploadAlbumFile(AlbumDTO albumDTO, MultipartFile file);
 
-    int addAlbumForThisUser(int userId, int albumId);
+    int  addAlbumForThisUser(Long userId, Long albumId);
 
-    Optional<Album> getAlbumById(int albumId);
+    Optional<Album> getAlbumById(Long albumId);
 
-    int deleteAlbumByIdAndUserId(int albumId, int userId);
+    int deleteAlbumByIdAndUserId(Long albumId, Long userId);
 
     int getAlbumCountByUsername(String username);
 

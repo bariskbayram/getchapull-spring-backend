@@ -43,35 +43,35 @@ public class ReviewService implements ReviewServiceInterface {
     }
 
     @Override
-    public Optional<Review> getPostByAlbumIdAndUsername(int albumId, String username) {
+    public Optional<Review> getPostByAlbumIdAndUsername(Long albumId, String username) {
         return reviewRepository.getPostByAlbumIdAndUsername(albumId, username);
     }
 
     @Override
-    public void deteReviewByReviewId(int reviewId) {
+    public void deteReviewByReviewId(Long reviewId) {
         reviewRepository.deleteById(reviewId);
     }
 
     @Override
-    public void updateReviewByReviewId(int reviewId, ReviewDTO reviewDTO) {
+    public void updateReviewByReviewId(Long reviewId, ReviewDTO reviewDTO) {
         reviewRepository.updateReviewByReviewId(reviewId, reviewDTO.getReviewTitle(), reviewDTO.getReviewContent(), reviewDTO.getReviewPoint());
     }
 
     @Override
-    public List<PostDTO> getPostsByUserId(int userId) {
+    public List<PostDTO> getPostsByUserId(Long userId) {
         List<Object[]> results = reviewRepository.getPostsByUserId(userId);
 
         return results.stream()
                 .map(row -> new PostDTO(
                         (String) row[0],     // users.username
-                        (Integer) row[1],    // reviews.review_id
+                        (Long) row[1],       // reviews.review_id
                         (String) row[2],     // reviews.review_title
                         (String) row[3],     // reviews.review_content
                         (Integer) row[4],    // reviews.review_point
                         ((Instant) row[5]).atOffset(ZoneOffset.UTC),  // reviews.posting_date TODO: not sure about using OffsetDateTime, better check Saul.Timezone da hatalı
-                        (Integer) row[8],    // albums.album_id
+                        (Long) row[8],       // albums.album_id
                         (String) row[9],     // albums.album_name
-                        (Integer) row[10],   // albums.band_band_id
+                        (Long) row[10],      // albums.band_band_id
                         (String) row[11]     // bands.band_name
                 ))
                 .collect(Collectors.toList());

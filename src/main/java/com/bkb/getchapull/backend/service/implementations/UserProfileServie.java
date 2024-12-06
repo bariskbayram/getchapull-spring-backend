@@ -48,17 +48,17 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
     }
 
     @Override
-    public List<UserProfile> getFollowers(int userId) {
+    public List<UserProfile> getFollowers(Long userId) {
         return userProfileRepository.getFollowersByUserId(userId);
     }
 
     @Override
-    public List<UserProfile> getFollowings(int userId) {
+    public List<UserProfile> getFollowings(Long userId) {
         return userProfileRepository.getFollowingsByUserId(userId);
     }
 
     @Override
-    public List<UserProfile> getUserSuggestion(int userId) {
+    public List<UserProfile> getUserSuggestion(Long userId) {
         return null;
     }
 
@@ -183,17 +183,17 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
     }
 
     @Override
-    public void followSomeone(Integer userId, Integer followingId) {
+    public void followSomeone(Long userId, Long followingId) {
         userProfileRepository.followSomeone(userId, followingId);
     }
 
     @Override
-    public void unfollowSomeone(Integer userId, Integer unfollowingId) {
+    public void unfollowSomeone(Long userId, Long unfollowingId) {
         userProfileRepository.unfollowSomeone(userId, unfollowingId);
     }
 
     @Override
-    public boolean isFollowedByUser(Integer userId, String otherUsername) {
+    public boolean isFollowedByUser(Long userId, String otherUsername) {
         String username = userProfileRepository.isFollowedByUser(userId, otherUsername);
         return username != null;
     }

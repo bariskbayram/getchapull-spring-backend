@@ -16,12 +16,12 @@ import java.util.Objects;
 public class UserAlbumId implements Serializable {
 
     @Column(name = "user_id")
-    private int userId;
+    private Long userId;
 
     @Column(name = "album_id")
-    private int albumId;
+    private Long albumId;
 
-    public UserAlbumId(int userId, int albumId) {
+    public UserAlbumId(Long userId, Long albumId) {
         this.userId = userId;
         this.albumId = albumId;
     }

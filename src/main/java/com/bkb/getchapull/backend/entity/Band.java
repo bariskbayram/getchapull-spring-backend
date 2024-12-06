@@ -36,7 +36,7 @@ public class Band {
             name = "band_id",
             updatable = false
     )
-    private int bandId;
+    private Long bandId;
 
     @Column(
             name = "band_spotify_id",
@@ -61,7 +61,7 @@ public class Band {
     @JsonManagedReference
     private List<Album> albums = new ArrayList<>();
 
-    public Band(int bandId) {
+    public Band(Long bandId) {
         this.bandId = bandId;
     }
 

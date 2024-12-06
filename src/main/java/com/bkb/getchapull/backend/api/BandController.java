@@ -34,7 +34,7 @@ public class BandController {
 
     @GetMapping(path = "/download_band_image")
     @PreAuthorize("hasAuthority('review:read')")
-    public byte[] downloadBandImage(@RequestParam(name = "band_id") int bandId){
+    public byte[] downloadBandImage(@RequestParam(name = "band_id") Long bandId){
         byte[] arrayBase64 = Base64.getEncoder().encode(bandService.downloadBandImage(bandId));
         return arrayBase64;
     }
@@ -45,7 +45,7 @@ public class BandController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAuthority('review:write')")
-    public int uploadBand(@RequestPart("band_dto") BandDTO bandDTO, @RequestPart("multipart_file") MultipartFile file) {
+    public Long uploadBand(@RequestPart("band_dto") BandDTO bandDTO, @RequestPart("multipart_file") MultipartFile file) {
         Band band = bandService.findBandByBandSpotifyId(bandDTO.getBandSpotifyId());
         if(band == null){
             return bandService.uploadBandFile(bandDTO, file).getBandId();
@@ -56,7 +56,7 @@ public class BandController {
     //orElse yerine 404 fırtlatman mantıklı olabilir bunu dene.
     @GetMapping(path = "/get_band_by_id")
     @PreAuthorize("hasAuthority('review:read')")
-    public Band getBandById(@RequestParam(name = "band_id") int bandId){
+    public Band getBandById(@RequestParam(name = "band_id") Long bandId){
         return bandService.getBandById(bandId).orElse(null);
     }
 

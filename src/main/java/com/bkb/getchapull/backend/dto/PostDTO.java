@@ -10,26 +10,26 @@ import java.time.OffsetDateTime;
 public class PostDTO {
 
     private String postUsername;
-    private int reviewId;
+    private Long reviewId;
     private String reviewTitle;
     private String reviewContent;
     private int reviewPoint;
     private OffsetDateTime postingDate;
-    private int albumId;
+    private Long albumId;
     private String albumName;
-    private int bandId;
+    private Long bandId;
     private String bandName;
 
     public PostDTO(
             String postUsername,
-            int reviewId,
+            Long reviewId,
             String reviewTitle,
             String reviewContent,
             int reviewPoint,
             OffsetDateTime postingDate,
-            int albumId,
+            Long albumId,
             String albumName,
-            int bandId,
+            Long bandId,
             String bandName) {
 
         this.postUsername = postUsername;

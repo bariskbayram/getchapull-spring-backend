@@ -33,26 +33,26 @@ public class ReviewController {
     @GetMapping(path = "/get_post_by_album_id_and_username")
     @PreAuthorize("hasAuthority('review:read')")
     public Review getPostByAlbumIdAndUsername(
-            @RequestParam(name = "album_id") int albumId,
+            @RequestParam(name = "album_id") Long albumId,
             @RequestParam(name = "username") String username){
         return reviewService.getPostByAlbumIdAndUsername(albumId, username).orElse(null);
     }
 
     @DeleteMapping(path = "/delete_review_by_review_id")
     @PreAuthorize("hasAuthority('review:write')")
-    public void deleteReviewByReviewId(@RequestParam(name = "review_id") int reviewId){
+    public void deleteReviewByReviewId(@RequestParam(name = "review_id") Long reviewId){
         reviewService.deteReviewByReviewId(reviewId);
     }
 
     @PutMapping("/update_review_by_review_id")
     @PreAuthorize("hasAuthority('review:write')")
-    public void updateReviewByReviewId(@RequestBody ReviewDTO reviewDTO, @RequestParam(name = "review_id") int reviewId){
+    public void updateReviewByReviewId(@RequestBody ReviewDTO reviewDTO, @RequestParam(name = "review_id") Long reviewId){
         reviewService.updateReviewByReviewId(reviewId, reviewDTO);
     }
 
     @PostMapping(path = "/get_all_post_by_user_id")
     @PreAuthorize("hasAuthority('review:read')")
-    public List<PostDTO> getPostsByUserId(@RequestParam(name = "user_id") int userId){
+    public List<PostDTO> getPostsByUserId(@RequestParam(name = "user_id") Long userId){
         return reviewService.getPostsByUserId(userId);
     }
 

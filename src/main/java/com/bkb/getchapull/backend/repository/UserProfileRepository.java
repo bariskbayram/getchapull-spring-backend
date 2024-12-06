@@ -12,16 +12,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository("jpaRepoUserProfile")
-public interface UserProfileRepository extends JpaRepository<UserProfile, Integer> {
+public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
 
     @Query("select u from UserProfile u inner join u.userList ul where ul.following.userId = :userId and ul.user.userId != :userId")
-    List<UserProfile> getFollowersByUserId(int userId);
+    List<UserProfile> getFollowersByUserId(Long userId);
 
     @Query(
             value = "select u2.user_id, u2.username, u2.email, u2.password, u2.fullname, u2.user_created, u2.bio_info, u2.user_role from users u inner join user_following uf on u.user_id = uf.user_user_id and u.user_id = :userId inner join users u2 ON uf.following_user_id = u2.user_id WHERE uf.following_user_id != :userId",
             nativeQuery = true
     )
-    List<UserProfile> getFollowingsByUserId(int userId);
+    List<UserProfile> getFollowingsByUserId(Long userId);
 
     Optional<UserProfile> findByUsername(String username);
 
@@ -38,13 +38,13 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Intege
     @Modifying
     @Transactional
     @Query(value = "insert into user_following(user_user_id, following_user_id) values (:userId, :followingId)", nativeQuery = true)
-    void followSomeone(int userId, int followingId);
+    void followSomeone(Long userId, Long followingId);
 
     @Modifying
     @Transactional
     @Query(value = "delete from user_following where user_user_id = :userId and following_user_id = :followingId", nativeQuery = true)
-    void unfollowSomeone(int userId, int followingId);
+    void unfollowSomeone(Long userId, Long followingId);
 
     @Query(value = "SELECT username FROM user_following inner join users on users.user_id = user_following.following_user_id where user_following.user_user_id = :userId and users.username = :otherUsername", nativeQuery = true)
-    String isFollowedByUser(Integer userId, String otherUsername);
+    String isFollowedByUser(Long userId, String otherUsername);
 }

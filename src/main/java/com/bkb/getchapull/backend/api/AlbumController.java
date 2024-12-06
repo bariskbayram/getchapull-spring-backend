@@ -36,13 +36,13 @@ public class AlbumController {
     @PreAuthorize("hasAuthority('review:read')")
     public List<Album> getAlbumsByBandIdAndUsername(
             @RequestParam(name = "username") String username,
-            @RequestParam(name = "band_id") int bandId){
+            @RequestParam(name = "band_id") Long bandId){
         return albumService.getAlbumsByBandIdAndUsername(username, bandId);
     }
 
     @GetMapping(path = "/download_album_image")
     @PreAuthorize("hasAuthority('review:read')")
-    public byte[] downloadAlbumImage(@RequestParam(name = "album_id") int albumId){
+    public byte[] downloadAlbumImage(@RequestParam(name = "album_id") Long albumId){
         byte[] arrayBase64 = Base64.getEncoder().encode(albumService.downloadAlbumImage(albumId));
         return arrayBase64;
     }
@@ -53,7 +53,7 @@ public class AlbumController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAuthority('review:write')")
-    public int uploadAlbum(@RequestPart("album_dto") AlbumDTO albumDTO, @RequestPart("multipart_file") MultipartFile file){
+    public Long uploadAlbum(@RequestPart("album_dto") AlbumDTO albumDTO, @RequestPart("multipart_file") MultipartFile file){
         Album album = albumService.findAlbumByAlbumSpotifyId(albumDTO.getAlbumSpotifyId());
         if(album == null){
             album = albumService.uploadAlbumFile(albumDTO, file);
@@ -65,14 +65,14 @@ public class AlbumController {
     //orElse yerine 404 fırtlatman mantıklı olabilir bunu dene.
     @GetMapping(path = "/get_album_by_album_id")
     @PreAuthorize("hasAuthority('review:read')")
-    public Album getAlbumById(@RequestParam(name = "album_id") int albumId){
+    public Album getAlbumById(@RequestParam(name = "album_id") Long albumId){
         return albumService.getAlbumById(albumId).orElse(null);
     }
 
     @DeleteMapping(path = "/delete_album_by_album_id_for_user")
     @PreAuthorize("hasAuthority('review:write')")
-    public int deleteAlbumByIdAndUserId(@RequestParam(name = "album_id") int albumId,
-                                @RequestParam(name = "user_id") int userId){
+    public int deleteAlbumByIdAndUserId(@RequestParam(name = "album_id") Long albumId,
+                                @RequestParam(name = "user_id") Long userId){
         return albumService.deleteAlbumByIdAndUserId(albumId, userId);
     }
 

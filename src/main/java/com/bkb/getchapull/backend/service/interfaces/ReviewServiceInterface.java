@@ -11,12 +11,12 @@ public interface ReviewServiceInterface {
 
     void addReview(ReviewDTO reviewDTO);
 
-    Optional<Review> getPostByAlbumIdAndUsername(int albumId, String username);
+    Optional<Review> getPostByAlbumIdAndUsername(Long albumId, String username);
 
-    void deteReviewByReviewId(int reviewId);
+    void deteReviewByReviewId(Long reviewId);
 
-    void updateReviewByReviewId(int reviewId, ReviewDTO reviewDTO);
+    void updateReviewByReviewId(Long reviewId, ReviewDTO reviewDTO);
 
-    List<PostDTO> getPostsByUserId(int userId);
+    List<PostDTO> getPostsByUserId(Long userId);
 
 }

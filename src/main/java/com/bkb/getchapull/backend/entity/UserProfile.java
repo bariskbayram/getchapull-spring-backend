@@ -41,7 +41,7 @@ public class UserProfile implements UserDetails {
             name = "user_id",
             updatable = false
     )
-    private int userId;
+    private Long userId;
 
     @Column(
             name = "username",
@@ -138,7 +138,7 @@ public class UserProfile implements UserDetails {
     @Transient
     private boolean isEnabled;
 
-    public UserProfile(int userId) {
+    public UserProfile(Long userId) {
         this.userId = userId;
     }
 

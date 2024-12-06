@@ -16,12 +16,12 @@ import java.util.Objects;
 public class UserFollowingId implements Serializable {
 
     @Column(name = "user_id")
-    private int userId;
+    private Long userId;
 
     @Column(name = "following_id")
-    private int followingId;
+    private Long followingId;
 
-    public UserFollowingId(int userId, int followingId) {
+    public UserFollowingId(Long userId, Long followingId) {
         this.userId = userId;
         this.followingId = followingId;
     }

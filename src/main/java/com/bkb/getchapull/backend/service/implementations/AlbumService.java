@@ -37,19 +37,19 @@ public class AlbumService implements AlbumServiceInterface {
     }
 
     @Override
-    public List<Album> getAlbumsByBandIdAndUsername(String username, int bandId) {
+    public List<Album> getAlbumsByBandIdAndUsername(String username, Long bandId) {
         return albumRepository.findAlbumsByUsernameAndBandId(username, bandId);
     }
 
     @Override
-    public byte[] downloadAlbumImage(int albumId) {
+    public byte[] downloadAlbumImage(Long albumId) {
         Album album = getAlbumOrThrow(albumId);
         String key = String.format("albums/%s-%s", album.getAlbumName(), album.getAlbumSpotifyId());
 
         return fileStoreService.download(BucketName.IMAGE.getBucketName(), key);
     }
 
-    private Album getAlbumOrThrow(int albumId) {
+    private Album getAlbumOrThrow(Long albumId) {
         return getAlbumById(albumId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Album is not found!", albumId)));
     }
@@ -97,17 +97,17 @@ public class AlbumService implements AlbumServiceInterface {
     }
 
     @Override
-    public int addAlbumForThisUser(int userId, int albumId) {
+    public int addAlbumForThisUser(Long userId, Long albumId) {
         return albumRepository.insertUserAlbum(userId, albumId);
     }
 
     @Override
-    public Optional<Album> getAlbumById(int albumId) {
+    public Optional<Album> getAlbumById(Long albumId) {
         return albumRepository.findById(albumId);
     }
 
     @Override
-    public int deleteAlbumByIdAndUserId(int albumId, int userId) {
+    public int deleteAlbumByIdAndUserId(Long albumId, Long userId) {
         return albumRepository.deleteUserAlbum(albumId, userId);
     }
 
