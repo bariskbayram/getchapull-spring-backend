@@ -13,17 +13,17 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @Embeddable
-public class UserFollowingId implements Serializable {
+public class FollowId implements Serializable {
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "follower_id")
+    private Long followerId;
 
-    @Column(name = "following_id")
-    private Long followingId;
+    @Column(name = "followed_id")
+    private Long followedId;
 
-    public UserFollowingId(Long userId, Long followingId) {
-        this.userId = userId;
-        this.followingId = followingId;
+    public FollowId(Long followerId, Long followedId) {
+        this.followerId = followerId;
+        this.followedId = followedId;
     }
 
     @Override
@@ -33,14 +33,14 @@ public class UserFollowingId implements Serializable {
         if (obj == null || getClass() != obj.getClass())
             return false;
 
-        UserFollowingId that = (UserFollowingId) obj;
-        return Objects.equals(userId, that.userId) &&
-                Objects.equals(followingId, that.followingId);
+        FollowId that = (FollowId) obj;
+        return Objects.equals(followerId, that.followerId) &&
+                Objects.equals(followedId, that.followedId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId,followingId);
+        return Objects.hash(followerId,followedId);
     }
 }
 

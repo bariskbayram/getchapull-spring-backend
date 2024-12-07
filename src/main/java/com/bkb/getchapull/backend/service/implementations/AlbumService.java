@@ -44,7 +44,7 @@ public class AlbumService implements AlbumServiceInterface {
     @Override
     public byte[] downloadAlbumImage(Long albumId) {
         Album album = getAlbumOrThrow(albumId);
-        String key = String.format("albums/%s-%s", album.getAlbumName(), album.getAlbumSpotifyId());
+        String key = String.format("albums/%s-%s", album.getName(), album.getSpotifyId());
 
         return fileStoreService.download(BucketName.IMAGE.getBucketName(), key);
     }
@@ -55,8 +55,8 @@ public class AlbumService implements AlbumServiceInterface {
     }
 
     @Override
-    public Album findAlbumByAlbumSpotifyId(String albumSpotifyId) {
-        return albumRepository.findAlbumByAlbumSpotifyId(albumSpotifyId).orElse(null);
+    public Album findAlbumBySpotifyId(String albumSpotifyId) {
+        return albumRepository.findAlbumBySpotifyId(albumSpotifyId).orElse(null);
     }
 
     @Override

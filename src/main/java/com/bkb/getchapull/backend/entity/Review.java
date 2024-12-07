@@ -30,39 +30,39 @@ public class Review {
             generator = "review_sequence"
     )
     @Column(
-            name = "review_id",
+            name = "id",
             updatable = false
     )
-    private Long reviewId;
+    private Long id;
 
     @Column(
-            name = "review_title",
+            name = "title",
             nullable = false,
             length = 100
     )
-    private String reviewTitle;
+    private String title;
 
     @Column(
-            name = "review_content",
+            name = "content",
             nullable = false,
             length = 1000
     )
-    private String reviewContent;
+    private String content;
 
     @Column(
-            name = "review_point",
+            name = "point",
             nullable = false
     )
-    private int reviewPoint;
+    private int point;
 
     @Column(
-            name = "posting_date",
+            name = "created_at",
             nullable = false,
             updatable = false,
             insertable = false,
             columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP"
     )
-    private OffsetDateTime postingDate;
+    private OffsetDateTime createdAt;
 
     @ManyToOne(
             optional = false,
@@ -78,10 +78,10 @@ public class Review {
     @JsonBackReference
     private UserProfile userProfile;
 
-    public Review(String reviewTitle, String reviewContent, int reviewPoint) {
-        this.reviewTitle = reviewTitle;
-        this.reviewContent = reviewContent;
-        this.reviewPoint = reviewPoint;
+    public Review(String title, String content, int point) {
+        this.title = title;
+        this.content = content;
+        this.point = point;
     }
 
     @Override
@@ -92,12 +92,12 @@ public class Review {
             return false;
 
         Review review = (Review) obj;
-        return Objects.equals(reviewId, review.getReviewId());
+        return Objects.equals(id, review.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reviewId);
+        return Objects.hash(id);
     }
 
 }

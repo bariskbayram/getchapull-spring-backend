@@ -2,7 +2,7 @@ package com.bkb.getchapull.backend.service.implementations;
 
 import com.bkb.getchapull.backend.bucket.BucketName;
 import com.bkb.getchapull.backend.dto.UserDTO;
-import com.bkb.getchapull.backend.entity.UserFollowing;
+import com.bkb.getchapull.backend.entity.Follow;
 import com.bkb.getchapull.backend.entity.UserProfile;
 import com.bkb.getchapull.backend.repository.UserProfileRepository;
 import com.bkb.getchapull.backend.service.FileStoreService;
@@ -29,14 +29,14 @@ import static org.apache.http.entity.ContentType.IMAGE_PNG;
 
 @Service("jpaServiceUserProfile")
 @Transactional
-public class UserProfileServie implements UserProfileServiceInterface, UserDetailsService {
+public class UserProfileService implements UserProfileServiceInterface, UserDetailsService {
 
     private final UserProfileRepository userProfileRepository;
     private final FileStoreService fileStoreService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserProfileServie(@Qualifier("jpaRepoUserProfile") UserProfileRepository userProfileRepository, FileStoreService fileStoreService, PasswordEncoder passwordEncoder) {
+    public UserProfileService(@Qualifier("jpaRepoUserProfile") UserProfileRepository userProfileRepository, FileStoreService fileStoreService, PasswordEncoder passwordEncoder) {
         this.userProfileRepository = userProfileRepository;
         this.fileStoreService = fileStoreService;
         this.passwordEncoder = passwordEncoder;
@@ -105,7 +105,7 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
         UserProfile userProfile = userProfileRepository.findByUsername(username).get();
 
         Set<? extends GrantedAuthority> grantedAuthorities;
-        if(userProfile.getUserRole().equals("ADMIN")){
+        if(userProfile.getRole().equals("ADMIN")){
             grantedAuthorities = ADMIN.getGrantedAuthorities();
         }else{
             grantedAuthorities = NORMAL.getGrantedAuthorities();
@@ -133,9 +133,9 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
                 userDTO.getFullname(),
                 "NORMAL");
 
-        UserFollowing userFollowing = new UserFollowing(userProfile, userProfile);
+        Follow follow = new Follow(userProfile, userProfile);
 
-        userProfile.setUserList(Arrays.asList(userFollowing));
+        userProfile.setFollowing(Arrays.asList(follow));
 
         userProfileRepository.save(userProfile);
     }
@@ -155,9 +155,9 @@ public class UserProfileServie implements UserProfileServiceInterface, UserDetai
                 userDTO.getFullname(),
                 "ADMIN");
 
-        UserFollowing userFollowing = new UserFollowing(userProfile, userProfile);
+        Follow follow = new Follow(userProfile, userProfile);
 
-        userProfile.setUserList(Arrays.asList(userFollowing));
+        userProfile.setFollowing(Arrays.asList(follow));
 
         userProfileRepository.save(userProfile);
     }

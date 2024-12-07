@@ -38,10 +38,10 @@ public class UserProfile implements UserDetails {
             generator = "user_sequence"
     )
     @Column(
-            name = "user_id",
+            name = "id",
             updatable = false
     )
-    private Long userId;
+    private Long id;
 
     @Column(
             name = "username",
@@ -80,20 +80,20 @@ public class UserProfile implements UserDetails {
     private String bioInfo;
 
     @Column(
-            name = "user_created",
+            name = "created_at",
             nullable = false,
             updatable = false,
             insertable = false,
             columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP"
     )
-    private OffsetDateTime userCreated;
+    private OffsetDateTime createdAt;
 
     @Column(
-            name = "user_role",
+            name = "role",
             nullable = false,
             length = 50
     )
-    private String userRole;
+    private String role;
 
     @OneToMany(
             mappedBy = "userProfile",
@@ -112,20 +112,20 @@ public class UserProfile implements UserDetails {
     private List<UserAlbum> userAlbums = new ArrayList<>();
 
     @OneToMany(
-            mappedBy = "user",
+            mappedBy = "follower",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     @JsonManagedReference
-    private List<UserFollowing> userList = new ArrayList<>();
+    private List<Follow> following = new ArrayList<>();
 
     @OneToMany(
-            mappedBy = "following",
+            mappedBy = "followed",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     @JsonManagedReference
-    private List<UserFollowing> followingList = new ArrayList<>();
+    private List<Follow> followers = new ArrayList<>();
 
     @Transient
     private Set<? extends GrantedAuthority> grantedAuthorities;
@@ -138,16 +138,16 @@ public class UserProfile implements UserDetails {
     @Transient
     private boolean isEnabled;
 
-    public UserProfile(Long userId) {
-        this.userId = userId;
+    public UserProfile(Long id) {
+        this.id = id;
     }
 
-    public UserProfile(String username, String email, String password, String fullname, String userRole) {
+    public UserProfile(String username, String email, String password, String fullname, String role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.fullname = fullname;
-        this.userRole = userRole;
+        this.role = role;
     }
 
     @Override

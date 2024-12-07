@@ -14,14 +14,14 @@ import java.util.Optional;
 @Repository("jpaRepoReview")
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    @Query(value = "select users.username, reviews.review_id, reviews.review_title, reviews.review_content, reviews.review_point, reviews.posting_date, reviews.album_album_id, reviews.user_profile_user_id, albums.album_id, albums.album_name, albums.band_band_id, bands.band_name from reviews inner join albums on reviews.album_album_id = albums.album_id inner join bands on albums.band_band_id = bands.band_id inner join users on reviews.user_profile_user_id = users.user_id inner join user_following on users.user_id = user_following.following_user_id WHERE user_following.user_user_id = :userId ORDER BY reviews.posting_date DESC", nativeQuery = true)
+    @Query(value = "select users.username, reviews.id, reviews.title, reviews.content, reviews.point, reviews.created_at, reviews.album_id, reviews.user_profile_id, albums.id, albums.name, albums.band_id, bands.name from reviews inner join albums on reviews.album_id = albums.id inner join bands on albums.band_id = bands.id inner join users on reviews.user_profile_id = users.id inner join follows on users.id = follows.followed_id WHERE follows.follower_id = :userId ORDER BY reviews.created_at DESC", nativeQuery = true)
     List<Object[]> getPostsByUserId(Long userId);
 
-    @Query(value = "select reviews.review_id, reviews.review_title, reviews.review_content, reviews.review_point, reviews.posting_date, reviews.album_album_id, reviews.user_profile_user_id, albums.album_name, bands.band_id, bands.band_name from reviews inner join albums on reviews.album_album_id = albums.album_id and albums.album_id = :albumId inner join bands on bands.band_id = albums.band_band_id inner join users ON reviews.user_profile_user_id = users.user_id WHERE username = :username", nativeQuery = true)
+    @Query(value = "select reviews.id, reviews.title, reviews.content, reviews.point, reviews.created_at, reviews.album_id, reviews.user_profile_id, albums.name, bands.id, bands.name from reviews inner join albums on reviews.album_id = albums.id and albums.id = :albumId inner join bands on bands.id = albums.band_id inner join users ON reviews.user_profile_id = users.id WHERE username = :username", nativeQuery = true)
     Optional<Review> getPostByAlbumIdAndUsername(Long albumId, String username);
 
     @Modifying
     @Transactional
-    @Query(value = "update reviews set review_title = :reviewTitle, review_content = :reviewContent, review_point = :reviewPoint where review_id = :reviewId", nativeQuery = true)
+    @Query(value = "update reviews set title = :reviewTitle, content = :reviewContent, point = :reviewPoint where id = :reviewId", nativeQuery = true)
     Review updateReviewByReviewId(Long reviewId, String reviewTitle, String reviewContent, int reviewPoint);
 }

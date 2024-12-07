@@ -11,27 +11,27 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity(name = "UserFollowing")
-@Table(name = "user_following")
-public class UserFollowing {
+@Entity(name = "Follow")
+@Table(name = "follows")
+public class Follow {
 
     @EmbeddedId
-    private UserFollowingId id;
+    private FollowId id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @MapsId("userId")
+    @MapsId("followerId")
     @JsonBackReference
-    private UserProfile user;
+    private UserProfile follower;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @MapsId("followingId")
+    @MapsId("followedId")
     @JsonBackReference
-    private UserProfile following;
+    private UserProfile followed;
 
-    public UserFollowing(UserProfile user, UserProfile following) {
-        this.user = user;
-        this.following = following;
-        this.id = new UserFollowingId(user.getUserId(), following.getUserId());
+    public Follow(UserProfile follower, UserProfile followed) {
+        this.follower = follower;
+        this.followed = followed;
+        this.id = new FollowId(follower.getId(), followed.getId());
     }
 
     @Override
@@ -41,14 +41,14 @@ public class UserFollowing {
         if (obj == null || getClass() != obj.getClass())
             return false;
 
-        UserFollowing that = (UserFollowing) obj;
-        return Objects.equals(user, that.user) &&
-                Objects.equals(following, that.following);
+        Follow that = (Follow) obj;
+        return Objects.equals(follower, that.follower) &&
+                Objects.equals(followed, that.followed);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, following);
+        return Objects.hash(follower, followed);
     }
 }
 

@@ -54,12 +54,12 @@ public class AlbumController {
     )
     @PreAuthorize("hasAuthority('review:write')")
     public Long uploadAlbum(@RequestPart("album_dto") AlbumDTO albumDTO, @RequestPart("multipart_file") MultipartFile file){
-        Album album = albumService.findAlbumByAlbumSpotifyId(albumDTO.getAlbumSpotifyId());
+        Album album = albumService.findAlbumBySpotifyId(albumDTO.getAlbumSpotifyId());
         if(album == null){
             album = albumService.uploadAlbumFile(albumDTO, file);
         }
-        albumService.addAlbumForThisUser(albumDTO.getUserId(), album.getAlbumId());
-        return album.getAlbumId();
+        albumService.addAlbumForThisUser(albumDTO.getUserId(), album.getId());
+        return album.getId();
     }
 
     //orElse yerine 404 fırtlatman mantıklı olabilir bunu dene.

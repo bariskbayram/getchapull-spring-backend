@@ -46,11 +46,11 @@ public class BandController {
     )
     @PreAuthorize("hasAuthority('review:write')")
     public Long uploadBand(@RequestPart("band_dto") BandDTO bandDTO, @RequestPart("multipart_file") MultipartFile file) {
-        Band band = bandService.findBandByBandSpotifyId(bandDTO.getBandSpotifyId());
+        Band band = bandService.findBandBySpotifyId(bandDTO.getBandSpotifyId());
         if(band == null){
-            return bandService.uploadBandFile(bandDTO, file).getBandId();
+            return bandService.uploadBandFile(bandDTO, file).getId();
         }
-        return band.getBandId();
+        return band.getId();
     }
 
     //orElse yerine 404 fırtlatman mantıklı olabilir bunu dene.

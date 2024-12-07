@@ -14,11 +14,11 @@ import java.util.Optional;
 @Repository("jpaRepoUserProfile")
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
 
-    @Query("select u from UserProfile u inner join u.userList ul where ul.following.userId = :userId and ul.user.userId != :userId")
+    @Query("select u from UserProfile u inner join u.following ul where ul.followed.id = :userId and ul.follower.id != :userId")
     List<UserProfile> getFollowersByUserId(Long userId);
 
     @Query(
-            value = "select u2.user_id, u2.username, u2.email, u2.password, u2.fullname, u2.user_created, u2.bio_info, u2.user_role from users u inner join user_following uf on u.user_id = uf.user_user_id and u.user_id = :userId inner join users u2 ON uf.following_user_id = u2.user_id WHERE uf.following_user_id != :userId",
+            value = "select u2.id, u2.username, u2.email, u2.password, u2.fullname, u2.created_at, u2.bio_info, u2.role from users u inner join follows f on u.id = f.follower_id and u.id = :userId inner join users u2 ON f.followed_id = u2.id WHERE f.followed_id != :userId",
             nativeQuery = true
     )
     List<UserProfile> getFollowingsByUserId(Long userId);
@@ -37,14 +37,14 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
 
     @Modifying
     @Transactional
-    @Query(value = "insert into user_following(user_user_id, following_user_id) values (:userId, :followingId)", nativeQuery = true)
+    @Query(value = "insert into follows(follower_id, followed_id) values (:userId, :followingId)", nativeQuery = true)
     void followSomeone(Long userId, Long followingId);
 
     @Modifying
     @Transactional
-    @Query(value = "delete from user_following where user_user_id = :userId and following_user_id = :followingId", nativeQuery = true)
+    @Query(value = "delete from follows where follower_id = :userId and followed_id = :followingId", nativeQuery = true)
     void unfollowSomeone(Long userId, Long followingId);
 
-    @Query(value = "SELECT username FROM user_following inner join users on users.user_id = user_following.following_user_id where user_following.user_user_id = :userId and users.username = :otherUsername", nativeQuery = true)
+    @Query(value = "SELECT username FROM follows inner join users on users.id = follows.followed_id where follows.follower_id = :userId and users.username = :otherUsername", nativeQuery = true)
     String isFollowedByUser(Long userId, String otherUsername);
 }

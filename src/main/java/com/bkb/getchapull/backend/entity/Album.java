@@ -19,7 +19,7 @@ import java.util.Objects;
 @Entity(name = "Album")
 @Table(
         name = "albums",
-        uniqueConstraints = { @UniqueConstraint(name = "album_spotify_id_unique", columnNames = "album_spotify_id")}
+        uniqueConstraints = { @UniqueConstraint(name = "spotify_id_unique", columnNames = "spotify_id")}
 )
 public class Album {
 
@@ -34,31 +34,31 @@ public class Album {
             generator = "album_sequence"
     )
     @Column(
-            name = "album_id",
+            name = "id",
             updatable = false
     )
-    private Long albumId;
+    private Long id;
 
     @Column(
-            name = "album_spotify_id",
+            name = "spotify_id",
             nullable = false,
             length = 62,
             unique = true
     )
-    private String albumSpotifyId;
+    private String spotifyId;
 
     @Column(
-            name = "album_name",
+            name = "name",
             nullable = false,
             length = 100
     )
-    private String albumName;
+    private String name;
 
     @Column(
-            name = "album_year",
+            name = "year",
             nullable = false
     )
-    private int albumYear;
+    private int year;
 
     @ManyToOne(
             optional = false,
@@ -83,14 +83,14 @@ public class Album {
     @JsonManagedReference
     private List<UserAlbum> userAlbums = new ArrayList<>();
 
-    public Album(Long albumId) {
-        this.albumId = albumId;
+    public Album(Long id) {
+        this.id = id;
     }
 
-    public Album(String albumSpotifyId, String albumName, int albumYear) {
-        this.albumSpotifyId = albumSpotifyId;
-        this.albumName = albumName;
-        this.albumYear = albumYear;
+    public Album(String spotifyId, String name, int year) {
+        this.spotifyId = spotifyId;
+        this.name = name;
+        this.year = year;
     }
 
     @Override
@@ -101,11 +101,11 @@ public class Album {
             return false;
 
         Album album = (Album) obj;
-        return Objects.equals(albumSpotifyId, album.albumSpotifyId);
+        return Objects.equals(spotifyId, album.spotifyId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(albumSpotifyId);
+        return Objects.hash(spotifyId);
     }
 }

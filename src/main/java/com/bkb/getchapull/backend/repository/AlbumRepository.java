@@ -17,22 +17,22 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     @Query("select a from Album a join fetch a.userAlbums ua join fetch ua.user u where u.username = :username")
     List<Album> findAlbumsByUsername(String username);
 
-    @Query("select a from Album a join fetch a.userAlbums ua join fetch ua.user u where u.username = :username and a.band.bandId = :bandId")
+    @Query("select a from Album a join fetch a.userAlbums ua join fetch ua.user u where u.username = :username and a.band.id = :bandId")
     List<Album> findAlbumsByUsernameAndBandId(String username, Long bandId);
 
-    Optional<Album> findAlbumByAlbumSpotifyId(String spotifyId);
+    Optional<Album> findAlbumBySpotifyId(String spotifyId);
 
     @Modifying
     @Transactional
-    @Query(value = "insert into user_album(album_album_id, user_user_id) values(:albumId, :userId)", nativeQuery = true)
+    @Query(value = "insert into user_album(user_id, album_id) values(:userId, :albumId)", nativeQuery = true)
     int insertUserAlbum(Long userId, Long albumId);
 
     @Modifying
     @Transactional
-    @Query(value = "delete from user_album where user_user_id = :userId and album_album_id = :albumId", nativeQuery = true)
+    @Query(value = "delete from user_album where user_id = :userId and album_id = :albumId", nativeQuery = true)
     int deleteUserAlbum(Long albumId, Long userId);
 
-    @Query(value = "select count(*) from user_album WHERE user_user_id IN (SELECT user_id FROM users WHERE username = :username)", nativeQuery = true)
+    @Query(value = "select count(*) from user_album WHERE user_id IN (SELECT id FROM users WHERE username = :username)", nativeQuery = true)
     int getAlbumCountByUsername(String username);
 
 }

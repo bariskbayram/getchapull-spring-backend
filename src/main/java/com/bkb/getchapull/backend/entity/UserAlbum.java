@@ -33,7 +33,7 @@ public class UserAlbum {
     public UserAlbum(UserProfile user, Album album) {
         this.user = user;
         this.album = album;
-        this.id = new UserAlbumId(user.getUserId(), album.getAlbumId());
+        this.id = new UserAlbumId(user.getId(), album.getId());
     }
 
     @Override

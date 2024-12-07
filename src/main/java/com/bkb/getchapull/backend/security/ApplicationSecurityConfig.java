@@ -3,7 +3,7 @@ package com.bkb.getchapull.backend.security;
 import com.bkb.getchapull.backend.jwt.JwtConfig;
 import com.bkb.getchapull.backend.jwt.JwtTokenVerifier;
 import com.bkb.getchapull.backend.jwt.JwtUsernameAndPasswordAuthFilter;
-import com.bkb.getchapull.backend.service.implementations.UserProfileServie;
+import com.bkb.getchapull.backend.service.implementations.UserProfileService;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,11 +29,11 @@ import java.util.Collections;
 public class ApplicationSecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
-    private final UserProfileServie userProfileService;
+    private final UserProfileService userProfileService;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
 
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserProfileServie userProfileService, SecretKey secretKey, JwtConfig jwtConfig){
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserProfileService userProfileService, SecretKey secretKey, JwtConfig jwtConfig){
         this.passwordEncoder = passwordEncoder;
         this.userProfileService = userProfileService;
         this.secretKey = secretKey;

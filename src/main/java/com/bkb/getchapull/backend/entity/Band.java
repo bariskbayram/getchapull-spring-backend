@@ -18,7 +18,7 @@ import java.util.Objects;
 @Entity(name = "Band")
 @Table(
         name = "bands",
-        uniqueConstraints = { @UniqueConstraint(name = "band_spotify_id_unique", columnNames = "band_spotify_id")}
+        uniqueConstraints = { @UniqueConstraint(name = "spotify_id_unique", columnNames = "spotify_id")}
 )
 public class Band {
 
@@ -33,25 +33,25 @@ public class Band {
             generator = "band_sequence"
     )
     @Column(
-            name = "band_id",
+            name = "id",
             updatable = false
     )
-    private Long bandId;
+    private Long id;
 
     @Column(
-            name = "band_spotify_id",
+            name = "spotify_id",
             nullable = false,
             length = 62,
             unique = true
     )
-    private String bandSpotifyId;
+    private String spotifyId;
 
     @Column(
-            name = "band_name",
+            name = "name",
             nullable = false,
             length = 100
     )
-    private String bandName;
+    private String name;
 
     @OneToMany(
             mappedBy = "band",
@@ -61,13 +61,13 @@ public class Band {
     @JsonManagedReference
     private List<Album> albums = new ArrayList<>();
 
-    public Band(Long bandId) {
-        this.bandId = bandId;
+    public Band(Long id) {
+        this.id = id;
     }
 
-    public Band(String bandSpotifyId, String bandName) {
-        this.bandSpotifyId = bandSpotifyId;
-        this.bandName = bandName;
+    public Band(String spotifyId, String name) {
+        this.spotifyId = spotifyId;
+        this.name = name;
     }
 
     @Override
@@ -78,12 +78,12 @@ public class Band {
             return false;
 
         Band band = (Band) obj;
-        return Objects.equals(bandSpotifyId, band.bandSpotifyId);
+        return Objects.equals(spotifyId, band.spotifyId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bandSpotifyId);
+        return Objects.hash(spotifyId);
     }
 
 }
