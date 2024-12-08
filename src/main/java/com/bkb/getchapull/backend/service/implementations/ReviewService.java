@@ -50,7 +50,7 @@ public class ReviewService implements ReviewServiceInterface {
                         review.getTitle(),
                         review.getContent(),
                         review.getPoint(),
-                        null,
+                        review.getCreatedAt(),
                         review.getAlbum().getId(),
                         review.getAlbum().getName(),
                         review.getAlbum().getBand().getId(),
@@ -70,20 +70,19 @@ public class ReviewService implements ReviewServiceInterface {
 
     @Override
     public List<PostDTO> getPostsByUserId(Long userId) {
-        List<Object[]> results = reviewRepository.getPostsByUserId(userId);
-
-        return results.stream()
+        return reviewRepository.getPostsByUserId(userId)
+                .stream()
                 .map(row -> new PostDTO(
-                        (Long) row[0],       // reviews.id
-                        (String) row[1],     // users.username
-                        (String) row[2],     // reviews.title
-                        (String) row[3],     // reviews.content
-                        (Integer) row[4],    // reviews.point
-                        ((Instant) row[5]).atOffset(ZoneOffset.UTC),  // reviews.created_at TODO: not sure about using OffsetDateTime, better check Saul.Timezone da hatalı
-                        (Long) row[6],       // albums.id
-                        (String) row[7],     // albums.name
-                        (Long) row[8],      // band.id
-                        (String) row[9]     // bands.name
+                        (Long) row[0],                                   // reviews.id
+                        (String) row[1],                                 // users.username
+                        (String) row[2],                                 // reviews.title
+                        (String) row[3],                                 // reviews.content
+                        (Integer) row[4],                                // reviews.point
+                        ((Instant) row[5]).atOffset(ZoneOffset.UTC),     // reviews.created_at
+                        (Long) row[6],                                   // albums.id
+                        (String) row[7],                                 // albums.name
+                        (Long) row[8],                                   // band.id
+                        (String) row[9]                                  // bands.name
                 ))
                 .collect(Collectors.toList());
     }
