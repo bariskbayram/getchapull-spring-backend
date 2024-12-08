@@ -20,6 +20,9 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
     @Query("SELECT f.followed FROM Follow f WHERE f.follower.id = :userId AND f.followed.id != :userId")
     List<UserProfile> findFollowingsByUserId(Long userId);
 
+    @Query("SELECT u FROM UserProfile u WHERE u.id NOT IN (SELECT f.followed.id FROM Follow f WHERE f.follower.id = :userId) AND u.id != :userId")
+    List<UserProfile> findSuggestionsForUser(Long userId);
+
     Optional<UserProfile> findByUsername(String username);
 
     boolean existsByUsername(String username);

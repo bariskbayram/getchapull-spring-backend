@@ -42,7 +42,7 @@ public class UserProfileController {
         return userProfileService.findFollowingsByUserId(userId);
     }
 
-    @GetMapping("/get_five_user_suggestion")
+    @GetMapping("/get_user_suggestion")
     @PreAuthorize("hasAuthority('review:write')")
     public List<UserDTO> getUserSuggestion(@RequestParam(name = "user_id") Long userId){
         return userProfileService.getUserSuggestion(userId);

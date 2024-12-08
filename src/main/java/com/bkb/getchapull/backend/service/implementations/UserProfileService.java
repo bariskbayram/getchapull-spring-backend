@@ -84,7 +84,15 @@ public class UserProfileService implements UserProfileServiceInterface, UserDeta
     // TODO: Implement this method
     @Override
     public List<UserDTO> getUserSuggestion(Long userId) {
-        return null;
+        return userProfileRepository.findSuggestionsForUser(userId)
+                .stream()
+                .map(userProfile -> new UserDTO(
+                        userProfile.getId(),
+                        userProfile.getUsername(),
+                        userProfile.getEmail(),
+                        userProfile.getFullname(),
+                        userProfile.getBioInfo()
+                )).toList();
     }
 
     @Override
