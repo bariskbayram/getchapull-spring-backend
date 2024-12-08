@@ -31,8 +31,14 @@ public class BandService implements BandServiceInterface {
     }
 
     @Override
-    public List<Band> getBandsByUsername(String username) {
-        return bandRepository.findBandsByUsername(username);
+    public List<BandDTO> findBandsReviewedByUser(String username) {
+        return bandRepository.findBandsReviewedByUser(username)
+                .stream()
+                .map(band -> new BandDTO(
+                        band.getId(),
+                        band.getName(),
+                        band.getSpotifyId()))
+                .toList();
     }
 
     @Override
@@ -62,9 +68,9 @@ public class BandService implements BandServiceInterface {
         metadata.put("Content-Type", file.getContentType());
         metadata.put("Content-Length", String.valueOf(file.getSize()));
 
-        String path = String.format("bands/%s-%s", bandDTO.getBandName(), bandDTO.getBandSpotifyId());
+        String path = String.format("bands/%s-%s", bandDTO.getName(), bandDTO.getSpotifyId());
 
-        Band band = new Band(bandDTO.getBandSpotifyId(), bandDTO.getBandName());
+        Band band = new Band(bandDTO.getSpotifyId(), bandDTO.getName());
 
         try {
             fileStoreService.save(BucketName.IMAGE.getBucketName(), path, Optional.of(metadata), file.getInputStream());
@@ -92,7 +98,7 @@ public class BandService implements BandServiceInterface {
     }
 
     @Override
-    public int getBandCountByUsername(String username) {
-        return bandRepository.getBandCountByUsername(username);
+    public int getReviewedBandCountByUser(String username) {
+        return bandRepository.getReviewedBandCountByUser(username);
     }
 }

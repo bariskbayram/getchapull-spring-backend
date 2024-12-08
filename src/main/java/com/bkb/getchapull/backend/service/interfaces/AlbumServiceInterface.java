@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface AlbumServiceInterface {
 
-    List<Album> getAlbumsByUsername(String username);
+    List<AlbumDTO> findAlbumsReviewedByUser(String username);
 
-    List<Album> getAlbumsByBandIdAndUsername(String username, Long bandId);
+    List<AlbumDTO> findBandAlbumsReviewedByUser(String username, Long bandId);
 
     byte[] downloadAlbumImage(Long albumId);
 
@@ -20,12 +20,8 @@ public interface AlbumServiceInterface {
 
     Album uploadAlbumFile(AlbumDTO albumDTO, MultipartFile file);
 
-    int  addAlbumForThisUser(Long userId, Long albumId);
-
     Optional<Album> getAlbumById(Long albumId);
 
-    int deleteAlbumByIdAndUserId(Long albumId, Long userId);
-
-    int getAlbumCountByUsername(String username);
+    int getReviewedAlbumCountByUser(String username);
 
 }

@@ -14,14 +14,11 @@ import java.util.Optional;
 @Repository("jpaRepoUserProfile")
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
 
-    @Query("select u from UserProfile u inner join u.following ul where ul.followed.id = :userId and ul.follower.id != :userId")
-    List<UserProfile> getFollowersByUserId(Long userId);
+    @Query("SELECT f.follower FROM Follow f WHERE f.followed.id = :userId AND f.follower.id != :userId")
+    List<UserProfile> findFollowersByUserId(Long userId);
 
-    @Query(
-            value = "select u2.id, u2.username, u2.email, u2.password, u2.fullname, u2.created_at, u2.bio_info, u2.role from users u inner join follows f on u.id = f.follower_id and u.id = :userId inner join users u2 ON f.followed_id = u2.id WHERE f.followed_id != :userId",
-            nativeQuery = true
-    )
-    List<UserProfile> getFollowingsByUserId(Long userId);
+    @Query("SELECT f.followed FROM Follow f WHERE f.follower.id = :userId AND f.followed.id != :userId")
+    List<UserProfile> findFollowingsByUserId(Long userId);
 
     Optional<UserProfile> findByUsername(String username);
 
@@ -32,19 +29,19 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
     void deleteUserProfileByUsername(String username);
 
     @Modifying
-    @Query("update UserProfile u set u.fullname = :fullname, u.bioInfo = :bioInfo, u.password = :password where u.username = :username")
-    void updateUserProfile(String fullname, String bioInfo, String password, String username);
+    @Query("UPDATE UserProfile u SET u.fullname = :fullname, u.bioInfo = :bioInfo WHERE u.username = :username")
+    void updateUserProfile(String username, String fullname, String bioInfo);
 
     @Modifying
     @Transactional
-    @Query(value = "insert into follows(follower_id, followed_id) values (:userId, :followingId)", nativeQuery = true)
-    void followSomeone(Long userId, Long followingId);
+    @Query(value = "INSERT INTO follows(follower_id, followed_id) VALUES (:followerId, :followedId)", nativeQuery = true)
+    void followSomeone(Long followerId, Long followedId);
 
     @Modifying
     @Transactional
-    @Query(value = "delete from follows where follower_id = :userId and followed_id = :followingId", nativeQuery = true)
-    void unfollowSomeone(Long userId, Long followingId);
+    @Query(value = "DELETE FROM follows WHERE follower_id = :unfollowerId AND followed_id = :unfollowedId", nativeQuery = true)
+    void unfollowSomeone(Long unfollowerId, Long unfollowedId);
 
-    @Query(value = "SELECT username FROM follows inner join users on users.id = follows.followed_id where follows.follower_id = :userId and users.username = :otherUsername", nativeQuery = true)
-    String isFollowedByUser(Long userId, String otherUsername);
+    @Query("SELECT CASE WHEN COUNT(f) > 0 THEN true ELSE false END FROM Follow f WHERE f.follower.id = :userId AND f.followed.username = :otherUsername")
+    boolean isFollowedByUser(Long userId, String otherUsername);
 }

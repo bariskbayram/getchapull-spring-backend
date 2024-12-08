@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("jpaServiceReview")
@@ -31,9 +30,9 @@ public class ReviewService implements ReviewServiceInterface {
     @Override
     public void addReview(ReviewDTO reviewDTO) {
         Review review = new Review(
-                reviewDTO.getReviewTitle(),
-                reviewDTO.getReviewContent(),
-                reviewDTO.getReviewPoint()
+                reviewDTO.getTitle(),
+                reviewDTO.getContent(),
+                reviewDTO.getPoint()
         );
 
         review.setAlbum(new Album(reviewDTO.getAlbumId()));
@@ -43,8 +42,20 @@ public class ReviewService implements ReviewServiceInterface {
     }
 
     @Override
-    public Optional<Review> getPostByAlbumIdAndUsername(Long albumId, String username) {
-        return reviewRepository.getPostByAlbumIdAndUsername(albumId, username);
+    public PostDTO getPostByAlbumIdAndUsername(Long albumId, String username) {
+        return reviewRepository.getPostByAlbumIdAndUsername(albumId, username)
+                .map(review -> new PostDTO(
+                        review.getId(),
+                        username,
+                        review.getTitle(),
+                        review.getContent(),
+                        review.getPoint(),
+                        null,
+                        review.getAlbum().getId(),
+                        review.getAlbum().getName(),
+                        review.getAlbum().getBand().getId(),
+                        review.getAlbum().getBand().getName()
+                )).orElse(null);
     }
 
     @Override
@@ -54,7 +65,7 @@ public class ReviewService implements ReviewServiceInterface {
 
     @Override
     public void updateReviewByReviewId(Long reviewId, ReviewDTO reviewDTO) {
-        reviewRepository.updateReviewByReviewId(reviewId, reviewDTO.getReviewTitle(), reviewDTO.getReviewContent(), reviewDTO.getReviewPoint());
+        reviewRepository.updateReviewByReviewId(reviewId, reviewDTO.getTitle(), reviewDTO.getContent(), reviewDTO.getPoint());
     }
 
     @Override
@@ -63,16 +74,16 @@ public class ReviewService implements ReviewServiceInterface {
 
         return results.stream()
                 .map(row -> new PostDTO(
-                        (String) row[0],     // users.username
-                        (Long) row[1],       // reviews.review_id
-                        (String) row[2],     // reviews.review_title
-                        (String) row[3],     // reviews.review_content
-                        (Integer) row[4],    // reviews.review_point
-                        ((Instant) row[5]).atOffset(ZoneOffset.UTC),  // reviews.posting_date TODO: not sure about using OffsetDateTime, better check Saul.Timezone da hatalı
-                        (Long) row[8],       // albums.album_id
-                        (String) row[9],     // albums.album_name
-                        (Long) row[10],      // albums.band_band_id
-                        (String) row[11]     // bands.band_name
+                        (Long) row[0],       // reviews.id
+                        (String) row[1],     // users.username
+                        (String) row[2],     // reviews.title
+                        (String) row[3],     // reviews.content
+                        (Integer) row[4],    // reviews.point
+                        ((Instant) row[5]).atOffset(ZoneOffset.UTC),  // reviews.created_at TODO: not sure about using OffsetDateTime, better check Saul.Timezone da hatalı
+                        (Long) row[6],       // albums.id
+                        (String) row[7],     // albums.name
+                        (Long) row[8],      // band.id
+                        (String) row[9]     // bands.name
                 ))
                 .collect(Collectors.toList());
     }

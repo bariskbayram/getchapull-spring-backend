@@ -43,22 +43,47 @@ public class UserProfileService implements UserProfileServiceInterface, UserDeta
     }
 
     @Override
-    public List<UserProfile> getAllUsers() {
-        return userProfileRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        return userProfileRepository.findAll()
+                .stream()
+                .map(userProfile -> new UserDTO(
+                        userProfile.getId(),
+                        userProfile.getUsername(),
+                        userProfile.getEmail(),
+                        userProfile.getFullname(),
+                        userProfile.getBioInfo()
+                )).toList();
     }
 
     @Override
-    public List<UserProfile> getFollowers(Long userId) {
-        return userProfileRepository.getFollowersByUserId(userId);
+    public List<UserDTO> findFollowersByUserId(Long userId) {
+        return userProfileRepository.findFollowersByUserId(userId)
+                .stream()
+                .map(userProfile -> new UserDTO(
+                        userProfile.getId(),
+                        userProfile.getUsername(),
+                        userProfile.getEmail(),
+                        userProfile.getFullname(),
+                        userProfile.getBioInfo()
+                )).toList();
     }
 
     @Override
-    public List<UserProfile> getFollowings(Long userId) {
-        return userProfileRepository.getFollowingsByUserId(userId);
+    public List<UserDTO> findFollowingsByUserId(Long userId) {
+        return userProfileRepository.findFollowingsByUserId(userId)
+                .stream()
+                .map(userProfile -> new UserDTO(
+                        userProfile.getId(),
+                        userProfile.getUsername(),
+                        userProfile.getEmail(),
+                        userProfile.getFullname(),
+                        userProfile.getBioInfo()
+                )).toList();
     }
 
+    // TODO: Implement this method
     @Override
-    public List<UserProfile> getUserSuggestion(Long userId) {
+    public List<UserDTO> getUserSuggestion(Long userId) {
         return null;
     }
 
@@ -117,6 +142,19 @@ public class UserProfileService implements UserProfileServiceInterface, UserDeta
         userProfile.setAccountNonLocked(true);
         userProfile.setCredentialsNonExpired(true);
         return userProfile;
+    }
+
+    @Override
+    public UserDTO getUserByUsername(String username) throws UsernameNotFoundException {
+        UserProfile userProfile = userProfileRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+        return new UserDTO(
+                userProfile.getId(),
+                userProfile.getUsername(),
+                userProfile.getEmail(),
+                userProfile.getFullname(),
+                userProfile.getBioInfo()
+        );
     }
 
     @Override
@@ -179,22 +217,21 @@ public class UserProfileService implements UserProfileServiceInterface, UserDeta
 
     @Override
     public void updateUserProfileByUsername(UserDTO userDTO) {
-        userProfileRepository.updateUserProfile(userDTO.getFullname(), userDTO.getBioInfo(), passwordEncoder.encode(userDTO.getPassword()), userDTO.getUsername());
+        userProfileRepository.updateUserProfile(userDTO.getUsername(), userDTO.getFullname(), userDTO.getBioInfo());
     }
 
     @Override
-    public void followSomeone(Long userId, Long followingId) {
-        userProfileRepository.followSomeone(userId, followingId);
+    public void followSomeone(Long followerId, Long followedId) {
+        userProfileRepository.followSomeone(followerId, followedId);
     }
 
     @Override
-    public void unfollowSomeone(Long userId, Long unfollowingId) {
-        userProfileRepository.unfollowSomeone(userId, unfollowingId);
+    public void unfollowSomeone(Long unfollowerId, Long unfollowedId) {
+        userProfileRepository.unfollowSomeone(unfollowerId, unfollowedId);
     }
 
     @Override
     public boolean isFollowedByUser(Long userId, String otherUsername) {
-        String username = userProfileRepository.isFollowedByUser(userId, otherUsername);
-        return username != null;
+        return userProfileRepository.isFollowedByUser(userId, otherUsername);
     }
 }

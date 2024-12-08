@@ -19,7 +19,7 @@ import java.util.Objects;
 @Entity(name = "Album")
 @Table(
         name = "albums",
-        uniqueConstraints = { @UniqueConstraint(name = "spotify_id_unique", columnNames = "spotify_id")}
+        uniqueConstraints = { @UniqueConstraint(name = "album_spotify_id_unique", columnNames = "spotify_id")}
 )
 public class Album {
 
@@ -69,19 +69,12 @@ public class Album {
 
     @OneToMany(
             mappedBy = "album",
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     @JsonManagedReference
     private List<Review> reviews = new ArrayList<>();
-
-    @OneToMany(
-            mappedBy = "album",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    @JsonManagedReference
-    private List<UserAlbum> userAlbums = new ArrayList<>();
 
     public Album(Long id) {
         this.id = id;

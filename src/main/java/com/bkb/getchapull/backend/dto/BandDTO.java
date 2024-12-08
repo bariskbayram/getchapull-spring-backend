@@ -8,10 +8,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BandDTO {
 
-    @JsonProperty("band_name")
-    private String bandName;
+    @JsonProperty("id")
+    private Long id;
 
-    @JsonProperty("band_spotify_id")
-    private String bandSpotifyId;
+    @JsonProperty("name")
+    private String name;
 
+    @JsonProperty("spotify_id")
+    private String spotifyId;
+
+    public BandDTO(Long id, String name, String spotifyId) {
+        this.id = id;
+        this.name = name;
+        this.spotifyId = spotifyId;
+    }
 }

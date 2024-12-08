@@ -26,17 +26,16 @@ public class BandController {
         this.bandService = bandService;
     }
 
-    @GetMapping("/get_bands_by_username")
+    @GetMapping("/find_bands_reviewed_by_user")
     @PreAuthorize("hasAuthority('review:read')")
-    public List<Band> getBandsByUsername(@RequestParam(name = "username") String username){
-        return bandService.getBandsByUsername(username);
+    public List<BandDTO> findBandsReviewedByUser(@RequestParam(name = "username") String username){
+        return bandService.findBandsReviewedByUser(username);
     }
 
     @GetMapping(path = "/download_band_image")
     @PreAuthorize("hasAuthority('review:read')")
     public byte[] downloadBandImage(@RequestParam(name = "band_id") Long bandId){
-        byte[] arrayBase64 = Base64.getEncoder().encode(bandService.downloadBandImage(bandId));
-        return arrayBase64;
+        return Base64.getEncoder().encode(bandService.downloadBandImage(bandId));
     }
 
     @PostMapping(
@@ -46,8 +45,8 @@ public class BandController {
     )
     @PreAuthorize("hasAuthority('review:write')")
     public Long uploadBand(@RequestPart("band_dto") BandDTO bandDTO, @RequestPart("multipart_file") MultipartFile file) {
-        Band band = bandService.findBandBySpotifyId(bandDTO.getBandSpotifyId());
-        if(band == null){
+        Band band = bandService.findBandBySpotifyId(bandDTO.getSpotifyId());
+        if( band == null) {
             return bandService.uploadBandFile(bandDTO, file).getId();
         }
         return band.getId();
@@ -60,9 +59,9 @@ public class BandController {
         return bandService.getBandById(bandId).orElse(null);
     }
 
-    @GetMapping("/get_band_count_by_username")
+    @GetMapping("/get_reviewed_band_count_by_user")
     @PreAuthorize("hasAuthority('review:read')")
-    public int getBandCountByUsername(@RequestParam(name = "username") String username){
-        return bandService.getBandCountByUsername(username);
+    public int getReviewedBandCountByUser(@RequestParam(name = "username") String username){
+        return bandService.getReviewedBandCountByUser(username);
     }
 }

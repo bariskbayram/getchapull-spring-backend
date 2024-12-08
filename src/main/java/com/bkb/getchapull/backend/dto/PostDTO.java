@@ -1,5 +1,6 @@
 package com.bkb.getchapull.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,35 +10,53 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class PostDTO {
 
-    private String postUsername;
-    private Long reviewId;
-    private String reviewTitle;
-    private String reviewContent;
-    private int reviewPoint;
-    private OffsetDateTime postingDate;
+    @JsonProperty("id")
+    private Long id;
+
+    @JsonProperty("username")
+    private String username;
+
+    @JsonProperty("title")
+    private String title;
+
+    @JsonProperty("content")
+    private String content;
+
+    @JsonProperty("point")
+    private int point;
+
+    @JsonProperty("created_at")
+    private OffsetDateTime createdAt;
+
+    @JsonProperty("album_id")
     private Long albumId;
+
+    @JsonProperty("album_name")
     private String albumName;
+
+    @JsonProperty("band_id")
     private Long bandId;
+
+    @JsonProperty("band_name")
     private String bandName;
 
     public PostDTO(
-            String postUsername,
-            Long reviewId,
-            String reviewTitle,
-            String reviewContent,
-            int reviewPoint,
-            OffsetDateTime postingDate,
+            Long id,
+            String username,
+            String title,
+            String content,
+            int point,
+            OffsetDateTime createdAt,
             Long albumId,
             String albumName,
             Long bandId,
             String bandName) {
-
-        this.postUsername = postUsername;
-        this.reviewId = reviewId;
-        this.reviewTitle = reviewTitle;
-        this.reviewContent = reviewContent;
-        this.reviewPoint = reviewPoint;
-        this.postingDate = postingDate;
+        this.id = id;
+        this.username = username;
+        this.title = title;
+        this.content = content;
+        this.point = point;
+        this.createdAt = createdAt;
         this.bandId = bandId;
         this.bandName = bandName;
         this.albumId = albumId;

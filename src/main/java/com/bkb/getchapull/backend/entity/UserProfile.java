@@ -104,14 +104,6 @@ public class UserProfile implements UserDetails {
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(
-            mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    @JsonManagedReference
-    private List<UserAlbum> userAlbums = new ArrayList<>();
-
-    @OneToMany(
             mappedBy = "follower",
             cascade = CascadeType.ALL,
             orphanRemoval = true

@@ -1,14 +1,12 @@
 package com.bkb.getchapull.backend.api;
 
 import com.bkb.getchapull.backend.dto.UserDTO;
-import com.bkb.getchapull.backend.entity.UserProfile;
 import com.bkb.getchapull.backend.service.interfaces.UserProfileServiceInterface;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,25 +26,25 @@ public class UserProfileController {
     }
 
     @GetMapping("/get_all_users")
-    public List<UserProfile> getAllUsers(){
+    public List<UserDTO> getAllUsers(){
         return userProfileService.getAllUsers();
     }
 
-    @GetMapping("/get_followers")
+    @GetMapping("/find_followers_by_user_id")
     @PreAuthorize("hasAuthority('review:write')")
-    public List<UserProfile> getFollowers(@RequestParam(name = "user_id") Long userId){
-        return userProfileService.getFollowers(userId);
+    public List<UserDTO> findFollowersByUserId(@RequestParam(name = "user_id") Long userId){
+        return userProfileService.findFollowersByUserId(userId);
     }
 
-    @GetMapping("/get_followings")
+    @GetMapping("/find_followings_by_user_id")
     @PreAuthorize("hasAuthority('review:write')")
-    public List<UserProfile> getFollowings(@RequestParam(name = "user_id") Long userId){
-        return userProfileService.getFollowings(userId);
+    public List<UserDTO> findFollowingsByUserId(@RequestParam(name = "user_id") Long userId){
+        return userProfileService.findFollowingsByUserId(userId);
     }
 
     @GetMapping("/get_five_user_suggestion")
     @PreAuthorize("hasAuthority('review:write')")
-    public List<UserProfile> getUserSuggestion(@RequestParam(name = "user_id") Long userId){
+    public List<UserDTO> getUserSuggestion(@RequestParam(name = "user_id") Long userId){
         return userProfileService.getUserSuggestion(userId);
     }
 
@@ -73,8 +71,8 @@ public class UserProfileController {
     }
 
     @GetMapping("/get_user_by_username")
-    public UserDetails getUserByUsername(@RequestParam(name = "username") String username){
-        return userProfileService.loadUserByUsername(username);
+    public UserDTO getUserByUsername(@RequestParam(name = "username") String username){
+        return userProfileService.getUserByUsername(username);
     }
 
     @PostMapping("/signup")
@@ -111,16 +109,16 @@ public class UserProfileController {
 
     @PutMapping(path = "/follow_someone")
     @PreAuthorize("hasAuthority('review:write')")
-    public void followSomeone(@RequestParam(name = "user_id") Long userId,
-                          @RequestParam(name = "following_id") Long followingId){
-        userProfileService.followSomeone(userId, followingId);
+    public void followSomeone(@RequestParam(name = "user_id") Long followerId,
+                          @RequestParam(name = "followed_id") Long followedId){
+        userProfileService.followSomeone(followerId, followedId);
     }
 
     @PutMapping(path = "/unfollow_someone")
     @PreAuthorize("hasAuthority('review:write')")
-    public void unfollowSomeone(@RequestParam(name = "user_id") Long userId,
-                          @RequestParam(name = "unfollowing_id") Long unfollowingId){
-        userProfileService.unfollowSomeone(userId, unfollowingId);
+    public void unfollowSomeone(@RequestParam(name = "user_id") Long followerId,
+                          @RequestParam(name = "unfollowed_id") Long unfollowedId){
+        userProfileService.unfollowSomeone(followerId, unfollowedId);
     }
 
     @GetMapping(path = "/is_followed_by_user")

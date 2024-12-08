@@ -2,7 +2,6 @@ package com.bkb.getchapull.backend.api;
 
 import com.bkb.getchapull.backend.dto.PostDTO;
 import com.bkb.getchapull.backend.dto.ReviewDTO;
-import com.bkb.getchapull.backend.entity.Review;
 import com.bkb.getchapull.backend.service.interfaces.ReviewServiceInterface;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +31,10 @@ public class ReviewController {
 
     @GetMapping(path = "/get_post_by_album_id_and_username")
     @PreAuthorize("hasAuthority('review:read')")
-    public Review getPostByAlbumIdAndUsername(
+    public PostDTO getPostByAlbumIdAndUsername(
             @RequestParam(name = "album_id") Long albumId,
             @RequestParam(name = "username") String username){
-        return reviewService.getPostByAlbumIdAndUsername(albumId, username).orElse(null);
+        return reviewService.getPostByAlbumIdAndUsername(albumId, username);
     }
 
     @DeleteMapping(path = "/delete_review_by_review_id")

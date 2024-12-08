@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDTO {
 
-    private Long userId;
+    @JsonProperty("id")
+    private Long id;
 
     @JsonProperty("username")
     private String username;
@@ -25,4 +26,11 @@ public class UserDTO {
     @JsonProperty("bio_info")
     private String bioInfo;
 
+    public UserDTO(Long id, String username, String email, String fullname, String bioInfo) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.fullname = fullname;
+        this.bioInfo = bioInfo;
+    }
 }

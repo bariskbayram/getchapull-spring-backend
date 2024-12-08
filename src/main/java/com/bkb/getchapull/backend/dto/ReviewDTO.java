@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReviewDTO {
 
-    @JsonProperty("review_title")
-    private String reviewTitle;
+    @JsonProperty("title")
+    private String title;
 
-    @JsonProperty("review_content")
-    private String reviewContent;
+    @JsonProperty("content")
+    private String content;
 
-    @JsonProperty("review_point")
-    private int reviewPoint;
+    @JsonProperty("point")
+    private int point;
 
     @JsonProperty("album_id")
     private Long albumId;

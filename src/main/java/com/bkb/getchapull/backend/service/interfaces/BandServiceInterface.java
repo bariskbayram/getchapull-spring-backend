@@ -9,7 +9,7 @@ import java.util.*;
 
 public interface BandServiceInterface {
 
-    List<Band> getBandsByUsername(String username);
+    List<BandDTO> findBandsReviewedByUser(String username);
 
     byte[] downloadBandImage(Long bandId);
 
@@ -19,6 +19,6 @@ public interface BandServiceInterface {
 
     Optional<Band> getBandById(Long bandId);
 
-    int getBandCountByUsername(String username);
+    int getReviewedBandCountByUser(String username);
 
 }

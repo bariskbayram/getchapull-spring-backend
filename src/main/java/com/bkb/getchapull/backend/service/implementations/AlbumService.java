@@ -32,13 +32,29 @@ public class AlbumService implements AlbumServiceInterface {
     }
 
     @Override
-    public List<Album> getAlbumsByUsername(String username) {
-        return albumRepository.findAlbumsByUsername(username);
+    public List<AlbumDTO> findAlbumsReviewedByUser(String username) {
+        return albumRepository.findAlbumsReviewedByUser(username)
+                .stream()
+                .map(album -> new AlbumDTO(
+                        album.getId(),
+                        album.getName(),
+                        album.getSpotifyId(),
+                        album.getYear(),
+                        album.getBand().getId()))
+                .toList();
     }
 
     @Override
-    public List<Album> getAlbumsByBandIdAndUsername(String username, Long bandId) {
-        return albumRepository.findAlbumsByUsernameAndBandId(username, bandId);
+    public List<AlbumDTO> findBandAlbumsReviewedByUser(String username, Long bandId) {
+        return albumRepository.findBandAlbumsReviewedByUser(username, bandId)
+                .stream()
+                .map(album -> new AlbumDTO(
+                        album.getId(),
+                        album.getName(),
+                        album.getSpotifyId(),
+                        album.getYear(),
+                        album.getBand().getId()))
+                .toList();
     }
 
     @Override
@@ -68,12 +84,9 @@ public class AlbumService implements AlbumServiceInterface {
         metadata.put("Content-Type", file.getContentType());
         metadata.put("Content-Length", String.valueOf(file.getSize()));
 
-        String path = String.format("albums/%s-%s", albumDTO.getAlbumName(), albumDTO.getAlbumSpotifyId());
+        String path = String.format("albums/%s-%s", albumDTO.getName(), albumDTO.getSpotifyId());
 
-        Album album = new Album(albumDTO.getAlbumSpotifyId(), albumDTO.getAlbumName(), albumDTO.getAlbumYear());
-
-        //şimdilik yeni bir Band nesnesi oluşturuldu ama DB'den de çekilebilir
-        //Yeni bir query daha çalıştırmamak için böyle yaptım. Mantıklıdır umarım :)
+        Album album = new Album(albumDTO.getSpotifyId(), albumDTO.getName(), albumDTO.getYear());
         album.setBand(new Band(albumDTO.getBandId()));
 
         try {
@@ -97,22 +110,12 @@ public class AlbumService implements AlbumServiceInterface {
     }
 
     @Override
-    public int addAlbumForThisUser(Long userId, Long albumId) {
-        return albumRepository.insertUserAlbum(userId, albumId);
-    }
-
-    @Override
     public Optional<Album> getAlbumById(Long albumId) {
         return albumRepository.findById(albumId);
     }
 
     @Override
-    public int deleteAlbumByIdAndUserId(Long albumId, Long userId) {
-        return albumRepository.deleteUserAlbum(albumId, userId);
-    }
-
-    @Override
-    public int getAlbumCountByUsername(String username) {
-        return albumRepository.getAlbumCountByUsername(username);
+    public int getReviewedAlbumCountByUser(String username) {
+        return albumRepository.getReviewedAlbumCountByUser(username);
     }
 }

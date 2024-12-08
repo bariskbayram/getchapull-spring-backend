@@ -8,14 +8,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AlbumDTO {
 
-    @JsonProperty("album_name")
-    private String albumName;
+    @JsonProperty("id")
+    private Long id;
 
-    @JsonProperty("album_spotify_id")
-    private String albumSpotifyId;
+    @JsonProperty("name")
+    private String name;
 
-    @JsonProperty("album_year")
-    private int albumYear;
+    @JsonProperty("spotify_id")
+    private String spotifyId;
+
+    @JsonProperty("year")
+    private int year;
 
     @JsonProperty("band_id")
     private Long bandId;
@@ -23,4 +26,11 @@ public class AlbumDTO {
     @JsonProperty("user_id")
     private Long userId;
 
+    public AlbumDTO(Long id, String name, String spotifyId, int year, Long bandId) {
+        this.id = id;
+        this.name = name;
+        this.spotifyId = spotifyId;
+        this.year = year;
+        this.bandId = bandId;
+    }
 }

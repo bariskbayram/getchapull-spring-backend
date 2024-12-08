@@ -18,7 +18,7 @@ import java.util.Objects;
 @Entity(name = "Band")
 @Table(
         name = "bands",
-        uniqueConstraints = { @UniqueConstraint(name = "spotify_id_unique", columnNames = "spotify_id")}
+        uniqueConstraints = { @UniqueConstraint(name = "band_spotify_id_unique", columnNames = "spotify_id")}
 )
 public class Band {
 
