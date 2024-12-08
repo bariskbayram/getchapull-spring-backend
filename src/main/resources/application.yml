@@ -1,13 +1,13 @@
 app:
   datasource:
-    jdbc-url: ${JDBC_HOST}
+    jdbc-url: ${DATABASE_HOST}
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
 
 spring:
   flyway:
     enabled: false
-    url: ${JDBC_HOST}
+    url: ${DATABASE_HOST}
     user: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
   jpa:
