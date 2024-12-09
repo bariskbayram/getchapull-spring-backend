@@ -116,9 +116,9 @@ public class UserProfileController {
 
     @PutMapping(path = "/unfollow_someone")
     @PreAuthorize("hasAuthority('review:write')")
-    public void unfollowSomeone(@RequestParam(name = "user_id") Long followerId,
+    public void unfollowSomeone(@RequestParam(name = "user_id") Long unfollowerId,
                           @RequestParam(name = "unfollowed_id") Long unfollowedId){
-        userProfileService.unfollowSomeone(followerId, unfollowedId);
+        userProfileService.unfollowSomeone(unfollowerId, unfollowedId);
     }
 
     @GetMapping(path = "/is_followed_by_user")
