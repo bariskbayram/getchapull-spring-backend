@@ -1,60 +1,62 @@
-# GetchaPull - Backend - Spring and Postgresql
+# GetchaPull
 
 [![Apache-2.0 License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-GetchaPull website -> https://getchapull.wtf
+[Visit the Website](https://getchapull.wtf)
 
-* PostgreSQL -> Google Cloud SQL
-* spring-backend -> Google Cloud Run
-* vuejs-frontend -> Google Cloud Run
+GetchaPull is a simple social platform for music lovers to share their thoughts on albums and discover new music. You can think of it like a mix between a review site and a social feed where you follow people for music-related updates.
 
-Note:  The website is built using spring-jdbc-postgres branch.
+## What You Can Do
 
-<li><strong>Branches:</strong>
- <ul> <strong> master: </strong><br/>
-   <ul>last version by using Spring-Data-JPA(not fully implemented yet)</ul>
- </ul>
- <ul><strong> spring-jdbc-postgres: </strong><br/>
-   <ul>refactoring by using Spring-JDBC</ul>
- </ul>
- <ul> <strong> v1-without-refactoring: </strong><br/>
-   <ul>the first version of the project, bad implementation</ul>
- </ul>
-</li>
+* **Create a Profile:** Sign up, log in, and set up your music review space.
+* **Review Albums:** Write reviews, rate albums, and fetch album details from Spotify automatically.
+* **Follow Users:** See what others are reviewing and follow profiles you like.
+* **Personalized Feed:** Reviews from the people you follow show up on your main page.
+* **Save Media:** Album covers, band photos, and profile pictures are stored using AWS S3.
+  
+## How It Works
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+### Backend - [Spring-Backend Repository](https://github.com/bariskbayram/getchapull-spring-backend)
 
-This version of GetchaPull is refactored version of [this](https://github.com/bariskbayram/getchapull-spring-backend/tree/spring-jdbc-postgres) by using Spring Data JPA. This is not the best implementation of using Spring Data JPA, there are a few performance issues. In some cases, there are n+1 cases, so trying to improve performance and reduce the count of queries that are sent to DB is my next plan in this project. And then, Spring-Data-JDBC. :)
+Handles everything behind the scenes:
+  * Connects to a PostgreSQL database to store users, reviews, bands and albums. 
+  * Authenticates users with JWT. 
+  * Saves images and other files to AWS S3.
 
-GetchaPull is a Twitter-like web page for sharing music reviews with others. In the beginning, I was trying to make a web page just for myself with the same aim. Then it became a bigger project than I thought. GetchaPull has 2 repo in Github, one of them is [Spring-Backend](https://github.com/bariskbayram/getchapull-spring-backend) and another one is [VueJS-Frontend](https://github.com/bariskbayram/getchapull-vuejs-frontend). 
+### Frontend - [VueJS-Frontend Repository](https://github.com/bariskbayram/getchapull-vuejs-frontend)
 
-The Spring-Backend side of GetchaPull is an API that handles VueJS-Frontend requests. In this implementation, 6 tables are used for representing the object in the database. On the GetchaPull website, I am using AWS S3 for storing profile photos, album covers, and band photos for now. When you wanna add a new review for one album, it's getting the band's and album's information from Spotify API, then stores information in DB and images in AWS S3.
+This is what users see and interact with:
+  * Built with Vue.js. 
+  * Fetches and displays data from the backend. 
+  * Responsive and easy-to-use design.
 
-* You can add new reviews to your profile.
-* You can follow or unfollow other users.
-* You can see other reviews belong to one user through its profile page.
-* You can see the posts belonging to other users that are followed by you on the main page.
+### Branches Overview
+* **master:** Latest stable version using Spring Data JPA.
+* **spring-jdbc-postgres:** Refactored to use Spring JDBC.
+* **v1-without-refactoring:** Very first version, not cleaned up.
 
-### Build and Run on your localhost
- 
-  * java version: openjdk 11.0.25 2024-10-15
-    * It requires AWS AccessKey ID and Secret AccessKey, so firstly you need to get these.  
+## How to Run It Locally
+### Requirements
 
-1. Download and unzip the source repo, or clone it using Git:
+* **Java 17+:** Tested with OpenJDK 17.
+* **Docker:** To run the app easily.
+* **AWS Keys:** Needed for S3 integration.
+
+1. Clone the Backend Repo:
   ```sh
     git clone https://github.com/bariskbayram/getchapull-spring-backend.git
+    cd getchapull-spring-backend
    ```
-2. cd into 
-  ```sh 
-    cd getchapull-spring-backend-refactor-postgres-spring-jdbc
-  ```
-3. Replace environment variables in Dockerfile through your AWS information instead of "?"
+2. Update the Dockerfile: Replace the ? values with your own:
   ```sh
     ENV BUCKET_NAME="?"
     ENV AWS_ACCESSKEY_ID="?"
     ENV AWS_SECRET_ACCESSKEY="?"
+    ENV CORS_HOSTS="?"
+    ENV DATABASE_PASSWORD="?"
+    ENV DATABASE_USER="?"
+    ENV DATABASE_HOST="?"
    ```
 4. Build jar: 
   ```sh 
@@ -65,17 +67,17 @@ The Spring-Backend side of GetchaPull is an API that handles VueJS-Frontend requ
     docker-compose up --build
   ```
 
-* On this side of GetchaPull, it requires authentication so, if you wanna use the whole GetchaPull implementation, run the frontend side too.
+* Frontend Setup: Follow instructions in [VueJS-Frontend Repository](https://github.com/bariskbayram/getchapull-vuejs-frontend).
 
 ### Build with and Third-party
 
-* SpringBoot ( SpringBootWeb, SpringBootJPA, SpringBootSecurity )
+* SpringBoot(SpringBootWeb, SpringBootJPA, SpringBootSecurity)
+* JWT
 * PostgreSQL
+* AWS SDK
+* Lombok
 * Guava
 * Flyway
-* JWT
-* AWS-Java-SDK
-* Lombok
 
 [linkedin-shield]: https://img.shields.io/static/v1?label=LINKEDIN&message=BKB&color=<COLOR>
 [linkedin-url]: https://www.linkedin.com/in/bar%C4%B1%C5%9F-kaan-bayram-121850101
