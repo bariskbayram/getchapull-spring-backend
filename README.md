@@ -79,6 +79,10 @@ This is what users see and interact with:
 * Guava
 * Flyway
 
+## UML Diagram (GetchaPull-UML)
+
+![UML](GetchaPull-UML.svg)
+
 [linkedin-shield]: https://img.shields.io/static/v1?label=LINKEDIN&message=BKB&color=<COLOR>
 [linkedin-url]: https://www.linkedin.com/in/bar%C4%B1%C5%9F-kaan-bayram-121850101
 [license-shield]: https://img.shields.io/static/v1?label=LICENCE&message=Apache-2.0&color=<COLOR>
