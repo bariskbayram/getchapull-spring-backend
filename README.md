@@ -42,38 +42,51 @@ This is what users see and interact with:
 * **Java 17+:** Tested with OpenJDK 17.
 * **Docker:** To run the app easily.
 * **AWS Keys:** Needed for S3 integration.
+* **Spotify API credentials:** Needed for Spotify API integration.
 
 1. Clone the Backend Repo:
   ```sh
     git clone https://github.com/bariskbayram/getchapull-spring-backend.git
     cd getchapull-spring-backend
    ```
-2. Update the Dockerfile: Replace the ? values with your own:
+2. Update the Dockerfile for Spring-Backend Repository: Replace *** and <IP_ADDRESS> values with your own:
   ```sh
-    ENV BUCKET_NAME="?"
-    ENV AWS_ACCESSKEY_ID="?"
-    ENV AWS_SECRET_ACCESSKEY="?"
-    ENV CORS_HOSTS="?"
-    ENV DATABASE_PASSWORD="?"
-    ENV DATABASE_USER="?"
-    ENV DATABASE_HOST="?"
+    ENV AWS_ACCESSKEY_ID="***"
+    ENV AWS_SECRET_ACCESSKEY="***"
+    ENV BUCKET_NAME="***"
+    ENV CORS_HOSTS="http://<IP_ADDRESS>:8082"
+    ENV DATABASE_HOST="jdbc:postgresql://<IP_ADDRESS>:5433/getchapull"
+    ENV DATABASE_USER="postgres"
+    ENV DATABASE_PASSWORD="postgres"
    ```
 4. Build jar: 
   ```sh 
     ./mvnw package && java -jar target/getchapull-0.0.1-SNAPSHOT.jar 
   ```
-5. Build images and run with Docker
+5. Clone the Frontend Repo:
+  ```sh
+    git clone https://github.com/bariskbayram/getchapull-vuejs-frontend.git
+    cd getchapull-vuejs-frontend
+   ```
+2. Update the Dockerfile for VueJS-Frontend Repository: Replace *** and <IP_ADDRESS> values with your own:
+  ```sh
+    ENV VUE_APP_API_URL="http://<IP_ADDRESS>:8081"
+    ENV VUE_APP_SPOTIFY_CLIENT_ID="***"
+    ENV VUE_APP_SPOTIFY_CLIENT_SECRET="***"
+   ```
+5. Build images and run with Docker - Backend, frontend and database will be up:
   ```sh
     docker-compose up --build
   ```
-
-* Frontend Setup: Follow instructions in [VueJS-Frontend Repository](https://github.com/bariskbayram/getchapull-vuejs-frontend).
+6. You can access the application from `http://<IP_ADDRESS>:8082`
 
 ### Build with and Third-party
 
 * SpringBoot(SpringBootWeb, SpringBootJPA, SpringBootSecurity)
 * JWT
 * PostgreSQL
+* VueJS
+* Spotify API
 * AWS SDK
 * Lombok
 * Guava

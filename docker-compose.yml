@@ -3,7 +3,7 @@ services:
   postgres:
     image: postgres:alpine
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_DB: getchapull
       POSTGRES_USER: postgres
@@ -16,4 +16,13 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8080:8080"
+      - "8081:8080"
+
+  vue:
+    build:
+      context: ../getchapull-vuejs-frontend/
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8080"
+    depends_on:
+      - spring
