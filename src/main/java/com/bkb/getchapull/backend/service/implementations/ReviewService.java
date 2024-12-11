@@ -10,6 +10,7 @@ import com.bkb.getchapull.backend.service.interfaces.ReviewServiceInterface;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -29,16 +30,20 @@ public class ReviewService implements ReviewServiceInterface {
 
     @Override
     public void addReview(ReviewDTO reviewDTO) {
-        Review review = new Review(
-                reviewDTO.getTitle(),
-                reviewDTO.getContent(),
-                reviewDTO.getPoint()
-        );
+        try {
+            Review review = new Review(
+                    reviewDTO.getTitle(),
+                    reviewDTO.getContent(),
+                    reviewDTO.getPoint()
+            );
 
-        review.setAlbum(new Album(reviewDTO.getAlbumId()));
-        review.setUserProfile(new UserProfile(reviewDTO.getUserId()));
+            review.setAlbum(new Album(reviewDTO.getAlbumId()));
+            review.setUserProfile(new UserProfile(reviewDTO.getUserId()));
 
-        reviewRepository.save(review);
+            reviewRepository.save(review);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalStateException("User has already reviewed this album!");
+        }
     }
 
     @Override

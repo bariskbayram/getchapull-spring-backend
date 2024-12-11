@@ -6,6 +6,8 @@ import com.bkb.getchapull.backend.service.interfaces.ReviewServiceInterface;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +27,13 @@ public class ReviewController {
 
     @PostMapping("/upload_review")
     @PreAuthorize("hasAuthority('review:write')")
-    public void addReview(@RequestPart("review_dto") ReviewDTO reviewDTO){
-        reviewService.addReview(reviewDTO);
+    public ResponseEntity<?> addReview(@RequestPart("review_dto") ReviewDTO reviewDTO){
+        try {
+            reviewService.addReview(reviewDTO);
+            return ResponseEntity.ok("Review added successfully");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping(path = "/get_post_by_album_id_and_username")

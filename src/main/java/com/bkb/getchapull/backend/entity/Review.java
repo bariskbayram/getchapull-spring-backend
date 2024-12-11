@@ -16,7 +16,10 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Entity(name = "Review")
-@Table(name = "reviews")
+@Table(
+        name = "reviews",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_profile_id", "album_id"})
+)
 public class Review {
 
     @Id

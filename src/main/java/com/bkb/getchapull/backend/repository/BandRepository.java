@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository("jpaRepoBand")
 public interface BandRepository extends JpaRepository<Band, Long> {
 
-    @Query("SELECT DISTINCT r.album.band, r.createdAt FROM Review r WHERE r.userProfile.username = :username ORDER BY r.createdAt DESC")
+    @Query("SELECT r.album.band, MAX(r.createdAt) FROM Review r WHERE r.userProfile.username = :username GROUP BY r.album.band ORDER BY MAX(r.createdAt) DESC")
     List<Band> findBandsReviewedByUser(String username);
 
     Optional<Band> findBandBySpotifyId(String spotifyId);
