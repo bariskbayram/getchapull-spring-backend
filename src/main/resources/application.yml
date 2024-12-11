@@ -22,4 +22,4 @@ application:
   jwt:
     secretKey: mustbesecuremustbesecuremustbesecuremustbesecurekk
     tokenPrefix: "Bearer "
-    tokenExpirationAfterDays: 14
+    tokenExpirationTime: 432000000

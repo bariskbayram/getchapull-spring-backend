@@ -1,5 +1,6 @@
 package com.bkb.getchapull.backend.jwt;
 
+import io.jsonwebtoken.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -7,10 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.google.common.base.Strings;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 
 import javax.crypto.SecretKey;
 import jakarta.servlet.FilterChain;
@@ -18,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,6 +55,12 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             Claims body = claimsJws.getBody();
             String username = body.getSubject();
 
+            if (body.getExpiration().before(new Date())) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token expired");
+                return;
+            }
+
             List<Map<String,String>> authorities = (List<Map<String, String>>) body.get("authorities");
 
             Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
@@ -70,9 +74,14 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        }catch (JwtException e){
-            throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token expired");
+            return;
+        } catch (JwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write(String.format("Token %s cannot be trusted", token));
+            return;
         }
 
         filterChain.doFilter(request, response);

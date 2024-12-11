@@ -9,7 +9,7 @@ public class JwtConfig {
 
     private String secretKey;
     private String tokenPrefix;
-    private Integer tokenExpirationAfterDays;
+    private Integer tokenExpirationTime;
 
     public JwtConfig() {
     }
@@ -30,12 +30,12 @@ public class JwtConfig {
         this.tokenPrefix = tokenPrefix;
     }
 
-    public Integer getTokenExpirationAfterDays() {
-        return tokenExpirationAfterDays;
+    public Integer getTokenExpirationTime() {
+        return tokenExpirationTime;
     }
 
-    public void setTokenExpirationAfterDays(Integer tokenExpirationAfterDays) {
-        this.tokenExpirationAfterDays = tokenExpirationAfterDays;
+    public void setTokenExpirationTime(Integer tokenExpirationTime) {
+        this.tokenExpirationTime = tokenExpirationTime;
     }
 
     public String getAuthorizationHeader(){
